@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Venta;
 use Illuminate\Http\Request;
+use Auth;
 
 class VentaController extends Controller{
 
@@ -13,12 +14,7 @@ class VentaController extends Controller{
    * @return \Illuminate\Http\Response
    */
   public function index(){
-    // Verificamos si se creó un cierre.
-    if (\App\Cierre::where('usuario_id', Auth::user()->id)->where('tienda_id', Auth::user()->tienda_id)->where('estado', 1)) {
-      return view('ventas.inicio');
-    }else{
-      return redirect("{{url('cierre/create')}}");
-    }
+    return view('ventas.inicio');
   }
 
   /**
@@ -27,11 +23,7 @@ class VentaController extends Controller{
    * @return \Illuminate\Http\Response
    */
   public function create(){
-    if (\App\Cierre::where('usuario_id', Auth::user()->id)->where('tienda_id', Auth::user()->tienda_id)->where('estado', 1)) {
-      return view('ventas.nuevo');
-    }else{
-      return redirect("{{url('cierre/create')}}");
-    }
+    return view('ventas.nuevo');
   }
 
     /**

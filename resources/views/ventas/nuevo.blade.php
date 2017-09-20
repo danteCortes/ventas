@@ -47,7 +47,7 @@ Ventas
             <span class="input-group-addon">Código <span class="fa fa-barcode"></span></span>
             <input type="text" class="form-control" placeholder="CÓDIGO" id="txtCodigo">
             <span class="input-group-btn">
-              <input type="text" name="tienda_id" value="{{Auth::user()->tienda_id}}" id="tienda_id">
+              <input type="hidden" name="tienda_id" value="{{Auth::user()->tienda_id}}" id="tienda_id">
               <button class="btn btn-default" type="button"><span class="fa fa-search"></span></button>
             </span>
           </div>
@@ -123,64 +123,30 @@ Ventas
       <table class="table table-condensed table-bordered" style="background-color:#bfbfbf;">
         <thead>
           <tr>
-            <th>Operación</th>
-            <th>Cant.</th>
+            <th style="width:80px;">Operación</th>
+            <th style="width:60px;">Cant.</th>
             <th>Descripción</th>
             <th style="width:80px;">P. Unit.</th>
             <th style="width:80px;">Total</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td><button type="button" class="btn btn-xs btn-danger">Quitar</button></td>
-            <td>2</td>
-            <td>38475623. ZAPATOS PARA DAMA DE TACO 7, MULTICOLOR, IDEAL PARA FIESTAS DE GALA - JIMMY CHUO - TALLA 36.</td>
-            <td>S/ 75.00</td>
-            <td>S/ 150.00</td>
-          </tr>
-          <tr>
-            <td><button type="button" class="btn btn-xs btn-danger">Quitar</button></td>
-            <td>1</td>
-            <td>38475220. PERFUME VANILLA SCENT, FRAGANCIA CON UN DULCE AROMA A VAINILLA. 50ML/1.7 FL. OZ</td>
-            <td style="text-aling:right;">S/ 40.00</td>
-            <td>S/ 40.00</td>
-          </tr>
+          @if($venta = \App\Venta::where('usuario_id', Auth::user()->id)->where('tienda_id', Auth::user()->tienda_id)->where('estado', 1)->first())
+            @foreach($venta->detalles as $detalle)
+              <tr>
+                <td><button type="button" class="btn btn-xs btn-danger">Quitar</button></td>
+                <td>{{$detalle->cantidad}}</td>
+                <td>{{$detalle->producto->descripcion}}</td>
+                <td style="text-align:right">{{$detalle->precio_unidad}}</td>
+                <td style="text-align:right">{{$detalle->total}}</td>
+              </tr>
+            @endforeach
           <tr>
             <td colspan="4"><strong class="pull-right">TOTAL: </strong></td>
-            <td text-aling="right">S/ 190.00</td>
+            <td style="text-align:right">{{$venta->total}}</td>
           </tr>
+          @endif
         </tbody>
-      </table>
-    </div>
-    <div class="table-responsive">
-      <table class="table table-condensed table-bordered" style="background-color:#bfbfbf;">
-        <thead>
-          <tr>
-            <th>Operación</th>
-            <th colspan="2">Descuento</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><button type="button" class="btn btn-xs btn-danger">Quitar</button></td>
-            <td>38475623. ZAPATOS PARA DAMA DE TACO 7, MULTICOLOR, IDEAL PARA FIESTAS DE GALA - JIMMY CHUO - TALLA 36.</td>
-            <td>S/ 4.00</td>
-          </tr>
-          <tr>
-            <td colspan="2"><strong class="pull-right">TOTAL: </strong></td>
-            <td style="width:80px;">S/ 4.00</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="table-responsive">
-      <table class="table table-condensed table-bordered" style="background-color:#bfbfbf;">
-        <thead>
-          <tr>
-            <th><strong class="pull-right">TOTAL: </strong></th>
-            <th style="width:80px;">S/ 186.00</th>
-          </tr>
-        </thead>
       </table>
     </div>
   </div>
@@ -193,7 +159,7 @@ Ventas
           <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
             <div class="form-group">
               <div class="input-group">
-                <input type="text" name="documento" class="form-control" placeholder="DNI/RUC">
+                <input type="text" name="documento" class="form-control" placeholder="DNI/RUC" data-mask="99999999999">
                 <span class="input-group-btn">
                   <button class="btn btn-default" type="button"><span class="fa fa-search"></span></button>
                 </span>
@@ -271,6 +237,11 @@ Ventas
 {{Html::script('assets/lib/mask/jquery.mask.js')}}
 <script type="text/javascript">
   $(document).ready(function() {
+
+    /**
+     * Busca un cliente, ya sea persona o empresa, si el campo queda vacio puede guardarse la venta.
+     * Fecha: 19/09/2017
+    */
 
     /*
      * Token necesario para hacer consultas por ajax.

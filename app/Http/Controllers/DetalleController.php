@@ -56,20 +56,30 @@ class DetalleController extends Controller{
             return redirect('venta/create')->with('error', 'ESTÁ QUERIENDO VENDER MÁS DE LO QUE TIENE EN EL ALMACÉN.');
           }
           // Verificamos si ya existe una venta abierta para este usuario.
-          if($venta = \App\Venta::where('usuario_id', Auth::user()->id)->where('tienda_id', Auth::user()->tienda_id)->where('estado', 1)->first()){
-            // Si existe una venta abierta, agregamos el detalle de venta.
-            $detalle = new Detalle;
-            $detalle->venta_id = $venta->id;
-            $detalle->producto_codigo = $request->producto_codigo;
-            $detalle->cantidad = $request->producto_codigo;
-          }else{
+          if(!$venta = \App\Venta::where('usuario_id', Auth::user()->id)->where('tienda_id', Auth::user()->tienda_id)->where('estado', 1)->first()){
             // Si no existe una venta abierta, se debe crear una nueva venta.
-            // Verificamos si existe un cierre de caja activo.
-            if ($cierre = \App\Cierre::where('usuario_id', Auth::user()->id)->where('tienda_id', Auth::user()->tienda_id)
-              ->where('estado', 1)->first()) {
-              # code...
-            }
+            $venta = new \App\Venta;
+            $venta->usuario_id = Auth::user()->id;
+            $venta->cierre_id = \App\Cierre::where('usuario_id', Auth::user()->id)->where('tienda_id', Auth::user()->tienda_id)
+            ->where('estado', 1)->first()->id;
+            $venta->tienda_id = Auth::user()->tienda_id;
+            $venta->estado = 1;
+            $venta->total = 0;
+            $venta->save();
           }
+          // Ahora guardamos los datos del detalle.
+          $detalle = new Detalle;
+          $detalle->venta_id = $venta->id;
+          $detalle->producto_codigo = $request->producto_codigo;
+          $detalle->cantidad = $request->cantidad;
+          $detalle->precio_unidad = $request->precio_unidad;
+          $detalle->total = $request->cantidad * $request->precio_unidad;
+          $detalle->save();
+          // Actualizamos el total de la venta.
+          $venta->total += $detalle->total;
+          $venta->save();
+          // Retornamos a la vista de venta nueva.
+          return redirect('venta/create');
           break;
 
         case 2:
@@ -221,7 +231,6 @@ class DetalleController extends Controller{
   public function destroy(Request $request, Detalle $detalle){
 
     if($compra = $detalle->compra){
-
       // Verificamos si es una nueva compra o una compra por modificar.
       if ($compra->estado == 1) {
         // Esta compra está activa ( es una nueva compra).
@@ -275,9 +284,10 @@ class DetalleController extends Controller{
 
         return redirect('compra/'.$compra->id.'/edit')->with('info', 'SE ELIMINÓ EL DETALLE DE LA COMPRA');
       }
+    }
 
-
-
+    if ($venta = $detalle->venta) {
+      // Verificamos si es una venta nueva o una venta por modificar.
     }
   }
 }

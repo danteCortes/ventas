@@ -11,6 +11,8 @@
 |
 */
 
+Route::resource('caja', 'CierreController');
+
 Route::resource('venta', 'VentaController');
 
 Route::get('/', 'LoginController@inicio');
