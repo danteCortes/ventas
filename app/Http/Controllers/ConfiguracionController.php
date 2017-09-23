@@ -102,4 +102,21 @@ class ConfiguracionController extends Controller{
     }
     return redirect('editar-usuario')->with('error', 'LA CONTRASEÑA DEL USUARIO ES INCORRECTA.');
   }
+
+  /**
+   * Guarda el tipo de cambio que será por defecto para todas las ventas que se paguen en dolares.
+   * Fecha: 21/09/2017
+  */
+  public function agregarTipoCambio(Request $request){
+    // verificamos que no halla un cambio registrado.
+    if($cambio = \App\Configuracion::whereNotNull('cambio')->first()){
+      // Si hay un cambio registrado lo borramos.
+      $cambio->delete();
+    }
+    // Guardamos el nuevo cambio.
+    $cambio = new \App\Configuracion;
+    $cambio->cambio = $request->cambio;
+    $cambio->save();
+    return 1;
+  }
 }

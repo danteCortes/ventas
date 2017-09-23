@@ -11,9 +11,14 @@
 |
 */
 
+Route::post('buscar-persona', 'PersonaController@buscar');
+Route::post('buscar-empresa', 'EmpresaController@buscar');
+
 Route::resource('caja', 'CierreController');
 
 Route::resource('venta', 'VentaController');
+Route::post('vuelto', 'VentaController@vuelto');
+Route::post('tipo-cambio', 'VentaController@tipoCambio');
 
 Route::get('/', 'LoginController@inicio');
 Route::get('login', 'LoginController@frmInicioSesion');
@@ -27,6 +32,7 @@ Route::get('cajero', 'ConfiguracionController@cajero');
 Route::get('editar-usuario', 'ConfiguracionController@editarUsuario');
 Route::post('cambiar-foto', 'ConfiguracionController@cambiarFoto');
 Route::post('cambiar-password', 'ConfiguracionController@cambiarPassword');
+Route::post('cambio', 'ConfiguracionController@agregarTipoCambio');
 
 Route::resource('tienda', 'TiendaController');
 

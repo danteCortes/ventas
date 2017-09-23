@@ -82,4 +82,17 @@ class EmpresaController extends Controller
     {
         //
     }
+
+  /**
+   * Buscar los datos de una empresa y los devuelve commo un objeto.
+   * Fecha 21/09/2017
+   * @param  \Illuminate\Http\Request  $request
+   * @return \Illuminate\Http\Response
+  */
+  public function buscar(Request $request){
+    if ($empresa = Empresa::find($request->ruc)) {
+      return $empresa;
+    }
+    return 0;
+  }
 }
