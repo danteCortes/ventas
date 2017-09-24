@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Validator;
 use DB;
 use Auth;
+use DNS1D;
 
 class ProductoController extends Controller{
 
@@ -80,6 +81,9 @@ class ProductoController extends Controller{
       $producto->foto = $nombre_foto;
       $producto->save();
     }
+    // Generamos la imagen del códgo de barras para el producto.
+    DNS1D::setStorPath(storage_path("/app/public/codigosBarra/"));
+    DNS1D::getBarcodePNGPath(mb_strtolower($request->codigo), "C128");
     // Retornamos una redirección al método index de este controlador para volver a mostrar
     // la lista de productos mostrando un mensaje de satisfacción.
     return redirect('producto')->with('correcto', 'SE INGRESARON LOS DATOS DEL PRODUCTO CORRECTAMENTE.');
@@ -200,6 +204,12 @@ class ProductoController extends Controller{
       }
       // Eliminamos el producto de la base de datos.
     }
+    // Debemos borrar su imagen si lo tuviera.
+    if ($producto->foto != "producto.png") {
+      \Storage::disk('productos')->delete($producto->foto);
+    }
+    // Borramos su imagen de código de barras.
+    \Storage::disk('barcode')->delete($producto->codigo);
     $producto->delete();
     // redireccionamos a la lista de productos con el mensaje correspondiente.
     return redirect('producto')->with('info', 'SE ELIMINÓ CORRECTAMENTE EL PRODUCTO '.$producto->codigo.'.');
@@ -391,7 +401,9 @@ class ProductoController extends Controller{
   */
   public function imprimirCodigo(Request $request){
     if ($producto = Producto::find($request->codigo)) {
-      return ['producto'=>$producto];
+      $imgCodigo = "<img src='".url('storage/codigosBarra/'.mb_strtolower($producto->codigo)).".png' class='img-responsive img-thumbnail' ".
+        "style='height:50px;'>";
+      return ['producto'=>$producto, 'codigoBarras'=>$imgCodigo];
     }
   }
 }

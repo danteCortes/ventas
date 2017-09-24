@@ -1,5 +1,8 @@
 <script type="text/javascript">
   $(document).ready(function() {
+    $(".imprimir").click(function (){
+      $("div#imgBarcode").printArea();
+    })
     /*
      * Token necesario para hacer consultas por ajax.
      * Fecha 13/09/2017
@@ -78,6 +81,7 @@
       }).end().find(".command-barcode").on('click', function(e) {
         $.post("{{url('imprimir-codigo')}}", {codigo: $(this).data("row-codigo")}, function(data, textStatus, xhr) {
           $(".codigo").html(data['producto']['codigo']);
+          $(".imgBarcode").html(data['codigoBarras']);
           $("#barcode").modal("show");
         });
       });;

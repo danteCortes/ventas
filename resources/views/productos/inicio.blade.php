@@ -32,5 +32,6 @@ Producto
 
 @section('scripts')
 {{Html::script('bootgrid/jquery.bootgrid.min.js')}}
+{{Html::script('assets/js/jquery.printarea.js')}}
 @include('productos.scripts')
 @stop

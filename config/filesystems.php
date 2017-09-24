@@ -53,6 +53,11 @@ return [
             'root' => storage_path('app/public/productos'),
         ],
 
+        'barcode' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/codigosBarra'),
+        ],
+
         'usuarios' => [
             'driver' => 'local',
             'root' => storage_path('app/public/usuarios'),
