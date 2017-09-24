@@ -16,9 +16,12 @@ Route::post('buscar-empresa', 'EmpresaController@buscar');
 
 Route::resource('caja', 'CierreController');
 
+Route::resource('tarjeta', 'TarjetaController');
+Route::post('comision', 'TarjetaController@comision');
+
 Route::resource('venta', 'VentaController');
 Route::post('vuelto', 'VentaController@vuelto');
-Route::post('tipo-cambio', 'VentaController@tipoCambio');
+Route::post('tipo-cambio', 'VentaController@tipoCambio')->name('tipo-cambio');
 
 Route::get('/', 'LoginController@inicio');
 Route::get('login', 'LoginController@frmInicioSesion');
@@ -52,6 +55,7 @@ Route::resource('detalle', 'DetalleController');
 Route::resource('producto', 'ProductoController');
 Route::post('buscar-producto', 'ProductoController@buscarProducto');
 Route::post('listar-productos', 'ProductoController@listar');
+Route::post('imprimir-codigo', 'ProductoController@imprimirCodigo');
 
 Route::resource('proveedor', 'ProveedorController');
 Route::post('buscar-proveedor', 'ProveedorController@buscar');

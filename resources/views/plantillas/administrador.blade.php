@@ -16,18 +16,23 @@ Administrador
   </a>
 </li>
 <li class="">
-  <a href="{{url('compra')}}">
-    <i class="fa fa-money"></i><span class="link-title">&nbsp;Compras</span>
-  </a>
-</li>
-<li class="">
   <a href="{{url('producto')}}">
     <i class="fa fa-shopping-bag"></i><span class="link-title">&nbsp;Productos</span>
   </a>
 </li>
 <li class="">
+  <a href="{{url('compra')}}">
+    <i class="fa fa-money"></i><span class="link-title">&nbsp;Compras</span>
+  </a>
+</li>
+<li class="">
   <a href="{{url('proveedor')}}">
     <i class="fa fa-user-circle"></i><span class="link-title">&nbsp;Proveedores</span>
+  </a>
+</li>
+<li class="">
+  <a href="{{url('tarjeta')}}">
+    <i class="fa fa-credit-card"></i><span class="link-title">&nbsp;Tarjetas</span>
   </a>
 </li>
 <li class="">

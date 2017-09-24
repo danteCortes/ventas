@@ -323,7 +323,7 @@ Usuarios
                 <!--Fecha: 16/09/2017-->
                 <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#abrir{{$usuario->id}}"
                   style="background-color:#fff; border-color:black; color:#000;">
-                  <span class="glyphicon glyphicon-open"></span>
+                  <span class="fa fa-upload"></span>
                 </button>
                 <!--Modal de advertencia para abrir caja al usuario. Contiene un formuario que envia el id del
                   usuario al que se le va a abrir caja al método abrirCaja del controlador UsuarioController.-->
@@ -352,7 +352,7 @@ Usuarios
                         {{Form::hidden('usuario_id', $usuario->id)}}
                         <button type="button" class="btn btn-default" data-dismiss="modal">
                           <span class="glyphicon glyphicon-ban-circle"></span> Cancelar</button>
-                        <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-open"></span> Abrir Caja</button>
+                        <button type="submit" class="btn btn-primary"><span class="fa fa-upload"></span> Abrir Caja</button>
                       </div>
                       {{Form::close()}}
                     </div>
@@ -363,7 +363,7 @@ Usuarios
                 <!--Fecha: 16/09/2017-->
                 <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#cerrar{{$usuario->id}}"
                   style="background-color:#fff; border-color:black; color:#000;">
-                  <span class="glyphicon glyphicon-download"></span>
+                  <span class="fa fa-download"></span>
                 </button>
                 <!--Modal de advertencia para cerrar caja al usuario. Contiene un formuario que envia el id del
                   usuario al que se le va a cerrar caja al método cerrarCaja del controlador UsuarioController.-->
@@ -392,7 +392,7 @@ Usuarios
                         {{Form::hidden('usuario_id', $usuario->id)}}
                         <button type="button" class="btn btn-default" data-dismiss="modal">
                           <span class="glyphicon glyphicon-ban-circle"></span> Cancelar</button>
-                        <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-download"></span> Cerrar Caja</button>
+                        <button type="submit" class="btn btn-primary"><span class="fa fa-download"></span> Cerrar Caja</button>
                       </div>
                       {{Form::close()}}
                     </div>

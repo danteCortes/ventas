@@ -384,4 +384,14 @@ class ProductoController extends Controller{
     );
 
   }
+
+  /**
+   * Envia un arreglo con el código del producto y su respectivo código de barras.
+   * Fecha: 14/09/2017
+  */
+  public function imprimirCodigo(Request $request){
+    if ($producto = Producto::find($request->codigo)) {
+      return ['producto'=>$producto];
+    }
+  }
 }

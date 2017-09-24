@@ -93,7 +93,7 @@ class UsuarioController extends Controller{
       'direccion' => 'max:45',
       'telefono' => 'nullable|digits:9',
       'tipo' => 'required',
-      'foto' => 'required|image|max:1024',
+      'foto' => 'nullable|image|max:1024',
     ])->validate();
 
     $datosPersona = ['dni'=>$request->dni, 'nombres'=>$request->nombres, 'apellidos'=>$request->apellidos,
