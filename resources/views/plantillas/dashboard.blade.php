@@ -135,7 +135,8 @@
         </div>
           <div class="user-wrapper bg-dark" style="background-color:#385a94">
             <a class="user-link" href="#">
-              <img class="media-object img-thumbnail user-img" alt="User Picture" src="{{url('storage/usuarios/'.Auth::user()->foto)}}" style="height:64px;">
+              <img class="media-object img-thumbnail user-img" alt="User Picture" src="{{url('storage/usuarios/'.Auth::user()->foto)}}" 
+                style="height:64px;">
             </a>
             <div class="media-body">
               <h5 class="media-heading">{{Auth::user()->persona->nombres}}</h5>

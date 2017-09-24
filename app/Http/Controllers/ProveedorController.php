@@ -74,27 +74,27 @@ class ProveedorController extends Controller{
         // Si no existe un proveedor con el nuevo número de ruc, verificamos si ya existe una empresa con ese número de ruc.
         if ($empresa = \App\Empresa::find('ruc')) {
           // Si existe una empresa con ese número de ruc, actualizamos sus datos.
-          $empresa->nombre = $request->nombre;
-          $empresa->direccion = $request->direccion;
+          $empresa->nombre = mb_strtoupper($request->nombre);
+          $empresa->direccion = mb_strtoupper($request->direccion);
           $empresa->save();
         }else{
           // Si no existe una empresa con ese número de ruc, actualizamos los datos de la empresa del proveedor.
           $empresa = $proveedor->empresa;
           $empresa->ruc = $request->ruc;
-          $empresa->nombre = $request->nombre;
-          $empresa->direccion = $request->direccion;
+          $empresa->nombre = mb_strtoupper($request->nombre);
+          $empresa->direccion = mb_strtoupper($request->direccion);
           $empresa->save();
         }
       }
     }else {
       // Si no se cambia el número de ruc, se actualizan los datos de la empresa con normalidad.
       $empresa = $proveedor->empresa;
-      $empresa->nombre = $request->nombre;
-      $empresa->direccion = $request->direccion;
+      $empresa->nombre = mb_strtoupper($request->nombre);
+      $empresa->direccion = mb_strtoupper($request->direccion);
       $empresa->save();
     }
     // Actualizamos los datos del proveedor.
-    $proveedor->telefono = $request->telefono;
+    $proveedor->telefono = mb_strtoupper($request->telefono);
     $proveedor->representante = mb_strtoupper($request->representante);
     $proveedor->save();
     // Retornamos a la lista de todos los proveedores.

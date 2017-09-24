@@ -161,11 +161,11 @@ class CompraController extends Controller{
       $compra->estado = 0;
       $compra->save();
 
-      return redirect('compras')->with('correcto', 'LA COMPRA FUE MODIFICADA CON EXITO CON EXITO.');
+      return redirect('compra')->with('correcto', 'LA COMPRA FUE MODIFICADA CON EXITO CON EXITO.');
     }else{
       // si no tiene detalles de compra, eliminamos la compra.
       $compra->delete();
-      return redirect('compras')->with('info', 'LA COMPRA FUE ELIMINADO POR NO CONTAR CON DETALLES.');
+      return redirect('compra')->with('info', 'LA COMPRA FUE ELIMINADO POR NO CONTAR CON DETALLES.');
     }
   }
 
