@@ -13,4 +13,8 @@ class Venta extends Model{
   public function detalles(){
     return $this->hasMany('\App\Detalle');
   }
+
+  public function cierre(){
+    return $this->belongsTo('\App\Cierre');
+  }
 }

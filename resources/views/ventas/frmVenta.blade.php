@@ -2,6 +2,7 @@
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <div class="panel panel-default">
       <div class="panel-body" style="background-color:#bfbfbf;">
+        {{Form::open(['url'=>'venta'])}}
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
             <div class="form-group">
@@ -15,24 +16,24 @@
           </div>
           <div class="col-xs-12 col-sm-12 col-md-6 col-lg-8">
             <div class="form-group">
-              <input type="text" name="nombre" class="form-control" placeholder="RAZÓN SOCIAL" id="nombre" readonly>
+              <input type="text" name="nombre" class="form-control mayuscula" placeholder="RAZÓN SOCIAL" id="nombre" readonly>
             </div>
           </div>
         </div>
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-4 col-lg-3">
             <div class="form-group">
-              <input type="text" name="nombres" class="form-control" placeholder="NOMBRES" id="nombres" readonly>
+              <input type="text" name="nombres" class="form-control mayuscula" placeholder="NOMBRES" id="nombres" readonly>
             </div>
           </div>
           <div class="col-xs-12 col-sm-12 col-md-4 col-lg-3">
             <div class="form-group">
-              <input type="text" name="apellidos" class="form-control" placeholder="APELLIDOS" id="apellidos" readonly>
+              <input type="text" name="apellidos" class="form-control mayuscula" placeholder="APELLIDOS" id="apellidos" readonly>
             </div>
           </div>
           <div class="col-xs-12 col-sm-12 col-md-4 col-lg-6">
             <div class="form-group">
-              <input type="text" name="direccion" class="form-control" placeholder="DIRECCIÓN" id="direccion" readonly>
+              <input type="text" name="direccion" class="form-control mayuscula" placeholder="DIRECCIÓN" id="direccion" readonly>
             </div>
           </div>
         </div>
@@ -70,10 +71,11 @@
         </div>
         <div class="row">
           <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
-            <button type="button" class="btn btn-primary">Terminar</button>
+            <button type="submit" class="btn btn-primary">Terminar</button>
             <button type="button" class="btn btn-warning">Cancelar</button>
           </div>
         </div>
+        {{Form::close()}}
       </div>
     </div>
   </div>
