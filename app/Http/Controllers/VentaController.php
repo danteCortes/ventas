@@ -94,13 +94,16 @@ class VentaController extends Controller{
       $total = $venta->total;
       // Asignamos el efectivo enviado por el usuario a una variable $efectivo.
       $efectivo = $request->efectivo;
-      // Verificamos si está configurado un tipo de cambio.
-      if($Configuracion = \App\Configuracion::whereNotNull('cambio')->first()){
-        // Si etá configurado el tipo de cambio, cambiamos los dolares ingresados a soles.
-        $efectivo += $request->dolares * $Configuracion->cambio;
-      }else{
-        // Si no está configurado el tipo de cambio, enviamos una alerta para que se configure el tipo de cambio.
-        return 0;
+      // Verificamos si nos está pagando con dólares.
+      if ($request->dolares) {
+        // Verificamos si está configurado un tipo de cambio.
+        if($Configuracion = \App\Configuracion::whereNotNull('cambio')->first()){
+          // Si etá configurado el tipo de cambio, cambiamos los dolares ingresados a soles.
+          $efectivo += $request->dolares * $Configuracion->cambio;
+        }else{
+          // Si no está configurado el tipo de cambio, enviamos una alerta para que se configure el tipo de cambio.
+          return 0;
+        }
       }
       // sumamos lo ingresado por tarjeta al efectivo.
       $efectivo += $request->tarjeta;

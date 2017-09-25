@@ -2,6 +2,16 @@
   $(document).ready(function() {
 
     /**
+    * Al hacer clic en el botón btnRegistrarTarjeta, se muestra un modal con un formulario para registrar
+    * la venta con tarjeta.
+    * Fecha: 24/09/2017
+    */
+    $("#btnRegistrarTarjeta").click(function() {
+
+      $("#registrarTarjeta").modal("show"); 
+    });
+
+    /**
     * Al cambiar de opcion el tipo de tarjeta que se va a utilizar se va a mostrar el incremento en la venta.
     * Fecha: 23/09/2017
     */
@@ -24,7 +34,7 @@
     $("#btnTipoCambio").click(function() {
       $.post("{{url('tipo-cambio')}}", {efectivo: $(this).val()}, function(data, textStatus, xhr) {
         // Si el retorno es 0, mostramos un modal para que configure el tipo de cambio.
-        if (tipoCambio == 0) {
+        if (data == 0) {
           $("#msjTipoCambio").html("DEBE CONFIGURAR EL TIPO DE CAMBIO DE DOLARES A SOLES. ESTO SOLO SE RELIAZA UNA VEZ,"+
           "PARA ACTUALIZAR EL TIPO DE CAMBIO PULSE EL BOTÓN \"Tipo Cambio\".");
           $("#txtCambio").val("");
@@ -47,7 +57,13 @@
     $("#tarjeta").change(function() {
       $.post("{{url('vuelto')}}", {efectivo: $("#efectivo").val(), dolares: $("#dolares").val(), tarjeta: $(this).val()},
       function(data, textStatus, xhr) {
-        $("#vuelto").val(data);
+        if (data == 0) {
+          $("#mensaje").html("HAY UN VALOR EN EL CAMPO DOLARES, DEBE CONFIGURAR EL TIPO DE CAMBIO QUE VA A UTILIZAR HACIENDO "+
+            "CLIC EN EL BOTÓN 'Tipo Cambio' O DE LO CONTRARIO BORRE EL VALOR EN EL CAMPO DOLARES, SI NO, NO SE PODRÁ REALIZAR LA VENTA.");
+          $("#errores").modal("show");
+        }else{
+          $("#vuelto").val(data);
+        }
       });
     });
 
@@ -70,7 +86,7 @@
     $("#dolares").change(function() {
       $.post("{{url('tipo-cambio')}}", {efectivo: $(this).val()}, function(data, textStatus, xhr) {
         // Si el retorno es 0, mostramos un modal para que configure el tipo de cambio.
-        if (tipoCambio == 0) {
+        if (data == 0) {
           $("#tipoCambio").modal("show");
         }
       });
@@ -86,8 +102,15 @@
     * Fecha: 21/09/2017
     */
     $("#efectivo").change(function() {
-      $.post("{{url('vuelto')}}", {efectivo: $(this).val(), dolares: $("#dolares").val(), tarjeta: $("#tarjeta").val()}, function(data, textStatus, xhr) {
-        $("#vuelto").val(data);
+      $.post("{{url('vuelto')}}", {efectivo: $(this).val(), dolares: $("#dolares").val(), tarjeta: $("#tarjeta").val()},
+        function(data, textStatus, xhr) {
+          if (data == 0) {
+            $("#mensaje").html("HAY UN VALOR EN EL CAMPO DOLARES, DEBE CONFIGURAR EL TIPO DE CAMBIO QUE VA A UTILIZAR HACIENDO "+
+              "CLIC EN EL BOTÓN 'Tipo Cambio' O DE LO CONTRARIO BORRE EL VALOR EN EL CAMPO DOLARES, SI NO, NO SE PODRÁ REALIZAR LA VENTA.");
+            $("#errores").modal("show");
+          }else{
+            $("#vuelto").val(data);
+          }
       });
     });
 
@@ -203,10 +226,6 @@
     });
     $('#panelAgregar').on('shown.bs.collapse', function () {
       $("#btnAgregar").html("<span class='fa fa-minus'></span>")
-    });
-    $("#precio_venta").keyup(function() {
-      var ganancia = $(this).val()-59;
-      $("#ganancia").val(ganancia);
     });
   });
 </script>
