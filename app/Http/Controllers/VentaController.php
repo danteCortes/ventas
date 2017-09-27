@@ -36,7 +36,7 @@ class VentaController extends Controller{
   public function store(Request $request){
     // Validamos el numero de documento que se está mandando.
     Validator::make($request->all(), [
-      'documento'=>'max:11|min:8',
+      'documento'=>'nullable|max:11|min:8',
     ])->validate();
     // Pasado la verificación del documento, Verificamos el tipo de documento que se ingreso.
     if(strlen($request->documento) == 8){
@@ -104,9 +104,15 @@ class VentaController extends Controller{
       }
       if ($request->tarjeta) {
         // Si el cliente pretende pagar con tarjeta verificamos si lla registró el pago con tarjeta.
-        if(\App\TarjetaVenta::where('venta_id', $venta->id)->first()){
-          // Si se registró la venta con tarjeta, sumamos el monto al total.
-          $total_soles += $request->tarjeta;
+        if($tarjetaVenta = \App\TarjetaVenta::where('venta_id', $venta->id)->first()){
+          // Si se registró la venta con tarjeta, verificamos que el monto ingresado corresponda al monto registrado.
+          if ($tarjetaVenta->monto == $request->tarjeta) {
+            // sumamos el monto al total.
+            $total_soles += $request->tarjeta;
+          }else{
+            // Si el monto ingresado no corresponde al registrado regresamos a la vista anterior con un mensaje de error.
+            return redirect('venta/create')->with('error', 'ESTA INTENTANDO INGRESAR UN PAGO CON TARJETA DIFERENTE AL QUE REGISTRÓ!.');
+          }
         }else{
           // Si no se registró la venta con tarjeta, regresamos a la vista anterior con un mensaje de error.
           return redirect('venta/create')->with('error', 'DEBE REGISTRAR EL PAGO CON TARJETA ANTES DE FINALLIZAR LA VENTA.');

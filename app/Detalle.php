@@ -24,6 +24,10 @@ class Detalle extends Model{
   	return $this->belongsTo('\App\Compra');
   }
 
+  public function venta(){
+  	return $this->belongsTo('\App\Venta');
+  }
+
   public function ingresos(){
     return $this->hasMany('\App\Ingreso');
   }

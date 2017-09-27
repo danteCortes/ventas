@@ -71,7 +71,7 @@
         <div class="panel" style="background-color:#bd7406">
           <div class="panel-body">
             <p id="msjRegistrarTarjeta">EL PAGO CON TARJETA PUEDE INCLUIR UNA COMISIÓN SEGÚN LA TARJETA QUE USA.</p>
-            {{Form::open(['url'=>'tarjetaTienda', 'class'=>'form-horizontal'])}}
+            {{Form::open(['class'=>'form-horizontal'])}}
             <div class="form-group">
               <label for="tarjeta_id" class="control-label col-xs-2 col-sm-2 col-md-3 col-lg-3">Tarjeta*:</label>
               <div class="col-xs-10 col-sm-10 col-md-9 col-lg-9">
@@ -91,8 +91,8 @@
             </div>
             <div class="form-group">
               <div class="col-xs-10 col-xs-offset-2 col-sm-10 col-sm-offset-2 col-md-9 col-md-offset-3 col-lg-9 col-lg-offset-3">
-                {{Form::hidden('monto', null, ['id'=>'hdnMonto'])}}
-                {{Form::button('Guardar', ['type'=>'submit', 'class'=>'btn btn-primary btn-sm', 'id'=>'btnRegistrarTarjeta'])}}
+                {{Form::hidden('monto', null, ['id'=>'hdnMontoTarjeta'])}}
+                {{Form::button('Guardar', ['type'=>'button', 'class'=>'btn btn-primary btn-sm', 'id'=>'btnGuardarTarjetaVenta'])}}
               </div>
             </div>
             {{Form::close()}}

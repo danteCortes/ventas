@@ -11,6 +11,8 @@
 |
 */
 
+Route::resource('tarjeta-venta', 'TarjetaVentaController');
+
 Route::post('buscar-persona', 'PersonaController@buscar');
 Route::post('buscar-empresa', 'EmpresaController@buscar');
 

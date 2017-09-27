@@ -2,13 +2,37 @@
   $(document).ready(function() {
 
     /**
+     *
+    */
+    $("#btnGuardarTarjetaVenta").click(function() {
+      // Verificamos que esten completos los campos.
+      if (($("#tarjeta_id").val() != "") && ($("#operacion").val() != null)) {
+
+        $("#registrarTarjeta").modal("hide");
+        $.post("{{url('tarjeta-venta')}}",
+        {tarjeta_id: $("#tarjeta_id").val(), operacion: $("#operacion").val(), monto: $("#hdnMontoTarjeta").val()},
+        function(data, textStatus, xhr) {
+          if (data == 0) {
+            $("#mensaje").html("NO EXISTE UNA VENTA ACTIVA EN ESTE MOMENTO, AGREGE DETALLES DE VENTA PARA COMENZAR UNA VENTA.");
+            $("#errores").modal("show");
+          }else{
+            $("#detalles").append(data);
+          }
+        });
+      }
+    });
+
+    /**
     * Al hacer clic en el botón btnRegistrarTarjeta, se muestra un modal con un formulario para registrar
     * la venta con tarjeta.
     * Fecha: 24/09/2017
     */
     $("#btnRegistrarTarjeta").click(function() {
-
-      $("#registrarTarjeta").modal("show"); 
+      // verificamos si hay un valor en el campo tarjeta.
+      if ($("#tarjeta").val()) {
+        $("#hdnMontoTarjeta").val($("#tarjeta").val());
+        $("#registrarTarjeta").modal("show");
+      }
     });
 
     /**
@@ -65,6 +89,7 @@
           $("#vuelto").val(data);
         }
       });
+      $("#monto_tarjeta").val($(this).val());
     });
 
     $("#btnCambio").click(function() {

@@ -11,17 +11,32 @@
             <th style="width:80px;">Total</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="detalles">
           @if($venta = \App\Venta::where('usuario_id', Auth::user()->id)->where('tienda_id', Auth::user()->tienda_id)->where('estado', 1)->first())
             @foreach($venta->detalles as $detalle)
               <tr>
-                <td><button type="button" class="btn btn-xs btn-danger">Quitar</button></td>
+                <td>
+                  {{Form::open(['url'=>'detalle/'.$detalle->id, 'method'=>'delete', 'class'=>'pull-left'])}}
+                    {{ csrf_field() }}
+                    <button class="btn btn-xs btn-danger">Quitar</button>
+                  {{Form::close()}}</td>
                 <td>{{$detalle->cantidad}}</td>
                 <td>{{$detalle->producto->descripcion}}</td>
                 <td style="text-align:right">{{$detalle->precio_unidad}}</td>
                 <td style="text-align:right">{{$detalle->total}}</td>
               </tr>
             @endforeach
+            @if($venta->tarjetaVenta)
+              @if($venta->tarjetaVenta->tarjeta->comision != 0)
+                <tr>
+                  <td><button type="button" class="btn btn-xs btn-danger">Quitar</button></td>
+                  <td>1</td>
+                  <td>COMISIÓN POR USO DE TARJETA {{$venta->tarjetaVenta->tarjeta->nombre}} {{$venta->tarjetaVenta->tarjeta->comision}}%</td>
+                  <td style="text-align:right">{{$venta->tarjetaVenta->comision}}</td>
+                  <td style="text-align:right">{{$venta->tarjetaVenta->comision}}</td>
+                </tr>
+              @endif
+            @endif
           <tr>
             <td colspan="4"><strong class="pull-right">TOTAL: </strong></td>
             <td style="text-align:right">{{$venta->total}}</td>

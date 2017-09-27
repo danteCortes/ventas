@@ -17,4 +17,8 @@ class Venta extends Model{
   public function cierre(){
     return $this->belongsTo('\App\Cierre');
   }
+
+  public function tarjetaVenta(){
+    return $this->hasOne('\App\TarjetaVenta');
+  }
 }

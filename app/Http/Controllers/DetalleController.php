@@ -78,6 +78,11 @@ class DetalleController extends Controller{
           // Actualizamos el total de la venta.
           $venta->total += $detalle->total;
           $venta->save();
+          // Reducimos las unidades vendidas del stock en la tienda.
+          $productoTienda = \App\ProductoTienda::where('producto_codigo', $request->producto_codigo)
+            ->where('tienda_id', \Auth::user()->tienda_id)->first();
+          $productoTienda->cantidad -= $request->cantidad;
+          $productoTienda->save();
           // Retornamos a la vista de venta nueva.
           return redirect('venta/create');
           break;
@@ -284,10 +289,28 @@ class DetalleController extends Controller{
 
         return redirect('compra/'.$compra->id.'/edit')->with('info', 'SE ELIMINÓ EL DETALLE DE LA COMPRA');
       }
+    }elseif ($venta = $detalle->venta) {
+      // Vamos a borrar el detalle de una venta, primero verificamos si es una venta activa o un cambio.
+      if ($venta->estado == 1) {
+        // Es una venta activa, Verificamos si es su unica venta.
+        if (count($venta->detalles) == 1) {
+          // Esta venta tiene un solo detalle, borramos la venta.
+          $venta->delete();
+        }else{
+          // Esta venta tiene más de un detalle, primero descontamos el total de la venta.
+          $venta->total -= $detalle->total;
+          $venta->save();
+          // Regresamos las unidades vendidas al stock de la tienda.
+          // Borramos el detalle.
+          $detalle->delete();
+        }
+        $productoTienda = \App\ProductoTienda::where('producto_codigo', $detalle->producto_codigo)
+          ->where('tienda_id', \Auth::user()->tienda_id)->first();
+        $productoTienda->cantidad += $detalle->cantidad;
+        $productoTienda->save();
+        return redirect('venta/create')->with('info', 'SE ELIMINÓ EL DETALLE DE ESTA VENTA');
+      }
     }
-
-    if ($venta = $detalle->venta) {
-      // Verificamos si es una venta nueva o una venta por modificar.
-    }
+    return "no se reconoce la venta.";
   }
 }

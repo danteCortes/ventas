@@ -6,12 +6,12 @@ Cajero
 
 @section('menu')
 <li class="">
-  <a href="{{(Auth::user()->estado_caja == 2) ? url('venta') : url('caja/create')}}">
+  <a href="{{(Auth::user()->estado_caja == 2) ? url('venta/create') : url('caja/create')}}">
     <i class="fa fa-money"></i><span class="link-title">&nbsp;Ventas</span>
   </a>
 </li>
 <li class="">
-  <a href="{{(Auth::user()->estado_caja == 2) ? url('cambio') : url('caja/create')}}">
+  <a href="{{(Auth::user()->estado_caja == 2) ? url('venta') : url('caja/create')}}">
     <i class="fa fa-exchange"></i><span class="link-title">&nbsp;Cambios</span>
   </a>
 </li>

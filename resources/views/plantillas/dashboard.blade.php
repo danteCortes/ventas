@@ -135,14 +135,14 @@
         </div>
           <div class="user-wrapper bg-dark" style="background-color:#385a94">
             <a class="user-link" href="#">
-              <img class="media-object img-thumbnail user-img" alt="User Picture" src="{{url('storage/usuarios/'.Auth::user()->foto)}}" 
+              <img class="media-object img-thumbnail user-img" alt="User Picture" src="{{url('storage/usuarios/'.Auth::user()->foto)}}"
                 style="height:64px;">
             </a>
             <div class="media-body">
               <h5 class="media-heading">{{Auth::user()->persona->nombres}}</h5>
               <ul class="list-unstyled user-info">
-                <li>Cargo: {{(Auth::user()->tipo == 1) ? 'Administrador' : 'Cajero' }}</li>
-                <li>Editar Perfil : <br>
+                <li>{{(Auth::user()->tipo == 1) ? 'Administrador' : 'Cajero - '.Auth::user()->tienda->nombre }}</li>
+                <li>Editar Perfil :
                   <small><a href="{{url('editar-usuario')}}" style="color:#fff; text-decoration:none;"><i class="fa fa-edit"></i>&nbsp;editar</a></small>
                 </li>
               </ul>
