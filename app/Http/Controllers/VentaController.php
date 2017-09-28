@@ -222,8 +222,7 @@ class VentaController extends Controller{
    * @param  \App\Venta  $venta
    * @return \Illuminate\Http\Response
    */
-  public function destroy(Venta $venta)
-  {
+  public function destroy(Venta $venta){
       //
   }
 
@@ -238,16 +237,17 @@ class VentaController extends Controller{
       // Si tiene una venta activa, verificamos cuanto es el total de la venta.
       $total = $venta->total;
       // Asignamos el efectivo enviado por el usuario a una variable $efectivo.
-      $efectivo = $request->efectivo;
+      $efectivo = 0;
+      $efectivo += $request->efectivo;
       // Verificamos si nos está pagando con dólares.
-      if ($request->dolares) {
+      if ($request->dolares != "") {
         // Verificamos si está configurado un tipo de cambio.
         if($Configuracion = \App\Configuracion::whereNotNull('cambio')->first()){
           // Si etá configurado el tipo de cambio, cambiamos los dolares ingresados a soles.
           $efectivo += $request->dolares * $Configuracion->cambio;
         }else{
           // Si no está configurado el tipo de cambio, enviamos una alerta para que se configure el tipo de cambio.
-          return 0;
+          return "error";
         }
       }
       // sumamos lo ingresado por tarjeta al efectivo.

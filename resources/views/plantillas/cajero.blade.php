@@ -5,8 +5,9 @@ Cajero
 @stop
 
 @section('menu')
+@if(Auth::user()->estado_caja == 2)
 <li class="">
-  <a href="{{(Auth::user()->estado_caja == 2) ? url('venta/create') : url('caja/create')}}">
+  <a href="{{url('venta/create')}}">
     <i class="fa fa-money"></i><span class="link-title">&nbsp;Ventas</span>
   </a>
 </li>
@@ -35,6 +36,13 @@ Cajero
     <i class="fa fa-home"></i><span class="link-title">&nbsp;Caja</span>
   </a>
 </li>
+@elseif(Auth::user()->estado_caja == 1)
+<li class="">
+  <a href="{{url('caja/create')}}">
+    <i class="fa fa-home"></i><span class="link-title">&nbsp;Caja</span>
+  </a>
+</li>
+@endif
 @stop
 
 @section('contenido')

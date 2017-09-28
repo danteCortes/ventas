@@ -2,7 +2,7 @@
   $(document).ready(function() {
 
     /**
-     *
+     * Funcion para guardar el pago con tarjeta.
     */
     $("#btnGuardarTarjetaVenta").click(function() {
       // Verificamos que esten completos los campos.
@@ -42,7 +42,7 @@
     $("#tarjeta_id").change(function() {
       if ($(this).val()) {
 
-        $.post("{{url('comision')}}", {tarjeta_id: $(this).val()}, function(data, textStatus, xhr) {
+        $.post("{{url('comision')}}", {tarjeta_id: $(this).val(), monto: $("#hdnMontoTarjeta").val()}, function(data, textStatus, xhr) {
           $("#comision").html('EL INCREMENTO POR EL USO DE ESTA TARJETA SERÁ DE ' + data);
         });
       }else{
@@ -56,6 +56,7 @@
     * Fecha: 22/09/2017
     */
     $("#btnTipoCambio").click(function() {
+      // Verificamos si está configurado el tipo de cambio.
       $.post("{{url('tipo-cambio')}}", {efectivo: $(this).val()}, function(data, textStatus, xhr) {
         // Si el retorno es 0, mostramos un modal para que configure el tipo de cambio.
         if (data == 0) {
@@ -79,9 +80,10 @@
     * Fecha: 22/09/2017
     */
     $("#tarjeta").change(function() {
+      // Calculamos el vuelto con los valores ingresados.
       $.post("{{url('vuelto')}}", {efectivo: $("#efectivo").val(), dolares: $("#dolares").val(), tarjeta: $(this).val()},
-      function(data, textStatus, xhr) {
-        if (data == 0) {
+        function(data, textStatus, xhr) {
+        if (data == "error") {
           $("#mensaje").html("HAY UN VALOR EN EL CAMPO DOLARES, DEBE CONFIGURAR EL TIPO DE CAMBIO QUE VA A UTILIZAR HACIENDO "+
             "CLIC EN EL BOTÓN 'Tipo Cambio' O DE LO CONTRARIO BORRE EL VALOR EN EL CAMPO DOLARES, SI NO, NO SE PODRÁ REALIZAR LA VENTA.");
           $("#errores").modal("show");
@@ -98,7 +100,7 @@
           $("#tipoCambio").modal("hide");
         });
       }
-      $.post("{{url('vuelto')}}", {efectivo: $("#efectivo").val(), dolares: $("#dolares").val(), tarjeta: $(this).val()},
+      $.post("{{url('vuelto')}}", {efectivo: $("#efectivo").val(), dolares: $("#dolares").val(), tarjeta: $("#tarjeta").val()},
       function(data, textStatus, xhr) {
         $("#vuelto").val(data);
       });
@@ -129,7 +131,7 @@
     $("#efectivo").change(function() {
       $.post("{{url('vuelto')}}", {efectivo: $(this).val(), dolares: $("#dolares").val(), tarjeta: $("#tarjeta").val()},
         function(data, textStatus, xhr) {
-          if (data == 0) {
+          if (data == "error") {
             $("#mensaje").html("HAY UN VALOR EN EL CAMPO DOLARES, DEBE CONFIGURAR EL TIPO DE CAMBIO QUE VA A UTILIZAR HACIENDO "+
               "CLIC EN EL BOTÓN 'Tipo Cambio' O DE LO CONTRARIO BORRE EL VALOR EN EL CAMPO DOLARES, SI NO, NO SE PODRÁ REALIZAR LA VENTA.");
             $("#errores").modal("show");

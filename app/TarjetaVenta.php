@@ -13,4 +13,12 @@ class TarjetaVenta extends Model{
   public function tarjeta(){
     return $this->belongsTo('\App\Tarjeta');
   }
+
+  public function getComisionAttribute($value){
+    return number_format($value, 2, '.', ' ');
+  }
+
+  public function getMontoAttribute($value){
+    return number_format($value, 2, '.', ' ');
+  }
 }

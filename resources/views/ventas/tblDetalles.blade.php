@@ -26,14 +26,17 @@
                 <td style="text-align:right">{{$detalle->total}}</td>
               </tr>
             @endforeach
-            @if($venta->tarjetaVenta)
-              @if($venta->tarjetaVenta->tarjeta->comision != 0)
+            @if($tarjetaVenta = $venta->tarjetaVenta)
+              @if($tarjetaVenta->tarjeta->comision != 0)
                 <tr>
-                  <td><button type="button" class="btn btn-xs btn-danger">Quitar</button></td>
+                  <td>{{Form::open(['url'=>'tarjeta-venta/'.$tarjetaVenta->id, 'method'=>'delete', 'class'=>'pull-left'])}}
+                    {{ csrf_field() }}
+                    <button class="btn btn-xs btn-danger">Quitar</button>
+                  {{Form::close()}}</td>
                   <td>1</td>
-                  <td>COMISIÓN POR USO DE TARJETA {{$venta->tarjetaVenta->tarjeta->nombre}} {{$venta->tarjetaVenta->tarjeta->comision}}%</td>
-                  <td style="text-align:right">{{$venta->tarjetaVenta->comision}}</td>
-                  <td style="text-align:right">{{$venta->tarjetaVenta->comision}}</td>
+                  <td>COMISIÓN POR USO DE TARJETA {{$tarjetaVenta->tarjeta->nombre}} {{$tarjetaVenta->tarjeta->comision}}%</td>
+                  <td style="text-align:right">{{$tarjetaVenta->comision}}</td>
+                  <td style="text-align:right">{{$tarjetaVenta->comision}}</td>
                 </tr>
               @endif
             @endif

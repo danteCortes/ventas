@@ -39,7 +39,7 @@ Route::post('cambiar-foto', 'ConfiguracionController@cambiarFoto');
 Route::post('cambiar-password', 'ConfiguracionController@cambiarPassword');
 Route::post('cambio', 'ConfiguracionController@agregarTipoCambio');
 
-Route::resource('tienda', 'TiendaController');
+Route::middleware('administrador')->resource('tienda', 'TiendaController');
 
 Route::resource('usuario', 'UsuarioController');
 Route::post('restaurar-contrasenia', 'UsuarioController@restaurarContrasenia');

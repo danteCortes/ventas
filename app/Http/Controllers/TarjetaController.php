@@ -82,10 +82,16 @@ class TarjetaController extends Controller{
     // Verificamos si existe una venta activa ára el usuario logeado en esta tienda.
     if ($venta = \App\Venta::where('usuario_id', \Auth::user()->id)->where('tienda_id', \Auth::user()->tienda_id)
       ->where('estado', 1)->first()) {
-      // Si existe una venta activa para este usuario, verificamos que tipo de tarjeta quiere usar el cliente.
+      // Si existe una venta activa, verificamos si existe un pago con tarjeta ya registrado.
+      $comision_anterior = 0;
+      if($tarjetaVenta = $venta->tarjetaVenta){
+        // Si existe un pago con tarjeta ya registrado para esta venta, calculamos el total de la venta sin la comision ya registrada.
+        $comision_anterior = $tarjetaVenta->comision;
+      }
+      // Verificamos que tipo de tarjeta quiere usar el cliente.
       $tarjeta = \App\Tarjeta::find($request->tarjeta_id);
       // Calculamos cuanto sería la comisión que pagaría el cliente por el uso de la tarjeta.
-      $comision = $venta->total * ($tarjeta->comision/100);
+      $comision = ($request->monto - $comision_anterior) * ($tarjeta->comision/100);
       return "S/. ".number_format($comision, 2, '.', ' ');
     }
     return 0;
