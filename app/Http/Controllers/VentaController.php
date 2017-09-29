@@ -87,9 +87,9 @@ class VentaController extends Controller{
       ->where('estado', 1)->first()) {
       // Si existe una venta activa para este usuario, Verificamos el total de los montos ingresados.
       $total_soles = 0;
-      if($request->efectivo){
+      if($request->soles){
         // Si el cliente paga en efectivo se le suma al total en soles.
-        $total_soles += $request->efectivo;
+        $total_soles += $request->soles;
       }
       if($request->dolares) {
         // Si el cliente pretende pagar en dolares, verificamos si se configuró el tipo de cambio.
@@ -122,16 +122,21 @@ class VentaController extends Controller{
       if ($total_soles >= $venta->total) {
         // Si es mayor o igual al total de la venta, guardamos los montos en la base de datos.
         // Guradamos el efectivo.
-        $efectivo = new \App\Efectivo;
-        $efectivo->venta_id = $venta->id;
-        $efectivo->monto = $request->efectivo;
-        $efectivo->save;
+        if ($request->soles) {
+          $efectivo = new \App\Efectivo;
+          $efectivo->venta_id = $venta->id;
+          $efectivo->monto = $request->soles;
+          $efectivo->save;
+        }
         // Guardamos los dolares.
-        $dolares = new \App\Dolar;
-        $dolares->venta_id = $venta->id;
-        $dolares->monto = $request->monto;
-        $dolares->cambio = $configuracion->cambio;
-        $dolares->save();
+        if ($request->dolares) {
+          $configuracion = \App\Configuracion::whereNotNull('cambio')->first();
+          $dolares = new \App\Dolar;
+          $dolares->venta_id = $venta->id;
+          $dolares->monto = $request->monto;
+          $dolares->cambio = $configuracion->cambio;
+          $dolares->save();
+        }
         // El monto en tarjeta ya se debio registrar antes de terminar la venta.
         // Terminado de guardar los montos, cerramos la venta.
         $venta->estado = 0;
@@ -139,6 +144,7 @@ class VentaController extends Controller{
         // Actualizamos la caja de la tienda y el usuario.
         $cierre = $venta->cierre;
         $cierre->total += $venta->total;
+        $cierre->save();
         // Creamos el recibo.
         $recibo = new \App\Recibo;
         if(strlen($request->documento) == 8){
@@ -147,7 +153,9 @@ class VentaController extends Controller{
           $recibo->empresa_ruc = $request->documento;
         }
         $recibo->venta_id = $venta->id;
+        $recibo->tienda_id = \Auth::user()->tienda_id;
         $recibo->numeracion = Auth::user()->tienda->serie."-".$this->numeracion($request->documento, Auth::user()->tienda_id);
+        $recibo->save();
         return redirect('imprimir-recibo/'.$venta->id)->with('correcto', 'LA VENTA SE CONCLUYÓ CON ÉXITO, PUEDE IMPRIMIR SU RECIBO.');;
       }else{
         // Si el monto acumulado es menor que el total de la venta, regresamos a la vista de la venta con un mensaje de error.
@@ -164,16 +172,18 @@ class VentaController extends Controller{
     // Verificamos si es boleta o factura.
     if (strlen($documento) == 1) {
       // el recibo es factura. Buscamos la última factura que se emitió.
-      if($factura = \App\Recibo::whereNotNull('empresa_ruc')->whereNotNull('venta_id')->where('tienda_id', $tienda)->last()){
+      if($factura = \App\Recibo::whereNotNull('empresa_ruc')->whereNotNull('venta_id')->where('tienda_id', $tienda)->latest('id')->first()){
         $numero = explode("-", $factura->numeracion)[1];
+      }else{
+        $numero = 1;
       }
-      $numero = 1;
     }else{
       // el recibo es boleta. Buscamos la última factura que se emitió.
-      if($boleta = \App\Recibo::whereNull('empresa_ruc')->whereNotNull('venta_id')->where('tienda_id', $tienda)->last()){
-        $numero = explode("-", $boleta->numeracion);
+      if($boleta = \App\Recibo::whereNull('empresa_ruc')->whereNotNull('venta_id')->where('tienda_id', $tienda)->latest('id')->first()){
+        $numero = explode("-", $boleta->numeracion)[1];
+      }else{
+        $numero = 1;
       }
-      $numero = 1;
     }
     // rellenamos el numero a 6 dígitos.
     while (strlen($numero) < 6) {
@@ -276,5 +286,10 @@ class VentaController extends Controller{
       return number_format($configuracion->cambio, 2, '.', ' ');
     }
     return 1;
+  }
+
+  public function imprimirRecibo($recibo){
+    return $recibo;
+    return view('ventas.recibo');
   }
 }

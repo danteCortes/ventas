@@ -34,6 +34,11 @@ class TarjetaVentaController extends Controller{
    * @return \Illuminate\Http\Response
    */
   public function store(Request $request){
+    \Validator::make($request->all(), [
+      'tarjeta_id'=>'required',
+      'operacion'=>'required',
+      'monto'=>'required',
+    ])->validate();
     // Verificamos si existe una venta activa para este usuario.
     if ($venta = \App\Venta::where('usuario_id', \Auth::user()->id)->where('tienda_id', \Auth::user()->tienda_id)->where('estado', 1)->first()) {
       // Calculamos la comisión por uso de tarjeta.
@@ -42,25 +47,18 @@ class TarjetaVentaController extends Controller{
       if ($tarjetaVenta = TarjetaVenta::where('venta_id', $venta->id)->first()) {
         // Verificamos la comision anterior.
         $comision_anterior = $tarjetaVenta->comision;
-        $comision = number_format(($request->monto-$comision_anterior) * $comision, 2, '.', ' ');
+        $comision = number_format(($request->monto) * $comision, 2, '.', ' ');
         // Si hay registrado un pago con tarjeta para esta venta, actualizamos el registro.
         $tarjetaVenta->tarjeta_id = $request->tarjeta_id;
         $tarjetaVenta->operacion = $request->operacion;
         $tarjetaVenta->monto = $request->monto;
         $tarjetaVenta->comision = $comision;
         $tarjetaVenta->save();
-        // Verificamos si la comisión es diferente de cero.
-        if($comision != 0){
-          // Incrementamos el total de la venta por la comision.
-          $venta->total += ($comision-$comision_anterior);
-          $venta->save();
-          // Incrementamos el total de la caja por la comisión.
-          $cierre = $venta->cierre;
-          $cierre->total = ($comision-$comision_anterior);
-          $cierre->save();
-        }
+        // Incrementamos el total de la venta por la comision.
+        $venta->total += ($comision-$comision_anterior);
+        $venta->save();
       }else{
-        $comision = number_format($venta->total * $comision, 2, '.', ' ');
+        $comision = number_format($request->monto * $comision, 2, '.', ' ');
         $tarjetaVenta = new \App\TarjetaVenta;
         $tarjetaVenta->tarjeta_id = $request->tarjeta_id;
         $tarjetaVenta->venta_id = $venta->id;
@@ -73,15 +71,11 @@ class TarjetaVentaController extends Controller{
           // Incrementamos el total de la venta por la comision.
           $venta->total += $comision;
           $venta->save();
-          // Incrementamos el total de la caja por la comisión.
-          $cierre = $venta->cierre;
-          $cierre->total = $comision;
-          $cierre->save();
         }
       }
-        return redirect('venta/create')->with('correcto', 'EL PAGO CON TARJETA FUE REGISTRADO CON ÉXITO, PUEDE PROCEDER A TERMINAR LA VENTA.');
+      return redirect('venta/create')->with('correcto', 'EL PAGO CON TARJETA FUE REGISTRADO CON ÉXITO, PUEDE PROCEDER A TERMINAR LA VENTA.');
     }
-      return 0;
+    return 0;
   }
 
   /**

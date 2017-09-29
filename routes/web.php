@@ -24,6 +24,7 @@ Route::post('comision', 'TarjetaController@comision');
 Route::resource('venta', 'VentaController');
 Route::post('vuelto', 'VentaController@vuelto');
 Route::post('tipo-cambio', 'VentaController@tipoCambio')->name('tipo-cambio');
+Route::get('imprimir-recibo/{id}', 'VentaController@imprimirRecibo');
 
 Route::get('/', 'LoginController@inicio');
 Route::get('login', 'LoginController@frmInicioSesion');
