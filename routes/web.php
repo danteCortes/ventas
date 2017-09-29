@@ -25,6 +25,8 @@ Route::resource('venta', 'VentaController');
 Route::post('vuelto', 'VentaController@vuelto');
 Route::post('tipo-cambio', 'VentaController@tipoCambio')->name('tipo-cambio');
 Route::get('imprimir-recibo/{id}', 'VentaController@imprimirRecibo');
+Route::post('listar-ventas', 'VentaController@listar');
+Route::post('buscar-venta', 'VentaController@buscar');
 
 Route::get('/', 'LoginController@inicio');
 Route::get('login', 'LoginController@frmInicioSesion');

@@ -15,7 +15,7 @@ class VentaController extends Controller{
    * @return \Illuminate\Http\Response
    */
   public function index(){
-    return view('ventas.inicio');
+    return view('cambios.inicio');
   }
 
   /**
@@ -173,14 +173,14 @@ class VentaController extends Controller{
     if (strlen($documento) == 1) {
       // el recibo es factura. Buscamos la última factura que se emitió.
       if($factura = \App\Recibo::whereNotNull('empresa_ruc')->whereNotNull('venta_id')->where('tienda_id', $tienda)->latest('id')->first()){
-        $numero = explode("-", $factura->numeracion)[1];
+        $numero = explode("-", $factura->numeracion)[1]+1;
       }else{
         $numero = 1;
       }
     }else{
       // el recibo es boleta. Buscamos la última factura que se emitió.
       if($boleta = \App\Recibo::whereNull('empresa_ruc')->whereNotNull('venta_id')->where('tienda_id', $tienda)->latest('id')->first()){
-        $numero = explode("-", $boleta->numeracion)[1];
+        $numero = explode("-", $boleta->numeracion)[1]+1;
       }else{
         $numero = 1;
       }
@@ -192,39 +192,36 @@ class VentaController extends Controller{
     return $numero;
   }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Venta  $venta
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Venta $venta)
-    {
-        //
-    }
+  /**
+   * Display the specified resource.
+   *
+   * @param  \App\Venta  $venta
+   * @return \Illuminate\Http\Response
+   */
+  public function show(Venta $venta){
+      //
+  }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Venta  $venta
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Venta $venta)
-    {
-        //
-    }
+  /**
+   * Show the form for editing the specified resource.
+   *
+   * @param  \App\Venta  $venta
+   * @return \Illuminate\Http\Response
+   */
+  public function edit(Venta $venta){
+      //
+  }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Venta  $venta
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Venta $venta)
-    {
-        //
-    }
+  /**
+   * Update the specified resource in storage.
+   *
+   * @param  \Illuminate\Http\Request  $request
+   * @param  \App\Venta  $venta
+   * @return \Illuminate\Http\Response
+   */
+  public function update(Request $request, Venta $venta){
+      //
+  }
 
   /**
    * Remove the specified resource from storage.
@@ -288,8 +285,161 @@ class VentaController extends Controller{
     return 1;
   }
 
-  public function imprimirRecibo($recibo){
-    return $recibo;
-    return view('ventas.recibo');
+  public function imprimirRecibo($recibo_id){
+    $recibo = Venta::find($recibo_id)->recibo;
+    return view('ventas.recibo')->with('recibo', $recibo);
   }
+
+  public function listar(Request $request){
+
+    $line_quantity = intVal($request->current);
+    $line_number = intVal($request->rowCount);
+    $where = $request->searchPhrase;
+    $sort = $request->sort;
+
+    if (isset($sort['ticket'])) {
+        $order_by = 'numeracion';
+        $order_name = $sort['ticket'];
+    }
+    if (isset($sort['fecha'])) {
+        $order_by = 'updated_at';
+        $order_name = $sort['fecha'];
+    }
+    if (isset($sort['total'])) {
+        $order_by = 'total';
+        $order_name = $sort['total'];
+    }
+
+    $skip = 0;
+    $take = $line_number;
+
+    if ($line_quantity > 1) {
+        //DESDE QUE REGISTRO SE INICIA
+        $skip = $line_number * ($line_quantity - 1);
+        //CANTIDAD DE RANGO
+        $take = $line_number;
+    }
+
+    //Grupo de datos que enviaremos al modelo para filtrar
+    if ($request->rowCount < 0) {
+
+    } else {
+      if (empty($where)) {
+        $ventas = Venta::join('recibos', 'ventas.id', '=', 'recibos.venta_id')
+          ->where('ventas.tienda_id', \Auth::user()->tienda_id)
+          ->select(
+            'recibos.numeracion as ticket',
+            'ventas.updated_at as fecha',
+            'ventas.total as total',
+            'ventas.id as id'
+            )
+          ->distinct()
+          ->offset($skip)
+          ->limit($take)
+          ->orderBy($order_by, $order_name)
+          ->get();
+      } else {
+        $ventas = Venta::join('recibos', 'ventas.id', '=', 'recibos.venta_id')
+          ->where('ventas.tienda_id', \Auth::user()->tienda_id)
+          ->where('recibos.numeracion', 'like', '%'.$where.'%')
+          ->orWhere('ventas.updated_at', 'like', '%'.$where.'%')
+          ->orWhere('ventas.total', 'like', '%'.$where.'%')
+          ->select(
+            'recibos.numeracion as ticket',
+            'ventas.updated_at as fecha',
+            'ventas.total as total',
+            'ventas.id as id'
+            )
+          ->distinct()
+          ->offset($skip)
+          ->limit($take)
+          ->orderBy($order_by, $order_name)
+          ->get();
+      }
+
+      if (empty($where)) {
+        $total = Venta::where('tienda_id', \Auth::user()->tienda_id);
+
+        $total = count($total);
+      } else {
+        $total = Venta::join('recibos', 'ventas.id', '=', 'recibos.venta_id')
+          ->where('ventas.tienda_id', \Auth::user()->tienda_id)
+          ->where('recibos.numeracion', 'like', '%'.$where.'%')
+          ->orWhere('ventas.updated_at', 'like', '%'.$where.'%')
+          ->orWhere('ventas.total', 'like', '%'.$where.'%')
+          ->distinct()
+          ->get();
+
+        $total = count($total);
+      }
+    }
+
+    $datas = [];
+
+    foreach ($ventas as $venta):
+
+      $data = array_merge(
+        array
+        (
+          "ticket" => $venta->ticket,
+          "fecha" => \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $venta->fecha)->format('d/m/Y H:i A'),
+          "total" => $venta->total,
+          "id" => $venta->id,
+        )
+      );
+      //Asignamos un grupo de datos al array datas
+      $datas[] = $data;
+    endforeach;
+
+    return response()->json(
+      array(
+        'current' => $line_quantity,
+        'rowCount' => $line_number,
+        'rows' => $datas,
+        'total' => $total,
+        'skip' => $skip,
+        'take' => $take
+      )
+    );
+
+  }
+
+  public function buscar(Request $request){
+    $venta = Venta::find($request->id);
+    $recibo = $venta->recibo;
+    $tablaTicket = "<table class='table table-condensed'>
+      <tr>
+        <th colspan='3' style='text-align:center; border-top:rgba(255, 255, 255, 0);'>".$recibo->venta->tienda->nombre."</th>
+      </tr>
+      <tr>
+        <th colspan='3' style='text-align:center; border-top:rgba(255, 255, 255, 0);'>".$recibo->venta->tienda->direccion."</th>
+      </tr>
+      <tr>
+        <th colspan='3' style='text-align:center; border-top:rgba(255, 255, 255, 0);'>R.U.C. N° ".$recibo->venta->tienda->ruc."</th>
+      </tr>
+      <tr>
+        <th colspan='3' style='text-align:center; border-top:rgba(255, 255, 255, 0);'>N° DE SERIE ".$recibo->venta->tienda->ticketera."</th>
+      </tr>
+      <tr>
+        <th colspan='3' style='text-align:right; border-top:rgba(255, 255, 255, 0);'>".$recibo->numeracion."</th>
+      </tr>
+      <tr>
+        <th colspan='3' style='text-align:right; border-top:rgba(255, 255, 255, 0);'>".$recibo->venta->updated_at."</th>
+      </tr>";
+      foreach($recibo->venta->detalles as $detalle){
+        $tablaTicket .= "<tr>
+          <th style='text-align:center; border-top:rgba(255, 255, 255, 0);'>".$detalle->cantidad."</th>
+          <th style='text-align:left; border-top:rgba(255, 255, 255, 0);'>".$detalle->producto->descripcion."</th>
+          <th style='text-align:right; border-top:rgba(255, 255, 255, 0);'>".$detalle->total."</th>
+        </tr>";
+      }
+      $tablaTicket .= "<tr>
+        <th colspan='2' style='text-align:right; border-top:rgba(255, 255, 255, 0);'>TOTAL</th>
+        <th colspan='2' style='text-align:right; border-top:rgba(255, 255, 255, 0);'>".$recibo->venta->total."</th>
+      </tr>
+    </table>";
+    return ['ticket'=>$tablaTicket, 'recibo'=>$recibo, 'venta'=>$venta];
+  }
+
+
 }

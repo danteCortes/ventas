@@ -3,8 +3,8 @@
 @section('estilos')
 {{Html::style('bootgrid/jquery.bootgrid.min.css')}}
 <style media="screen">
-  .modal-body>.table-responsive>.table-hover tr:hover{
-    /*background-color: #e69c2d;*/
+  .table>tbody>tr>th{
+    border-top:rgba(255, 255, 255, 0);
   }
 </style>
 @stop
@@ -14,33 +14,62 @@ Recibo
 @stop
 
 @section('contenido')
+@include('plantillas.mensajes')
 <div class="row">
-  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    @if(Session::has('correcto'))
-      <div class="alert alert-success alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <strong>Correcto!</strong> {{Session::get('correcto')}}
+  <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Recibo {{$recibo->numeracion}}</h3>
       </div>
-    @elseif(Session::has('info'))
-      <div class="alert alert-info alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <strong>Correcto!</strong> {{Session::get('info')}}
+      <div class="panel-body" id="ticket">
+        <table class="table table-condensed">
+          <tr>
+            <th colspan="3" style="text-align:center; border-top:rgba(255, 255, 255, 0);">{{$recibo->venta->tienda->nombre}}</th>
+          </tr>
+          <tr>
+            <th colspan="3" style="text-align:center; border-top:rgba(255, 255, 255, 0);">{{$recibo->venta->tienda->direccion}}</th>
+          </tr>
+          <tr>
+            <th colspan="3" style="text-align:center; border-top:rgba(255, 255, 255, 0);">R.U.C. N° {{$recibo->venta->tienda->ruc}}</th>
+          </tr>
+          <tr>
+            <th colspan="3" style="text-align:center; border-top:rgba(255, 255, 255, 0);">N° DE SERIE {{$recibo->venta->tienda->ticketera}}</th>
+          </tr>
+          <tr>
+            <th colspan="3" style="text-align:right; border-top:rgba(255, 255, 255, 0);">{{$recibo->numeracion}}</th>
+          </tr>
+          <tr>
+            <th colspan="3" style="text-align:right; border-top:rgba(255, 255, 255, 0);">{{$recibo->venta->updated_at}}</th>
+          </tr>
+          @foreach($recibo->venta->detalles as $detalle)
+            <tr>
+              <th style="text-align:center; border-top:rgba(255, 255, 255, 0);">{{$detalle->cantidad}}</th>
+              <th style="text-align:left; border-top:rgba(255, 255, 255, 0);">{{$detalle->producto->descripcion}}</th>
+              <th style="text-align:right; border-top:rgba(255, 255, 255, 0);">{{$detalle->total}}</th>
+            </tr>
+          @endforeach
+          <tr>
+            <th colspan="2" style="text-align:right; border-top:rgba(255, 255, 255, 0);">TOTAL</th>
+            <th colspan="2" style="text-align:right; border-top:rgba(255, 255, 255, 0);">{{$recibo->venta->total}}</th>
+          </tr>
+        </table>
       </div>
-    @elseif(Session::has('error'))
-      <div class="alert alert-danger alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <strong>Error!</strong> {{Session::get('error')}}
+      <div class="panel-footer">
+        <button type="button" class="btn btn-primary imprimir" id="imprimir"><span class="fa fa-print"></span> Imprimir</button>
+        <a href="{{url('venta/create')}}" class="btn btn-default"> Salir</a>
       </div>
-    @endif
-    @foreach($errors->all() as $mensaje)
-    <div class="alert alert-info alert-dismissible" role="alert">
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      <strong>Ups!</strong> {{$mensaje}}
     </div>
-    @endforeach
   </div>
 </div>
 @stop
 
 @section('scripts')
+{{Html::script('assets/js/jquery.printarea.js')}}
+<script type="text/javascript">
+  $(document).ready(function() {
+    $(".imprimir").click(function (){
+      $("#ticket").printArea();
+    });
+  });
+</script>
 @stop

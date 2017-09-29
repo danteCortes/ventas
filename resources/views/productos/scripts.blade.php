@@ -2,7 +2,7 @@
   $(document).ready(function() {
     $(".imprimir").click(function (){
       $("div#imgBarcode").printArea();
-    })
+    });
     /*
      * Token necesario para hacer consultas por ajax.
      * Fecha 13/09/2017
