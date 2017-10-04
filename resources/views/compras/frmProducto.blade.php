@@ -8,7 +8,7 @@
         </button>
       </h3>
     </div>
-    {{Form::open(['url'=>'detalle', 'enctype'=>'multipart/form-data'])}}
+    {{Form::open(['url'=>'detalle', 'enctype'=>'multipart/form-data', 'id'=>'frmProducto'])}}
       {{ csrf_field() }}
       <div class="panel-body collapse in" id="panelBuscar" style="background-color:#bfbfbf;">
         <div class="form-group">

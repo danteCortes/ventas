@@ -37,12 +37,16 @@
         $.post("{{url('buscar-venta')}}", {id: $(this).data('row-codigo')}, function(data, textStatus, xhr) {
           $("#impTicket").html(data['ticket']);
           $(".numeracion").html(data['recibo']['numeracion']);
+          $("#verTicket").modal("show");
         });
-        $("#verTicket").modal("show");
       }).end().find(".command-edit").on("click", function(e){
-
+        //
       }).end().find(".command-delete").on('click', function(e) {
-
+        $.post("{{url('buscar-venta')}}", {id: $(this).data('row-codigo')}, function(data, textStatus, xhr) {
+          $(".numeracion").html(data['recibo']['numeracion']);
+          $("#frmEliminar").prop('action', "{{url('venta')}}/" + data['venta']['id']);
+          $("#eliminar").modal("show");
+        });
       });
     });
 

@@ -328,7 +328,7 @@ class CompraController extends Controller{
           "recibo" => $compra->recibo,
           "proveedor" => $compra->proveedor,
           "usuario" => $compra->usuario,
-          "fecha" => $compra->fecha,
+          "fecha" => \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $compra->fecha)->format('d/m/Y H:i A'),
         )
       );
       //Asignamos un grupo de datos al array datas

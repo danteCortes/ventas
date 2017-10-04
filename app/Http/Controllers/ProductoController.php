@@ -82,7 +82,7 @@ class ProductoController extends Controller{
       $producto->save();
     }
     // Generamos la imagen del códgo de barras para el producto.
-    DNS1D::setStorPath(storage_path("/app/public/codigosBarra/"));
+    DNS1D::setStorPath(public_path("/storage/codigosBarra/"));
     DNS1D::getBarcodePNGPath(mb_strtolower($request->codigo), "C128");
     // Retornamos una redirección al método index de este controlador para volver a mostrar
     // la lista de productos mostrando un mensaje de satisfacción.

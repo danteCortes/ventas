@@ -11,6 +11,25 @@
 |
 */
 
+// Créditos de productos.
+Route::get('credito', 'CreditoController@index');
+Route::post('agregar-detalle-credito', 'CreditoController@agregarDetalle');
+Route::delete('quitar-detalle-credito/{id}', 'CreditoController@quitarDetalle');
+Route::post('terminar-credito', 'CreditoController@terminar');
+
+//TRASLADOS DE PRODUCTOS
+Route::resource('traslado', 'TrasladoController');
+Route::post('traslado/terminar', 'TrasladoController@terminar');
+
+// Cambio de productos en venta
+Route::post('detalle-cambio', 'CambioController@agregarDetalle');
+Route::delete('quitar-detalle-cambio/{id}', 'CambioController@quitarDetalleCambio');
+Route::post('vuelto-cambio', 'CambioController@vuelto');
+Route::post('tipo-cambio-cambio', 'CambioController@tipoCambio');
+Route::post('comision-cambio', 'CambioController@comisionTarjeta');
+Route::post('pago-tarjeta-cambio', 'CambioController@pagoTarjeta');
+Route::post('terminar-cambio', 'CambioController@terminar');
+
 Route::resource('tarjeta-venta', 'TarjetaVentaController');
 
 Route::post('buscar-persona', 'PersonaController@buscar');

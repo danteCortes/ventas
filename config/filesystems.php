@@ -50,17 +50,17 @@ return [
 
         'productos' => [
             'driver' => 'local',
-            'root' => storage_path('app/public/productos'),
+            'root' => public_path('storage/productos'),
         ],
 
         'barcode' => [
             'driver' => 'local',
-            'root' => storage_path('app/public/codigosBarra'),
+            'root' => public_path('storage/codigosBarra'),
         ],
 
         'usuarios' => [
             'driver' => 'local',
-            'root' => storage_path('app/public/usuarios'),
+            'root' => public_path('storage/usuarios'),
         ],
 
         'public' => [

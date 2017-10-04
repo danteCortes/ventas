@@ -1,6 +1,12 @@
 <script type="text/javascript">
   $(document).ready(function() {
 
+    $("#frmProducto").keypress(function(event) {
+      if (event.which == 13) {
+        return false;
+      }
+    });
+
     $.ajaxSetup({
       headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

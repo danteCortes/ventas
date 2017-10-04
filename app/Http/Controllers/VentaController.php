@@ -126,14 +126,14 @@ class VentaController extends Controller{
           $efectivo = new \App\Efectivo;
           $efectivo->venta_id = $venta->id;
           $efectivo->monto = $request->soles;
-          $efectivo->save;
+          $efectivo->save();
         }
         // Guardamos los dolares.
         if ($request->dolares) {
           $configuracion = \App\Configuracion::whereNotNull('cambio')->first();
           $dolares = new \App\Dolar;
           $dolares->venta_id = $venta->id;
-          $dolares->monto = $request->monto;
+          $dolares->monto = $request->dolares;
           $dolares->cambio = $configuracion->cambio;
           $dolares->save();
         }
@@ -161,7 +161,6 @@ class VentaController extends Controller{
         // Si el monto acumulado es menor que el total de la venta, regresamos a la vista de la venta con un mensaje de error.
         return redirect('venta/create')->with('error', 'EL MONTO TOTAL INGRESADO NO COMPLETA EL TOTAL DE LA VENTA.');
       }
-      dd($request);
     }else{
       // Si no existe una venta activa para este usuario, retornams a la vista de venta con un mensaje de error.
       return redirect('venta/create')->with('error', 'NO EXISTE UNA VENTA ACTIVA EN ESTE MOMENTO.');
@@ -208,8 +207,21 @@ class VentaController extends Controller{
    * @param  \App\Venta  $venta
    * @return \Illuminate\Http\Response
    */
-  public function edit(Venta $venta){
-      //
+  public function edit($id){
+    // Primero verificamos si existe un cambio activo (estado 1) para este usuario y en esta tienda.
+    if ($cambio = \App\Cambio::where('usuario_id', \Auth::user()->id)->where('tienda_id', \Auth::user()->tienda_id)
+      ->where('estado', 1)->first()) {
+      // Verificamos si la venta de este cambio es igual a la venta que estamos queriendo hacer cambios.
+      if($cambio->venta->id != $id){
+        // Si existe un cambio activo en esta tienda y con el usuario logueado lo enviamos a la vista del cambio de la venta activa.
+        return redirect('venta/'.$cambio->venta->id.'/edit')->with('info', 'ESTE CAMBIO NO FUE TERMINADO,
+        HAGA CLIC EN TERMINAR ANTES DE EMPEZAR OTRO CAMBIO.');
+      }
+    }
+    // Si no existe buscamos la venta que queremos cambiar.
+    $venta = Venta::find($id);
+    // mostramos la vista
+    return view('cambios.editar')->with('venta', $venta);
   }
 
   /**
@@ -229,8 +241,43 @@ class VentaController extends Controller{
    * @param  \App\Venta  $venta
    * @return \Illuminate\Http\Response
    */
-  public function destroy(Venta $venta){
-      //
+  public function destroy(Request $request, $id){
+    // Primero verificamos si es una venta terminada (estado 0) o una venta encurso (estado 1).
+    $venta = Venta::find($id);
+    // Identificamos la tienda de la que se vendio.
+    $tienda = \App\Tienda::find($venta->tienda_id);
+    if (!$venta->estado) {
+      $autorizacion = 0;
+      // Si la venta esta cerrada, verificamos que se halla ingresado la contraseña de un administrador.
+      foreach (\App\Usuario::where('tipo', 1)->get() as $administrador) {
+        // verificamos que la contraseña ingresada sea del administrador.
+        if(\Hash::check($request->password, $administrador->password)){
+          $autorizacion = 1;
+          break;
+        }
+      }
+    }else{
+      $autorizacion = 1;
+    }
+    if (!$autorizacion) {
+      return redirect('venta')->with('error', 'LA CONTRASEÑA INGRESADA NO PERTENECE AL ADMINISTRADOR.');
+    }
+    // Procedemos a retornar la cantidad de los productos a la tienda que se vendió.
+    foreach ($venta->detalles as $detalle) {
+      // Recorremos todos los detalles de la venta e identificamos el producto que se vendio.
+      $producto = \App\Producto::find($detalle->producto_codigo);
+      // Identificamos la cantidad de productos que se vedio.
+      $cantidad = $detalle->cantidad;
+      // Regresamos la cantidad a la tienda de origen.
+      $productoTienda = \App\productoTienda::where('producto_codigo', $producto->codigo)
+        ->where('tienda_id', $tienda->id)->first();
+      $productoTienda->cantidad += $cantidad;
+      $productoTienda->save();
+    }
+    // Ya regresados las cantidades de los productos a las tiendas de origen, procedemos a eliminar la venta.
+    $venta->delete();
+    return redirect('venta')->with('info', 'SE ELIMINÓ UNA VENTA DE ESTA TIENDA, ESTE CAMBIO SE REGISTRÓ
+      CON SU USUARIO '.\Auth::user()->persona->nombres.' '.\Auth::user()->persona->apellidos.'.');
   }
 
   /**

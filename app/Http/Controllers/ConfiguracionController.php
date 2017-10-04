@@ -110,13 +110,15 @@ class ConfiguracionController extends Controller{
   public function agregarTipoCambio(Request $request){
     // verificamos que no halla un cambio registrado.
     if($cambio = \App\Configuracion::whereNotNull('cambio')->first()){
-      // Si hay un cambio registrado lo borramos.
-      $cambio->delete();
+      // Si hay un cambio registrado lo editamos.
+      $cambio->cambio = $request->cambio;
+      $cambio->save();
+    }else{
+      // Guardamos el nuevo cambio.
+      $cambio = new \App\Configuracion;
+      $cambio->cambio = $request->cambio;
+      $cambio->save();
     }
-    // Guardamos el nuevo cambio.
-    $cambio = new \App\Configuracion;
-    $cambio->cambio = $request->cambio;
-    $cambio->save();
     return 1;
   }
 }

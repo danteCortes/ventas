@@ -12,8 +12,16 @@ class Detalle extends Model{
     return number_format($valor, 2, '.', ' ');
   }
 
+  public function setPrecioUnidadAttribute($value){
+    $this->attributes['precio_unidad'] = str_replace(' ', '', $value);
+  }
+
   public function getTotalAttribute($valor){
     return number_format($valor, 2, '.', ' ');
+  }
+
+  public function setTotalAttribute($value){
+    $this->attributes['total'] = str_replace(' ', '', $value);
   }
 
   public function producto(){
@@ -26,6 +34,10 @@ class Detalle extends Model{
 
   public function venta(){
   	return $this->belongsTo('\App\Venta');
+  }
+
+  public function credito(){
+  	return $this->belongsTo('\App\Credito');
   }
 
   public function ingresos(){

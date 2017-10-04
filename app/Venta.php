@@ -33,4 +33,16 @@ class Venta extends Model{
   public function tienda(){
     return $this->belongsTo('\App\Tienda');
   }
+
+  public function efectivo(){
+    return $this->hasOne('\App\Efectivo');
+  }
+
+  public function dolar(){
+    return $this->hasOne('\App\Dolar');
+  }
+
+  public function cambio(){
+    return $this->hasOne('\App\Cambio');
+  }
 }
