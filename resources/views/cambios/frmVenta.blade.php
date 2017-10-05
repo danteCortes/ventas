@@ -88,7 +88,13 @@
           <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
             <div class="form-group">
               <div class="input-group">
-                <input type="text" name="tarjeta" class="form-control moneda" placeholder="TARJETA" id="tarjeta">
+                @if($cambio = \App\Cambio::where('venta_id', $venta->id)->first())
+                  @if($pagoTarjeta = \App\TarjetaVenta::where('cambio_id', $cambio->id)->first())
+                    <input type="text" name="tarjeta" class="form-control moneda" placeholder="TARJETA" id="tarjeta" value="{{$pagoTarjeta->monto}}">
+                  @else
+                    <input type="text" name="tarjeta" class="form-control moneda" placeholder="TARJETA" id="tarjeta">
+                  @endif
+                @endif
                 <span class="input-group-btn">
                   <button class="btn btn-default" type="button" id="btnRegistrarTarjeta">Registrar</button>
                 </span>

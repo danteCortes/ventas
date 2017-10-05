@@ -9,4 +9,8 @@ class Cambio extends Model{
   public function venta(){
     return $this->belongsTo('\App\Venta');
   }
+
+  public function tarjetaVenta(){
+    return $this->hasOne('\App\TarjetaVenta');
+  }
 }

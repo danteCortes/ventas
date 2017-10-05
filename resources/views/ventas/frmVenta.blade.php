@@ -1,6 +1,7 @@
 <div class="row">
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    <div class="panel panel-default">
+    @if($venta = \App\Venta::where('usuario_id', Auth::user()->id)->where('tienda_id', Auth::user()->tienda_id)->where('estado', 1)->first())
+      <div class="panel panel-default">
       <div class="panel-body" style="background-color:#bfbfbf;">
         {{Form::open(['url'=>'venta'])}}
         <div class="row">
@@ -98,5 +99,6 @@
         {{Form::close()}}
       </div>
     </div>
+    @endif
   </div>
 </div>

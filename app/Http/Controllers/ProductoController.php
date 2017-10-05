@@ -319,6 +319,10 @@ class ProductoController extends Controller{
         $order_by = 'precio';
         $order_name = $sort['precio'];
     }
+    if (isset($sort['stock'])) {
+        $order_by = 'cantidad';
+        $order_name = $sort['stock'];
+    }
 
     $skip = 0;
     $take = $line_number;
@@ -369,6 +373,7 @@ class ProductoController extends Controller{
     $datas = [];
 
     foreach ($productos as $producto):
+      $cantidad = \App\ProductoTienda::where('producto_codigo', $producto->codigo)->where('tienda_id', \Auth::user()->tienda_id)->first()->cantidad;
 
       $data = array_merge(
         array
@@ -376,6 +381,7 @@ class ProductoController extends Controller{
           "codigo" => $producto->codigo,
           "descripcion" => $producto->descripcion,
           "precio" => $producto->precio,
+          "stock" => $cantidad,
         )
       );
       //Asignamos un grupo de datos al array datas

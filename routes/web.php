@@ -16,6 +16,7 @@ Route::get('credito', 'CreditoController@index');
 Route::post('agregar-detalle-credito', 'CreditoController@agregarDetalle');
 Route::delete('quitar-detalle-credito/{id}', 'CreditoController@quitarDetalle');
 Route::post('terminar-credito', 'CreditoController@terminar');
+Route::get('listar-creditos', 'CreditoController@listar');
 
 //TRASLADOS DE PRODUCTOS
 Route::resource('traslado', 'TrasladoController');

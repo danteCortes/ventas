@@ -1,5 +1,6 @@
 <div class="row">
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    @if($venta = \App\Venta::where('usuario_id', Auth::user()->id)->where('tienda_id', Auth::user()->tienda_id)->where('estado', 1)->first())
     <div class="table-responsive">
       <table class="table table-condensed table-bordered" style="background-color:#bfbfbf;">
         <thead>
@@ -12,7 +13,6 @@
           </tr>
         </thead>
         <tbody id="detalles">
-          @if($venta = \App\Venta::where('usuario_id', Auth::user()->id)->where('tienda_id', Auth::user()->tienda_id)->where('estado', 1)->first())
             @foreach($venta->detalles as $detalle)
               <tr>
                 <td>
@@ -44,9 +44,9 @@
             <td colspan="4"><strong class="pull-right">TOTAL: </strong></td>
             <td style="text-align:right">{{$venta->total}}</td>
           </tr>
-          @endif
         </tbody>
       </table>
     </div>
+    @endif
   </div>
 </div>

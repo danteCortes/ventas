@@ -1,5 +1,9 @@
 @extends('plantillas.cajero')
 
+@section('estilos')
+{{Html::style('bootgrid/jquery.bootgrid.min.css')}}
+@stop
+
 @section('titulo')
 Cambiar Venta
 @stop
@@ -13,7 +17,6 @@ Cambiar Venta
 @include('cambios.tblDetalles')
 @include('cambios.frmVenta')
 @include('cambios.modales')
-
 <!--Modal con el formulario para registrar la venta con tarjeta al sistema.-->
 <!--Fecha 22/09/2017-->
 <div class="modal fade" id="registrarTarjeta" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -49,9 +52,9 @@ Cambiar Venta
             <div class="form-group">
               <label for="operacion" class="control-label col-xs-2 col-sm-2 col-md-3 col-lg-3">Operación*:</label>
               <div class="col-xs-10 col-sm-10 col-md-9 col-lg-9">
-                @if($venta = \App\Venta::where('usuario_id', Auth::user()->id)->where('tienda_id', Auth::user()->tienda_id)
-                  ->where('estado', 1)->first())
-                  @if($tarjetaVenta = $venta->tarjetaVenta)
+                @if($cambio = \App\Cambio::where('usuario_id', Auth::user()->id)->where('tienda_id', Auth::user()->tienda_id)
+                  ->where('estado', 1)->where('venta_id', $venta->id)->first())
+                  @if($tarjetaVenta = $cambio->tarjetaVenta)
                     {{Form::text('operacion', $tarjetaVenta->operacion, ['class'=>'form-control input-sm numero', 'id'=>'operacion'])}}
                   @else
                     {{Form::text('operacion', null, ['class'=>'form-control input-sm numero', 'id'=>'operacion'])}}
@@ -63,9 +66,9 @@ Cambiar Venta
             </div>
             <div class="form-group">
               <div class="col-xs-10 col-xs-offset-2 col-sm-10 col-sm-offset-2 col-md-9 col-md-offset-3 col-lg-9 col-lg-offset-3">
-                @if($venta = \App\Venta::where('usuario_id', Auth::user()->id)->where('tienda_id', Auth::user()->tienda_id)
-                  ->where('estado', 1)->first())
-                  @if($tarjetaVenta = $venta->tarjetaVenta)
+                @if($cambio = \App\Cambio::where('usuario_id', Auth::user()->id)->where('tienda_id', Auth::user()->tienda_id)
+                  ->where('estado', 1)->where('venta_id', $venta->id)->first())
+                  @if($tarjetaVenta = $cambio->tarjetaVenta)
                     {{Form::hidden('monto', $tarjetaVenta->monto, ['id'=>'hdnMontoTarjeta'])}}
                   @else
                     {{Form::hidden('monto', null, ['id'=>'hdnMontoTarjeta'])}}
@@ -91,6 +94,7 @@ Cambiar Venta
 @stop
 
 @section('scripts')
+{{Html::script('bootgrid/jquery.bootgrid.min.js')}}
 {{Html::script('assets/lib/mask/jquery.mask.js')}}
 @include('cambios.scriptEditar')
 @stop

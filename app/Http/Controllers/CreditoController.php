@@ -87,6 +87,10 @@ class CreditoController extends Controller{
     return redirect('credito')->with('correcto', 'EL CREDITO FUE GUARDADO CON ÉXITO');
   }
 
+  public function listar(){
+    return view('creditos.listar');
+  }
+
   private function devolverProducto(\App\Detalle $detalle){
     $productoTienda = \App\ProductoTienda::where('producto_codigo', $detalle->producto_codigo)->where('tienda_id', $detalle->credito->tienda_id)->first();
     $productoTienda->cantidad += $detalle->cantidad;

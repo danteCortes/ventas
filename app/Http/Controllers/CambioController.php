@@ -200,30 +200,41 @@ class CambioController extends Controller{
     // Primero identificamos el cambio que se tiene que pagar.
     if($cambio = \App\Cambio::where('usuario_id', \Auth::user()->id)->where('tienda_id', \Auth::user()->tienda_id)
       ->where('estado', 1)->first()){
-        // Si existe el cambio, verificamos cuanto es la diferencia.
-        $diferencia = $cambio->diferencia;
-        // Verificamos si la diferencia es mayor a cero.
-        if ($diferencia > 0) {
-          // Si la diferencia es mayor a cero quiere decir que el cliente tiene que pagar un monto extra por el cambio.
-          // Guardamos los datos en la tabla tarjeta_venta.
-          $tarjetaVenta = new \App\TarjetaVenta;
-          $tarjetaVenta->tarjeta_id = $request->tarjeta_id;
-          $tarjetaVenta->cambio_id = $cambio->id;
-          $tarjetaVenta->operacion = $request->operacion;
-          $tarjetaVenta->monto = $request->monto;
-          $tarjetaVenta->comision = number_format($request->monto * (\App\Tarjeta::find($request->tarjeta_id)->comision / 100), 2, '.', '');
-          $tarjetaVenta->save();
-        }elseif($diferencia == 0){
-          // Si la diferencia es cero no es necesario que se registre el pago con tarjeta.
-          // Retornamos a la vista anterior con el mensaje correspondiente.
-          return redirect('venta/'.$cambio->venta->id.'/edit')->with('error', 'NO ES NECESARIO REALIZAR UN PAGO CON TARJETA
+        // Verificamos si ya existe un pago co tarjeta para este cambio.
+        if($pagoTarjeta = $cambio->tarjetaVenta){
+          // Si ya se hizo un pago con tarjeta verificamos si el monto a cambiado.
+          $pagoTarjeta->tarjeta_id = $request->tarjeta_id;
+          $pagoTarjeta->monto = $request->monto;
+          $pagoTarjeta->comision = number_format($request->monto * (\App\Tarjeta::find($request->tarjeta_id)->comision / 100), 2, '.', '');
+          $pagoTarjeta->save();
+          return redirect('venta/'.$cambio->venta->id.'/edit')->with('correcto', 'EL PAGO CON TARJETA FUE ACTUALIZADO CON EXITO. PUEDE TERMINAR LA VENTA.');
+        }else{
+          // Si existe el cambio, verificamos cuanto es la diferencia.
+          $diferencia = $cambio->diferencia;
+          // Verificamos si la diferencia es mayor a cero.
+          if ($diferencia > 0) {
+            // Si la diferencia es mayor a cero quiere decir que el cliente tiene que pagar un monto extra por el cambio.
+            // Guardamos los datos en la tabla tarjeta_venta.
+            $tarjetaVenta = new \App\TarjetaVenta;
+            $tarjetaVenta->tarjeta_id = $request->tarjeta_id;
+            $tarjetaVenta->cambio_id = $cambio->id;
+            $tarjetaVenta->operacion = $request->operacion;
+            $tarjetaVenta->monto = $request->monto;
+            $tarjetaVenta->comision = number_format($request->monto * (\App\Tarjeta::find($request->tarjeta_id)->comision / 100), 2, '.', '');
+            $tarjetaVenta->save();
+            return redirect('venta/'.$cambio->venta->id.'/edit')->with('correcto', 'EL PAGO CON TARJETA FUE REGISTRADO CON EXITO. PUEDE TERMINAR LA VENTA.');
+          }elseif($diferencia == 0){
+            // Si la diferencia es cero no es necesario que se registre el pago con tarjeta.
+            // Retornamos a la vista anterior con el mensaje correspondiente.
+            return redirect('venta/'.$cambio->venta->id.'/edit')->with('error', 'NO ES NECESARIO REALIZAR UN PAGO CON TARJETA
             PARA ESTA OPERACIÓN, PUEDE TERMINAR LA OPERACIÓN SIN COBRAR NADA.');
-        }else {
-          // Si la diferencia es menor a cero es por que el cliente requeriria una devolución de dinero,
-          // en esta version no se atiende este pedido.
-          // Retornamos a la vista anterior con el mensaje correspondiente.
-          return redirect('venta/'.$cambio->venta->id.'/edit')->with('error', 'EL TOTAL A COBRAR EN ESTE CAMBIO ES NEGATIVO, PARA CORREGIR ESTO
-            QUITE EL PRODUCTO INGRESADO Y MODIFIQUE SU PRECIO DE VENTA PARA QUE COINCIDA CON EL TOTAL DE LA VENTA.');
+          }else {
+            // Si la diferencia es menor a cero es por que el cliente requeriria una devolución de dinero,
+            // en esta version no se atiende este pedido.
+            // Retornamos a la vista anterior con el mensaje correspondiente.
+            return redirect('venta/'.$cambio->venta->id.'/edit')->with('error', 'EL TOTAL A COBRAR EN ESTE CAMBIO ES NEGATIVO, PARA CORREGIR ESTO
+              QUITE EL PRODUCTO INGRESADO Y MODIFIQUE SU PRECIO DE VENTA PARA QUE COINCIDA CON EL TOTAL DE LA VENTA.');
+          }
         }
     }else {
       // Si no existe un cambio activo no es necesario registrar el pago con tarjeta.
@@ -239,7 +250,7 @@ class CambioController extends Controller{
     // Primero verificamos el cambio que estamos terminando.
     if ($cambio = \App\Cambio::where('usuario_id', \Auth::user()->id)->where('tienda_id', \Auth::user()->tienda_id)
       ->where('estado', 1)->first()) {
-      // Una vez identificado el cambio que se va a cerrar, berificamos que la diferencia de a venta
+      // Una vez identificado el cambio que se va a cerrar, verificamos que la diferencia de a venta
       // con las modificaciones sea mayor o igual a cero
       if ($cambio->diferencia > 0) {
         // Si es mayor o igual a cero procedemos a verificar si nos estan enviando el dinero suficiente para cubrir
@@ -262,7 +273,7 @@ class CambioController extends Controller{
         }
         if ($request->tarjeta) {
           // Si el cliente pretende pagar con tarjeta verificamos si lla registró el pago con tarjeta.
-          if($tarjetaVenta = \App\TarjetaVenta::where('compra_id', $compra->id)->first()){
+          if($tarjetaVenta = \App\TarjetaVenta::where('cambio_id', $cambio->id)->first()){
             // Si se registró la venta con tarjeta, verificamos que el monto ingresado corresponda al monto registrado.
             if ($tarjetaVenta->monto == $request->tarjeta) {
               // sumamos el monto al total.
