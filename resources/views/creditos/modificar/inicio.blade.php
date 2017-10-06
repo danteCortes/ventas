@@ -5,7 +5,7 @@
 @stop
 
 @section('titulo')
-Creditos
+Modificar Credito
 <a href="{{url('credito')}}" class="btn btn-primary">
   <span class="glyphicon glyphicon-plus"></span> Nuevo
 </a>
@@ -18,10 +18,10 @@ Creditos
 @include('plantillas.mensajes')
 <div class="row">
   @include('creditos.tblProductos')
-  @include('creditos.frmAgregarProducto')
+  @include('creditos.modificar.frmAgregarProducto')
 </div>
-@include('creditos.tblDetalles')
-@include('creditos.frmCredito')
+@include('creditos.modificar.tblDetalles')
+@include('creditos.modificar.frmCredito')
 @stop
 
 @section('scripts')

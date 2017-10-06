@@ -46,6 +46,7 @@ class CreditoController extends Controller{
     $this->devolverProducto($detalle);
     // Descontamos el total del detalle del total del credito.
     $credito = $detalle->credito;
+    $credito->usuario_id = \Auth::user()->id;
     $credito->total -= number_format($detalle->total, 2, '.', '');
     $credito->save();
     // Verificamos si es el último detalle del crédito.
@@ -53,8 +54,17 @@ class CreditoController extends Controller{
       // Si el crédito tiene más de un detalle, borramos el detalle.
       $detalle->delete();
     }else{
-      // Si tiene un solo detalle, borramos el crédito.
-      $credito->delete();
+      // Si tiene un solo detalle, verificamos si es un credito cerrado o activo.
+      if ($credito->estado) {
+        // Si es un credito activo, borramos todo el crédito.
+        $credito->delete();
+      }else{
+        // Si es un credito ya cerrado borramos solo el detalle,
+        // puede ser que posteriormente agreguen otro detalle.
+        $detalle->delete();
+        // regresamos a la vista anterior con el mensaje correspondiente
+        return redirect('modificar-credito/'.$credito->id)->with('info', 'SE QUITO UN DETALLE DEL CREDITO');
+      }
     }
     // regresamos a la vista anterior con el mensaje correspondiente
     return redirect('credito')->with('info', 'SE QUITO UN DETALLE DEL CREDITO');
@@ -64,17 +74,17 @@ class CreditoController extends Controller{
     // Primero verificamos si la persona existe en la bd.
     if ($persona = \App\Persona::find($request->documento)) {
       // Si la persona existe, actualizamos sus datos.
-      $persona->nombres = $request->nombres;
-      $persona->apellidos = $request->apellidos;
-      $persona->direccion = $request->direccion;
+      $persona->nombres = mb_strtoupper($request->nombres);
+      $persona->apellidos = mb_strtoupper($request->apellidos);
+      $persona->direccion = mb_strtoupper($request->direccion);
       $persona->save();
     }else{
       // Si no existe, lo guardamos.
       $persona = new \App\Persona;
       $persona->dni = $request->documento;
-      $persona->nombres = $request->nombres;
-      $persona->apellidos = $request->apellidos;
-      $persona->direccion = $request->direccion;
+      $persona->nombres = mb_strtoupper($request->nombres);
+      $persona->apellidos = mb_strtoupper($request->apellidos);
+      $persona->direccion = mb_strtoupper($request->direccion);
       $persona->save();
     }
     // Cerramos el credito.
@@ -89,6 +99,198 @@ class CreditoController extends Controller{
 
   public function listar(){
     return view('creditos.listar');
+
+
+  }
+
+  public function llenarTabla(Request $request){
+    $line_quantity = intVal($request->current);
+    $line_number = intVal($request->rowCount);
+    $where = $request->searchPhrase;
+    $sort = $request->sort;
+
+    if (isset($sort['id'])) {
+        $order_by = 'id';
+        $order_name = $sort['id'];
+    }
+    if (isset($sort['cliente'])) {
+        $order_by = 'nombres';
+        $order_name = $sort['cliente'];
+    }
+    if (isset($sort['fecha_credito'])) {
+        $order_by = 'created_at';
+        $order_name = $sort['fecha_credito'];
+    }
+    if (isset($sort['fecha_cobro'])) {
+        $order_by = 'fecha';
+        $order_name = $sort['fecha_cobro'];
+    }
+    if (isset($sort['total'])) {
+        $order_by = 'total';
+        $order_name = $sort['total'];
+    }
+
+    $skip = 0;
+    $take = $line_number;
+
+    if ($line_quantity > 1) {
+        //DESDE QUE REGISTRO SE INICIA
+        $skip = $line_number * ($line_quantity - 1);
+        //CANTIDAD DE RANGO
+        $take = $line_number;
+    }
+    //Grupo de datos que enviaremos al modelo para filtrar
+    if ($request->rowCount < 0) {
+      //
+    } else {
+      if (empty($where)) {
+        $creditos = \App\Credito::join('personas', 'creditos.persona_dni', '=', 'personas.dni')
+          ->where('tienda_id', \Auth::user()->tienda_id)->where('estado', 0)
+          ->select(
+            'creditos.id as id',
+            'personas.nombres as nombres',
+            'personas.apellidos as apellidos',
+            'creditos.created_at as created_at',
+            'creditos.fecha as fecha',
+            'creditos.total as total'
+            )
+          ->distinct()
+          ->offset($skip)
+          ->limit($take)
+          ->orderBy($order_by, $order_name)
+          ->get();
+
+      } else {
+
+        $creditos = \App\Credito::join('personas', 'creditos.persona_dni', '=', 'personas.dni')
+          ->where('tienda_id', \Auth::user()->tienda_id)->where('estado', 0)
+          ->where('creditos.id', 'like', '%'.$where.'%')
+          ->orWhere('creditos.created_at', 'like', '%'.$where.'%')
+          ->orWhere('creditos.fecha', 'like', '%'.$where.'%')
+          ->orWhere('personas.nombres', 'like', '%'.$where.'%')
+          ->orWhere('personas.apellidos', 'like', '%'.$where.'%')
+          ->orWhere('creditos.total', 'like', '%'.$where.'%')
+          ->select(
+            'creditos.id as id',
+            'personas.nombres as nombres',
+            'personas.apellidos as apellidos',
+            'creditos.created_at as created_at',
+            'creditos.fecha as fecha',
+            'creditos.total as total'
+            )
+          ->distinct()
+          ->offset($skip)
+          ->limit($take)
+          ->orderBy($order_by, $order_name)
+          ->get();
+      }
+
+      if (empty($where)) {
+        $total = \App\Credito::join('personas', 'creditos.persona_dni', '=', 'personas.dni')
+          ->where('tienda_id', \Auth::user()->tienda_id)->where('estado', 0)
+          ->distinct()
+          ->offset($skip)
+          ->limit($take)
+          ->orderBy($order_by, $order_name)
+          ->get();
+
+        $total = count($total);
+      } else {
+        $total = \App\Credito::join('personas', 'creditos.persona_dni', '=', 'personas.dni')
+          ->where('tienda_id', \Auth::user()->id)->where('estado', 0)
+          ->where('creditos.id', 'like', '%'.$where.'%')
+          ->orWhere('creditos.created_at', 'like', '%'.$where.'%')
+          ->orWhere('creditos.fecha', 'like', '%'.$where.'%')
+          ->orWhere('personas.nombres', 'like', '%'.$where.'%')
+          ->orWhere('personas.apellidos', 'like', '%'.$where.'%')
+          ->orWhere('creditos.total', 'like', '%'.$where.'%')
+          ->distinct()
+          ->get();
+
+        $total = count($total);
+      }
+    }
+
+    $datas = [];
+
+    foreach ($creditos as $credito):
+
+      $data = array_merge(
+        array
+        (
+          "id" => $credito->id,
+          "cliente" => $credito->nombres." ".$credito->apellidos,
+          "total" => number_format($credito->total, 2, '.', ' '),
+          "fecha_credito" => $credito->created_at,
+          "fecha_cobro" => $credito->fecha,
+        )
+      );
+      //Asignamos un grupo de datos al array datas
+      $datas[] = $data;
+    endforeach;
+
+    return response()->json(
+      array(
+        'current' => $line_quantity,
+        'rowCount' => $line_number,
+        'rows' => $datas,
+        'total' => $total,
+        'skip' => $skip,
+        'take' => $take
+      )
+    );
+  }
+
+  public function buscar(Request $request){
+    // Buscamos el credito segun el id que nos mandan.
+    $credito = \App\Credito::find($request->id);
+    $productos = [];
+    foreach ($credito->detalles as $detalle) {
+      $detalle->producto;
+    }
+    return ['credito'=>$credito, 'cliente'=>$credito->persona, 'cajero'=>$credito->usuario->persona, 'detalles'=>$credito->detalles];
+  }
+
+  public function editar($id){
+    $credito = \App\Credito::find($id);
+    return view('creditos.modificar.inicio')->with('credito', $credito);
+  }
+
+  public function modificarDetalle(Request $request, $id){
+    // Verificamos que se está agregando una cantidad menor o igual al stock de la tienda.
+    if ($request->cantidad > $request->stock) {
+      // Si la cantidad que queremos agregar al credito es mayor al stock en la tienda retornamos a la vista anterior con el mensaje corresóndiente.
+      return redirect('credito')->with('error', 'ESTÁ QUERIENDO VENDER MÁS DE LO QUE TIENE EN EL ALMACÉN.');
+    }
+    $credito = \App\Credito::find($id);
+    // Si la cantidad por agregar es menor o igual al stock de la tienda, procedemos a guardar el detalle relacionado con el crédito.
+    $detalle = $this->nuevoDetalle($request, $credito->id);
+    // Descontamos la cantidad agregada al credito del stock de la tienda.
+    $this->descontarProducto($request);
+    // Actualizamos el total del credito.
+    $credito->total += $detalle->total;
+    $credito->save();
+    // Regresamos a la vista anterior con el mensaje correspondiente.
+    return redirect('modificar-credito/'.$id)->with('correcto', 'EL DETALLE DEL CRÉDITO SE AGREGÓ CON EXITO.');
+    dd($request);
+  }
+
+  public function modificar(Request $request, $id){
+    $credito = \App\Credito::find($id);
+    // Verificamos si el credito tiene algun detalle.
+    if (count($credito->detalles) == 0) {
+      // Si no tiene detalles se regresa a la vista anterior con el mensaje de error.
+      return redirect('modificar-credito/'.$id)->with('error', 'ES NECESARIO INGRESAR
+        UN PRODUCTO AL CRÉDITO, DE LO CONTRARIO DEBERÍA ELIMINARLO DESDE LA LISTA DE CREDITOS.');
+    }else {
+      // Si tiene al menos un detalle, procedemos a modificar sus datos.
+      $credito->usuario_id = \Auth::user()->id;
+      $credito->fecha = $request->fecha;
+      $credito->save();
+      // regresamos a la vista anterior con el mensaje correspondiente
+      return redirect('credito')->with('correcto', 'EL CREDITO FUE MODIFICADO CON ÉXITO');
+    }
+    dd($request);
   }
 
   private function devolverProducto(\App\Detalle $detalle){

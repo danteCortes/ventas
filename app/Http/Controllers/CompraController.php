@@ -253,7 +253,7 @@ class CompraController extends Controller{
     }
     //Grupo de datos que enviaremos al modelo para filtrar
     if ($request->rowCount < 0) {
-
+      //
     } else {
       if (empty($where)) {
         $compras = Compra::join('proveedores', 'compras.proveedor_id', '=', 'proveedores.id')

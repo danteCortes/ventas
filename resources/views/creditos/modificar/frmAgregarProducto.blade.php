@@ -35,7 +35,7 @@
         <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 foto">
           <img src="{{url('storage/productos').'/producto.png'}}" style="width:100px;">
         </div>
-        {{Form::open(['url'=>'agregar-detalle-credito'])}}
+        {{Form::open(['url'=>'modificar-detalle-credito/'.$credito->id])}}
           {{ csrf_field() }}
           {{Form::hidden('producto_codigo', null, ['id'=>'producto_codigo', 'required'=>''])}}
           {{Form::hidden('stock', null, ['id'=>'stock', 'required'=>''])}}
