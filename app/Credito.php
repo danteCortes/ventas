@@ -18,6 +18,10 @@ class Credito extends Model{
     return $this->belongsTo('\App\Usuario');
   }
 
+  public function pagos(){
+    return $this->hasMany('\App\Pago');
+  }
+
   public function getTotalAttribute($value){
     return number_format($value, 2, '.', '');
   }

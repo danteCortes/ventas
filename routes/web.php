@@ -22,6 +22,12 @@ Route::post('buscar-credito', 'CreditoController@buscar');
 Route::get('modificar-credito/{id}', 'CreditoController@editar');
 Route::post('modificar-credito/{id}', 'CreditoController@modificar');
 Route::post('modificar-detalle-credito/{id}', 'CreditoController@modificarDetalle');
+Route::delete('eliminar-credito/{id}', 'CreditoController@eliminar');
+Route::post('pagar-credito/{id}', 'CreditoController@pagar');
+Route::get('listar-cobrar-creditos', 'CreditoController@listarCobrar');
+Route::post('listar-cobrar-creditos', 'CreditoController@llenarTablaCobrar');
+Route::get('listar-pagados-creditos', 'CreditoController@listarPagados');
+Route::post('listar-pagados-creditos', 'CreditoController@llenarTablaPagados');
 
 //TRASLADOS DE PRODUCTOS
 Route::resource('traslado', 'TrasladoController');

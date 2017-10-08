@@ -5,7 +5,7 @@
 @stop
 
 @section('titulo')
-Creditos
+Creditos Cancelados
 <a href="{{url('credito')}}" class="btn btn-primary">
   <span class="glyphicon glyphicon-plus"></span> Nuevo
 </a>
@@ -25,7 +25,7 @@ Creditos
   <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
       <div class="table-responsive">
-        <table class="table table-condensed table-hover table-bordered" id="tblCreditos">
+        <table class="table table-condensed table-hover table-bordered" id="tblCreditosCobrar">
           <thead>
             <tr style="background-color:#385a94; color:#FFF;">
               <th data-column-id="id" data-order="desc" style="text-align:center;">NÚMERO</th>
@@ -61,7 +61,7 @@ Creditos
      * Lista las compras llamanto por ajax al metodo lista del controlador CompraController.
      * Fecha 15/09/2017
     */
-    var grid = $("#tblCreditos").bootgrid({
+    var grid = $("#tblCreditosCobrar").bootgrid({
       labels: {
         all: "todos",
         infos: "",
@@ -77,7 +77,7 @@ Creditos
           id: "b0df282a-0d67-40e5-8558-c9e93b7befed"
         };
       },
-      url: "{{url('listar-creditos')}}",
+      url: "{{url('listar-pagados-creditos')}}",
       formatters: {
         "commands": function(column, row){
           return "<button type='button' class='btn btn-xs btn-info command-show' data-row-id='"+row.id+"' style='margin:2px'>"+

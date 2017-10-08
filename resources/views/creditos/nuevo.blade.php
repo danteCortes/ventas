@@ -12,6 +12,12 @@ Creditos
 <a href="{{url('listar-creditos')}}" class="btn btn-primary">
   <span class="glyphicon glyphicon-list"></span> Listar
 </a>
+<a href="{{url('listar-cobrar-creditos')}}" class="btn btn-primary">
+  <span class="glyphicon glyphicon-list"></span> Por Cobrar
+</a>
+<a href="{{url('listar-pagados-creditos')}}" class="btn btn-primary">
+  <span class="glyphicon glyphicon-list"></span> Pagados
+</a>
 @stop
 
 @section('contenido')
