@@ -23,15 +23,13 @@ Route::prefix('prestamo')->group(function(){
   Route::get('editar/{id}', 'PrestamoController@editar');
   Route::delete('quitar-detalle-editar/{id}', 'PrestamoController@quitarDetalleEditar');
   Route::post('agregar-detalle-editar/{id}', 'PrestamoController@agregarDetalleEditar');
-
-
+  Route::post('modificar/{id}', 'PrestamoController@modificar');
+  Route::post('devolver/{id}', 'PrestamoController@devolver');
+  Route::get('listar-devolver', 'PrestamoController@listarDevolver');
+  Route::post('listar-devolver', 'PrestamoController@llenarTablaDevolver');
+  Route::get('listar-recoger', 'PrestamoController@listarRecoger');
+  Route::post('listar-recoger', 'PrestamoController@llenarTablaRecoger');
   Route::delete('eliminar/{id}', 'PrestamoController@eliminar');
-  Route::post('modificar-credito/{id}', 'PrestamoController@modificar');
-  Route::post('pagar-credito/{id}', 'PrestamoController@pagar');
-  Route::get('listar-cobrar-creditos', 'PrestamoController@listarCobrar');
-  Route::post('listar-cobrar-creditos', 'PrestamoController@llenarTablaCobrar');
-  Route::get('listar-pagados-creditos', 'PrestamoController@listarPagados');
-  Route::post('listar-pagados-creditos', 'PrestamoController@llenarTablaPagados');
 });
 
 // Créditos de productos.

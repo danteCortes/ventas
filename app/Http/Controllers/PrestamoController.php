@@ -60,7 +60,7 @@ class PrestamoController extends Controller{
     // Identificamos el prestamo.
     $prestamo = \App\Prestamo::find($id);
     // Verificamos que dirección tiene el prestamo (dar prestamo: 1; recibir prestamo: 0).
-    if ($request->direccion == 1) {
+    if ($request->direccion[0] == 1) {
       // Si es 1, se va a dar un prestamo a una empresa externa.
       // descontamos las cantidades correspondientes de los productos en la tienda.
       foreach ($prestamo->detalles as $detalle) {
@@ -127,5 +127,91 @@ class PrestamoController extends Controller{
     // regresamos a la vista anterior con el mensaje definido.
     return redirect('prestamo/editar/'.$detalle->prestamo->id)->with('correcto', 'SE AGREGÓ UN NUEVO DETALLE DEL PRESTAMO.');
   }
+
+  public function modificar(Request $request, $id){
+    $prestamo = \App\prestamo::find($id);
+    $prestamo->usuario_id = \Auth::user()->id;
+    $prestamo->cierre_id = $this->cierreActual()->id;
+    $prestamo->fecha = $request->fecha;
+    $prestamo->socio = mb_strtoupper($request->socio);
+    $prestamo->save();
+    return redirect('prestamo/listar')->with('info', 'EL PRESTAMO FUE MODIFICADO CON ÉXITO.');
+  }
+
+  public function devolver($id){
+    //identificamos el prestamo a devolver y cambiamos su atributo devuelto.
+    $prestamo = \App\Prestamo::find($id);
+    // Verificamos que dirección tiene el prestamo (dar prestamo: 1; recibir prestamo: 0).
+    if ($prestamo->direccion[0] == 1) {
+      // Si es 1, se dio un prestamo a una empresa externa.
+      // devolvemos las cantidades correspondientes de los productos en la tienda.
+      foreach ($prestamo->detalles as $detalle) {
+        $this->devolverProducto($detalle);
+      }
+    }else{
+      // si no es 1, es por que se recibió un prestamo de una empresa externa.
+      // Descontamos las cantidades de los productos en la tienda.
+      foreach ($prestamo->detalles as $detalle) {
+        $this->descontarProducto($detalle);
+      }
+    }
+    $prestamo->devuelto = 1;
+    $prestamo->save();
+    // Regresamos a la lista de todos los prestamos con el mensaje correspondiente.
+    return redirect('prestamo/listar')->with('correcto', 'EL PRESTAMO '.$id.' FUE DEVUELTO CON SATISFACCIÓN.');
+  }
+
+  public function listarDevolver(){
+    return view('prestamos.devolver.inicio');
+  }
+
+  public function listarRecoger(){
+    return view('prestamos.recoger.inicio');
+  }
+
+  public function eliminar(Request $request, $id){
+    // Primero verificamos si la contraseña ingresada es conrrespondiente a la de un administrador.
+    $autorizacion = 0;
+    foreach (\App\Usuario::where('tipo', 1)->get() as $administrador) {
+      // verificamos que la contraseña ingresada sea del administrador.
+      if(\Hash::check($request->password, $administrador->password)){
+        $autorizacion = 1;
+        break;
+      }
+    }
+    // $verificamos si hay autorización de un administrador.
+    if ($autorizacion) {
+      $prestamo = \App\Prestamo::find($id);
+      // Procedemos a eliminar el prestamo.
+      // Antes de eliminar el prestamo verificamos si es un prestamo devuelto.
+      if (!($prestamo->devuelto == 1)) {
+        // Si es un prestamo aun no devuelto quiere decir que no se devueven o descuentan los productos a las tiendas
+        // Primero verificamos que tipo de prestamo es.
+        if ($prestamo->direccion[0] == 1) {
+          // Si la direccion es 1, era un prestamo dado a otra empresa.
+          // Devolvemos los productos a su tienda de origen.
+          foreach ($prestamo->detalles as $detalle) {
+            $this->devolverProducto($detalle);
+          }
+        }else{
+          // Si la direccion es 0, era un prestamo recibido de otra empresa.
+          // descontamos los productos de la tienda.
+          foreach ($prestamo->detalles as $detalle) {
+            $this->descontarProducto($detalle);
+          }
+        }
+      }
+      // // Por ultimo eliminamos el prestamo.
+      // $prestamo->delete();
+      // si no hay autorización retornamos a la vista anterior con el mensaje correspondiente.
+      return redirect('prestamo/listar')->with('info', 'EL PRESTAMO '.$prestamo->id.' FUE ELIMINADO POR SU CUENTA DE CAJERO '.
+        \Auth::user()->persona->nombres.' '.\Auth::user()->persona->apellidos.'.');
+    }else{
+      // si no hay autorización retornamos a la vista anterior con el mensaje correspondiente.
+      return redirect('prestamo/listar')->with('error', 'LA CONTRASEÑA INGRESADA NO PERTENECE AL
+        ADMINISTRADOR, NO CUENTA CON AUTORIZACIÓN PARA REALIZAR ESTA ACCIÓN.');
+    }
+  }
+
 
 }

@@ -32,7 +32,6 @@
         </div>
         <div class="row">
           <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
-            <input type="hidden" name="credito_id" value="{{$prestamo->id}}">
             <button type="submit" class="btn btn-primary">Terminar</button>
           </div>
         </div>

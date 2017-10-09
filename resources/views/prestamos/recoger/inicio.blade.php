@@ -5,7 +5,7 @@
 @stop
 
 @section('titulo')
-Lista de Prestamos
+Lista de Prestamos por Recoger
 <a href="{{url('prestamo')}}" class="btn btn-primary">
   <span class="glyphicon glyphicon-plus"></span> Nuevo
 </a>
@@ -45,5 +45,5 @@ Lista de Prestamos
 
 @section('scripts')
   {{Html::script('bootgrid/jquery.bootgrid.min.js')}}
-  @include('prestamos.scripts.listar')
+  @include('prestamos.recoger.script')
 @stop

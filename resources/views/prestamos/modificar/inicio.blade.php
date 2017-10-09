@@ -15,8 +15,8 @@ Modificar Préstamo {{$prestamo->id}}
 <a href="{{url('prestamo/listar-devolver')}}" class="btn btn-primary">
   <span class="glyphicon glyphicon-list"></span> Devolver
 </a>
-<a href="{{url('prestamo/listar-pedir')}}" class="btn btn-primary">
-  <span class="glyphicon glyphicon-list"></span> Pedir
+<a href="{{url('prestamo/listar-recoger')}}" class="btn btn-primary">
+  <span class="glyphicon glyphicon-list"></span> Recoger
 </a>
 @stop
 

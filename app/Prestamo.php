@@ -18,6 +18,10 @@ class Prestamo extends Model{
     return \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $value)->format('d/m/Y');
   }
 
+  public function getUpdatedAtAttribute($value){
+    return \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $value)->format('d/m/Y');
+  }
+
   public function getFechaAttribute($value){
     if ($value) {
       return \Carbon\Carbon::createFromFormat('Y-m-d', $value)->format('d/m/Y');

@@ -5,7 +5,7 @@
 @stop
 
 @section('titulo')
-Lista de Prestamos
+Lista de Prestamos por Devolver
 <a href="{{url('prestamo')}}" class="btn btn-primary">
   <span class="glyphicon glyphicon-plus"></span> Nuevo
 </a>
@@ -15,8 +15,8 @@ Lista de Prestamos
 <a href="{{url('prestamo/listar-devolver')}}" class="btn btn-primary">
   <span class="glyphicon glyphicon-list"></span> Devolver
 </a>
-<a href="{{url('prestamo/listar-recoger')}}" class="btn btn-primary">
-  <span class="glyphicon glyphicon-list"></span> Recoger
+<a href="{{url('prestamo/listar-pedir')}}" class="btn btn-primary">
+  <span class="glyphicon glyphicon-list"></span> Pedir
 </a>
 @stop
 
@@ -45,5 +45,5 @@ Lista de Prestamos
 
 @section('scripts')
   {{Html::script('bootgrid/jquery.bootgrid.min.js')}}
-  @include('prestamos.scripts.listar')
+  @include('prestamos.devolver.script')
 @stop

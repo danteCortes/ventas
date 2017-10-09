@@ -8,9 +8,9 @@
           <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
             <div class="form-group">
               <select class="form-control" name="direccion" required>
-                <option value="">SELECCIONE UNA OPCIÓN</option>
-                <option value="0">PEDIR PRESTAMO</option>
-                <option value="1">DAR PRESTAMO</option>
+                <option value="">TIPO DE PRESTAMO</option>
+                <option value="0">PRESTAMO ENTRADA</option>
+                <option value="1">PRESTAMO SALIDA</option>
               </select>
             </div>
           </div>
