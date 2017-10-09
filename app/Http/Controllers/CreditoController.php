@@ -291,7 +291,6 @@ class CreditoController extends Controller{
       // regresamos a la vista anterior con el mensaje correspondiente
       return redirect('credito')->with('correcto', 'EL CREDITO FUE MODIFICADO CON ÉXITO');
     }
-    dd($request);
   }
 
   public function pagar(Request $request, $id){

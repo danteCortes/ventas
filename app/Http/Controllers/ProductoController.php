@@ -371,9 +371,13 @@ class ProductoController extends Controller{
     }
 
     $datas = [];
-
+    $cantidad = 0;
     foreach ($productos as $producto):
-      $cantidad = \App\ProductoTienda::where('producto_codigo', $producto->codigo)->where('tienda_id', \Auth::user()->tienda_id)->first()->cantidad;
+      if ($cantidad = \App\ProductoTienda::where('producto_codigo', $producto->codigo)
+        ->where('tienda_id', \Auth::user()->tienda_id)->first()) {
+        $cantidad = \App\ProductoTienda::where('producto_codigo', $producto->codigo)
+          ->where('tienda_id', \Auth::user()->tienda_id)->first()->cantidad;
+      }
 
       $data = array_merge(
         array

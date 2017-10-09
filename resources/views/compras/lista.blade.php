@@ -177,7 +177,7 @@ Compras
                             <th>Cant.</th>
                             <th>Descripción</th>
                             <th>P. Unit.</th>
-                            <th>P. Total</th>
+                            <th style="width:65px;">P. Total</th>
                           </tr>
                         </thead>
                         <tbody class="detalles">

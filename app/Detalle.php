@@ -40,6 +40,10 @@ class Detalle extends Model{
   	return $this->belongsTo('\App\Credito');
   }
 
+  public function prestamo(){
+  	return $this->belongsTo('\App\Prestamo');
+  }
+
   public function ingresos(){
     return $this->hasMany('\App\Ingreso');
   }

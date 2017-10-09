@@ -56,7 +56,7 @@ Compras
           </button>
         </h3>
       </div>
-      {{Form::open(['url'=>'detalle'])}}
+      {{Form::open(['url'=>'detalle', 'enctype'=>'multipart/form-data', 'id'=>'frmProducto'])}}
         {{ csrf_field() }}
         <div class="panel-body collapse in" id="panelBuscar" style="background-color:#bfbfbf;">
           <div class="form-group">
@@ -447,6 +447,12 @@ Compras
 <script type="text/javascript">
   $(document).ready(function() {
 
+    $("#frmProducto").keypress(function(event) {
+      if (event.which == 13) {
+        return false;
+      }
+    });
+
     $.ajaxSetup({
       headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -534,32 +540,62 @@ Compras
       $("#costoUnitario").val("");
     });
 
-    $("#codigo").change(function(){
-      $.post(
-        "{{url('buscar-producto')}}",
-        {
-          codigo: $("#codigo").val()
-        },
-        function(data, textStatus, xhr){
-          if (data['producto'] != 0) {
+    // $("#codigo").change(function(){
+    //   $.post(
+    //     "{{url('buscar-producto')}}",
+    //     {
+    //       codigo: $("#codigo").val()
+    //     },
+    //     function(data, textStatus, xhr){
+    //       if (data['producto'] != 0) {
+    //
+    //         $("#descripcion").val(data['producto']['descripcion']);
+    //         $("#precio").val(data['producto']['precio']);
+    //         $("#linea_id").html(data['linea']);
+    //         $("#familia_id").html(data['familia']);
+    //         $("#marca_id").html(data['marca']);
+    //         $("#imgProducto").html(data['foto']);
+    //       }else{
+    //
+    //         $("#descripcion").val("");
+    //         $("#precio").val("");
+    //         $("#linea_id").html(data['linea']);
+    //         $("#familia_id").html(data['familia']);
+    //         $("#marca_id").html(data['marca']);
+    //         $("#imgProducto").html(data['foto']);
+    //       }
+    //     }
+    //   );
+    // });
 
-            $("#descripcion").val(data['producto']['descripcion']);
-            $("#precio").val(data['producto']['precio']);
-            $("#linea_id").html(data['linea']);
-            $("#familia_id").html(data['familia']);
-            $("#marca_id").html(data['marca']);
-            $("#imgProducto").html(data['foto']);
-          }else{
+    $("#codigo").keypress(function(event) {
+      if (event.which == 13) {
+        $.post(
+          "{{url('buscar-producto')}}",
+          {
+            codigo: $("#codigo").val()
+          },
+          function(data, textStatus, xhr){
+            if (data['producto'] != 0) {
 
-            $("#descripcion").val("");
-            $("#precio").val("");
-            $("#linea_id").html(data['linea']);
-            $("#familia_id").html(data['familia']);
-            $("#marca_id").html(data['marca']);
-            $("#imgProducto").html(data['foto']);
+              $("#descripcion").val(data['producto']['descripcion']);
+              $("#precio").val(data['producto']['precio']);
+              $("#linea_id").html(data['linea']);
+              $("#familia_id").html(data['familia']);
+              $("#marca_id").html(data['marca']);
+              $("#imgProducto").html(data['foto']);
+            }else{
+
+              $("#descripcion").val("");
+              $("#precio").val("");
+              $("#linea_id").html(data['linea']);
+              $("#familia_id").html(data['familia']);
+              $("#marca_id").html(data['marca']);
+              $("#imgProducto").html(data['foto']);
+            }
           }
-        }
-      );
+        );
+      }
     });
 
     $("#btnAgregarDetalle").click(function(){
