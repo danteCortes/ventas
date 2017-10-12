@@ -11,6 +11,19 @@
 |
 */
 
+Route::prefix('separacion')->group(function(){
+  Route::get('/', 'SeparacionController@nuevo');
+  Route::post('agregar-detalle', 'SeparacionController@agregarDetalle');
+  Route::delete('quitar-detalle/{id}', 'SeparacionController@quitarDetalle');
+  Route::post('terminar/{id}', 'SeparacionController@terminar');
+  Route::get('listar', 'SeparacionController@listar');
+  Route::post('listar', 'SeparacionController@llenarTabla');
+  Route::post('buscar', 'SeparacionController@buscar');
+  Route::get('modificar/{id}', 'SeparacionController@editar');
+  Route::post('modificar-detalle/{id}', 'SeparacionController@modificarDetalle');
+  Route::post('modificar/{id}', 'SeparacionController@modificar');
+});
+
 // Prestamos de productos.
 Route::prefix('prestamo')->group(function(){
   Route::get('/', 'PrestamoController@nuevo');

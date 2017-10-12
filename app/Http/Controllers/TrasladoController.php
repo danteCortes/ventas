@@ -21,10 +21,10 @@ class TrasladoController extends Controller
         $traslados = Traslado::where('usuario_id', Auth::user()->id)->where('tienda_origen', Auth::user()->tienda_id)->where('estado', 1)->first();
 
         $counttraslados = count($traslados);
-        
+
         $tiendas = Tienda::select('id', 'nombre')->where('id', '!=', \Auth::user()->tienda_id)->get();
 
-        return view('traslados.inicio', compact('tiendas', 'traslados', 'counttraslados'));
+        return view('traslados.nuevo.inicio', compact('tiendas', 'traslados', 'counttraslados'));
     }
 
     public function store(Request $request)
@@ -87,7 +87,7 @@ class TrasladoController extends Controller
     public function terminar(Request $request){
         $tienda = Tienda::select()->where('id', $request->tienda_traslado)->first();
 
-        if($request->id_traslado > 0){            
+        if($request->id_traslado > 0){
 
             $traslado = Traslado::where('id', $request->id_traslado)->first();
             $traslado->tienda_destino = $request->tienda_traslado;
@@ -110,7 +110,7 @@ class TrasladoController extends Controller
 
                 $producto_tienda->cantidad += $detalle->cantidad;
                 $producto_tienda->save();
-                // si no existe lo creas y aumentas las cantidades del detalle.                
+                // si no existe lo creas y aumentas las cantidades del detalle.
             }
 
             return redirect('traslado/create')->with('correcto', 'EL TRASLADO SE HIZO SATISFACTIRAMENTE A LA SIGUIENTE TIENDA: '.$tienda->nombre.' .');

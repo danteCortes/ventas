@@ -27,6 +27,11 @@ Cajero
   </a>
 </li>
 <li class="">
+  <a href="{{(Auth::user()->estado_caja == 2) ? url('separacion') : url('caja/create')}}">
+    <i class="fa fa-money"></i><span class="link-title">&nbsp;Separaciones</span>
+  </a>
+</li>
+<li class="">
   <a href="{{(Auth::user()->estado_caja == 2) ? url('traslado/create') : url('caja/create')}}">
     <i class="fa fa-shopping-bag"></i><span class="link-title">&nbsp;Traslados</span>
   </a>
