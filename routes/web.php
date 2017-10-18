@@ -22,6 +22,8 @@ Route::prefix('separacion')->group(function(){
   Route::get('modificar/{id}', 'SeparacionController@editar');
   Route::post('modificar-detalle/{id}', 'SeparacionController@modificarDetalle');
   Route::post('modificar/{id}', 'SeparacionController@modificar');
+  Route::post('pagar/{id}', 'SeparacionController@pagar');
+  Route::delete('eliminar/{id}', 'SeparacionController@eliminar');
 });
 
 // Prestamos de productos.

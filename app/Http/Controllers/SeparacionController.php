@@ -215,6 +215,7 @@ class SeparacionController extends Controller{
     $separacion = \App\Separacion::find($request->id);
     $separacion->persona;
     $separacion->usuario->persona;
+    $separacion->pagos;
     foreach ($separacion->detalles as $detalle) {
       $detalle->producto;
     }
@@ -259,26 +260,26 @@ class SeparacionController extends Controller{
     }
   }
 
-  public function pagar(Request $request, $id){
-    $credito = \App\Credito::find($id);
+  public function pagar(Request $request , $id){
+    $separacion = \App\Separacion::find($id);
     // Verificamos cuanto esta pagado hasta el momento.
-    $pagado = 0;
-    foreach ($credito->pagos as $pago) {
+    $pagado = $separacion->separacion_total;
+    foreach ($separacion->pagos as $pago) {
       $pagado += $pago->monto;
     }
     // verificamos cuanto falta pagar para cancelar el crédito.
-    $saldo = $credito->total - $pagado;
+    $saldo = $separacion->total - $pagado;
     $vuelto = 0;
     // Verificamos cuanto esta queriendo pagar el cliente del saldo.
     if ($saldo >= $request->monto) {
       // Si el saldo es mayor que el monto, va a pagar una parte del credito.
-      $pago = $this->guardarPago($credito, $request->monto);
+      $pago = $this->guardarPago($separacion, $request->monto);
       // Calculamos el nuevo saldo.
       $saldo -= $request->monto;
     }else{
       // Si el saldo por pagar es menor a la cantidad ingresada por el cliente,
       // solo guardamos el pago con la cantidad del saldo.
-      $pago = $this->guardarPago($credito, $saldo);
+      $pago = $this->guardarPago($separacion, $saldo);
       // el nuevo saldo será cero.
       $vuelto = $request->monto - $saldo;
       $saldo = 0;
@@ -287,8 +288,16 @@ class SeparacionController extends Controller{
     $cierre = $this->cierreActual();
     $cierre->total = str_replace(' ', '', $cierre->total) + $pago->monto;
     $cierre->save();
+    // Por último, verificamos si se completo el pago, de ser asi descontamos los productos correspondientes.
+    if ($saldo == 0) {
+      // Si el saldo es igual a cero, se completo el pago total de los productos.
+      // Procedemos a descontar los productos de la tienda.
+      foreach ($separacion->detalles as $detalle) {
+        $this->descontarProducto($detalle->producto_codigo, $detalle->cantidad);
+      }
+    }
     // Retornamos a la vista anterior con el mensaje correspondiente.
-    return redirect('listar-creditos')->with('correcto', 'EL PAGO DEL CRÉDITO '.$id.
+    return redirect('separacion/listar')->with('correcto', 'EL PAGO DEL CRÉDITO '.$id.
       ' SE GUARDO CON EXITO. TIENE UN SALDO DE S/ '.$saldo.', Y HUBO UN EXCESO DE S/ '.$vuelto.'.');
   }
 
@@ -304,16 +313,29 @@ class SeparacionController extends Controller{
     }
     // $verificamos si hay autorización de un administrador.
     if ($autorizacion) {
-      $credito = \App\Credito::find($id);
+      $separacion = \App\Separacion::find($id);
       // Procedemos a eliminar el credito.
       // Primero devolvemos los productos a la tienda de origen.
-      foreach ($credito->detalles as $detalle) {
-        $this->devolverProducto($detalle);
+      // Primero verificamos el saldo.
+      $total_pagado = $separacion->separacion_total;
+      foreach ($separacion->pagos as $pago) {
+        $total_pagado += $pago->monto;
       }
-      // En cuanto al pago, verificamos si el crédito tuvo un pago o aun no hicieron un pago para cancelar el credito.
-      if (count($credito->pagos) != 0) {
+      if ($total_pagado == $separacion->total) {
+        // Esto es una separacion de producto que ya fue cancelado y entregado.
+        // Procedemos a devolver los productos a su tienda de origen.
+        foreach ($separacion->detalles as $detalle) {
+          $this->devolverProducto($detalle);
+        }
+      }
+      // Restamos el pago por separación que se hizo del cierre que le pertenece al pago.
+      $cierre = $separacion->cierre;
+      $cierre->total = str_replace(' ', '', $cierre->total) - $separacion->separacion_total;
+      $cierre->save();
+      // En cuanto al pago, verificamos si la separación tuvo un pago o aun no hicieron un pago para cancelarlo.
+      if (count($separacion->pagos) != 0) {
         // Como tiene pagos hechos, debemos restar el monto pagado de los cierres que corresponden.
-        foreach ($credito->pagos as $pago) {
+        foreach ($separacion->pagos as $pago) {
           // Identificamos el cierre al que pertenece el pago.
           $cierre = $pago->cierre;
           $cierre->total = str_replace(' ', '', $cierre->total) - $pago->monto;
@@ -321,13 +343,13 @@ class SeparacionController extends Controller{
         }
       }
       // Por ultimo eliminamos el crédito.
-      $credito->delete();
+      $separacion->delete();
       // si no hay autorización retornamos a la vista anterior con el mensaje correspondiente.
-      return redirect('listar-creditos')->with('info', 'EL CRÉDITO '.$credito->id.' FUE ELIMINADO POR SU CUENTA DE CAJERO '.
+      return redirect('separacion/listar')->with('info', 'LA SEPARACIÓN '.$separacion->id.' FUE ELIMINADO POR SU CUENTA DE CAJERO '.
         \Auth::user()->persona->nombres.' '.\Auth::user()->persona->apellidos.'.');
     }else{
       // si no hay autorización retornamos a la vista anterior con el mensaje correspondiente.
-      return redirect('listar-creditos')->with('error', 'LA CONTRASEÑA INGRESADA NO PERTENECE AL
+      return redirect('separacion/listar')->with('error', 'LA CONTRASEÑA INGRESADA NO PERTENECE AL
         ADMINISTRADOR, NO CUENTA CON AUTORIZACIÓN PARA REALIZAR ESTA ACCIÓN.');
     }
   }

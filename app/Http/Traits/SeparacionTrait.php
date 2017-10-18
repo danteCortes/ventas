@@ -6,9 +6,9 @@ use Illuminate\Http\Request;
 
 trait SeparacionTrait{
 
-  private function guardarPago(\App\Credito $credito, $monto){
+  private function guardarPago(\App\Separacion $separacion, $monto){
     $pago = new \App\Pago;
-    $pago->credito_id = $credito->id;
+    $pago->separacion_id = $separacion->id;
     $pago->cierre_id = $this->cierreActual()->id;
     $pago->usuario_id = \Auth::user()->id;
     $pago->tienda_id = \Auth::user()->tienda_id;
@@ -17,15 +17,21 @@ trait SeparacionTrait{
     return \App\Pago::find($pago->id);
   }
 
+  private function primerPago($monto, $separacion){
+
+  }
+
   private function devolverProducto(\App\Detalle $detalle){
-    $productoTienda = \App\ProductoTienda::where('producto_codigo', $detalle->producto_codigo)->where('tienda_id', $detalle->credito->tienda_id)->first();
+    $productoTienda = \App\ProductoTienda::where('producto_codigo', $detalle->producto_codigo)
+      ->where('tienda_id', $detalle->separacion->tienda_id)->first();
     $productoTienda->cantidad += $detalle->cantidad;
     $productoTienda->save();
   }
 
-  private function descontarProducto(Request $request){
-    $productoTienda = \App\ProductoTienda::where('producto_codigo', $request->producto_codigo)->where('tienda_id', \Auth::user()->tienda_id)->first();
-    $productoTienda->cantidad -= $request->cantidad;
+  private function descontarProducto($producto_codigo, $cantidad){
+    $productoTienda = \App\ProductoTienda::where('producto_codigo', $producto_codigo)
+      ->where('tienda_id', \Auth::user()->tienda_id)->first();
+    $productoTienda->cantidad -= $cantidad;
     $productoTienda->save();
   }
 

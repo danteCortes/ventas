@@ -21,11 +21,11 @@ class CambioController extends Controller{
     );
     // Verificamos que se halla escogido un producto.
     if (!$request->producto_codigo || ($request->stock == null)) {
-      return redirect('venta/create')->with('error', 'DEBE ESCOGER UN PRODUCTO PARA AGREGAR UN DETALLE DE VENTA.');
+      return redirect('venta/'.$request->venta_id.'/edit')->with('error', 'DEBE ESCOGER UN PRODUCTO PARA AGREGAR UN DETALLE DE VENTA.');
     }
     // Verificamos que la cantidad por vender sea menor o igual al stock en tiendas.
     if ($request->cantidad > $request->stock) {
-      return redirect('venta/create')->with('error', 'ESTÁ QUERIENDO VENDER MÁS DE LO QUE TIENE EN EL ALMACÉN.');
+      return redirect('venta/'.$request->venta_id.'/edit')->with('error', 'ESTÁ QUERIENDO VENDER MÁS DE LO QUE TIENE EN EL ALMACÉN.');
     }
     // Identificamos la venta.
     $venta = \App\Venta::find($request->venta_id);
@@ -73,7 +73,7 @@ class CambioController extends Controller{
     // Aumentamos el precio del detalle al cierre de caja actual.
     $cierre = \App\Cierre::where('usuario_id', \Auth::user()->id)->where('tienda_id', \Auth::user()->tienda_id)
       ->where('estado', 1)->first();
-    $cierre->total = str_replace(' ', '', $cierre->total) - str_replace(' ', '', $cierre->total);
+    $cierre->total = str_replace(' ', '', $cierre->total) + str_replace(' ', '', $venta->total);
     $cierre->save();
     // Actualizamos la diferencia en el cambio.
     $cambio->diferencia += $request->cantidad * $request->precio_unidad;
@@ -125,10 +125,10 @@ class CambioController extends Controller{
     $venta = $detalle->venta;
     $venta->total = str_replace(' ', '', $venta->total) - str_replace(' ', '', $detalle->total);
     $venta->save();
-    // Descontamos el total del detalle que se está eliminado, del total del cierre que esta activo actuamente.
+    // Descontamos el total del detalle que se está eliminado, del total del cierre que esta activo actualmente.
     $cierre = \App\Cierre::where('usuario_id', \Auth::user()->id)->where('tienda_id', \Auth::user()->tienda_id)
     ->where('estado', 1)->first();
-    $cierre->total = str_replace(' ', '', $cierre->total) - str_replace(' ', '', $cierre->total);
+    $cierre->total = str_replace(' ', '', $cierre->total) - str_replace(' ', '', $detalle->total);
     $cierre->save();
     // Por último eliminamos el detalle.
     $detalle->delete();

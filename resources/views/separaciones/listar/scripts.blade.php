@@ -67,23 +67,26 @@
           $("#ver").modal('show');
         });
       }).end().find(".command-delete").on('click', function(e) {
-        $.post("{{url('buscar-credito')}}", {id: $(this).data("row-id")}, function(data, textStatus, xhr) {
-          $(".numero").html(data['credito']['id']);
-          $("#frmEliminar").prop('action', "{{url('eliminar-credito')}}/" + data['credito']['id']);
+        $.post("{{url('separacion/buscar')}}", {id: $(this).data("row-id")}, function(data, textStatus, xhr) {
+          $(".numero").html(data['id']);
+          $("#frmEliminar").prop('action', "{{url('separacion/eliminar')}}/" + data['id']);
           $("#eliminar").modal('show');
         });
       }).end().find(".command-pagar").on('click', function(e) {
-        $.post("{{url('buscar-credito')}}", {id: $(this).data("row-id")}, function(data, textStatus, xhr) {
-          $(".numero").html(data['credito']['id']);
-          $("#frmPagar").prop('action', "{{url('pagar-credito')}}/" + data['credito']['id']);
+        $.post("{{url('separacion/buscar')}}", {id: $(this).data("row-id")}, function(data, textStatus, xhr) {
+          $(".numero").html(data['id']);
+          $("#frmPagar").prop('action', "{{url('separacion/pagar')}}/" + data['id']);
           $("#tblPagos").empty();
-          var total_pagos = 0;
+          var total_pagos = parseFloat(data['separacion_total']);
+          $("#tblPagos").append("<tr><td style='border: 1px solid #398439;'>"+data['created_at']+
+          "</td><td style='border: 1px solid #398439'>"+total_pagos.toFixed(2)+"</td></tr>");
           $.each(data['pagos'], function(clave, valor) {
             total_pagos += parseFloat(valor['monto']);
-            pago = "<tr><td style='border: 1px solid #398439'>"+valor['created_at']+"</td><td style='border: 1px solid #398439'>"+valor['monto']+"</td></tr>";
+            pago = "<tr><td style='border: 1px solid #398439'>"+valor['created_at']+"</td><td style='border: 1px solid #398439'>"+
+              valor['monto']+"</td></tr>";
             $("#tblPagos").append(pago);
           });
-          var saldo = parseFloat(data['credito']['total']) - parseFloat(total_pagos);
+          var saldo = parseFloat(data['total']) - parseFloat(total_pagos);
           $(".saldo").html("S/ " + saldo.toFixed(2));
           $("#tblPagos").append("<tr><th style='text-align:right; border: 1px solid #398439;'>TOTAL</th><th style='border: 1px solid #398439'>"+
             total_pagos.toFixed(2)+"</th></tr>");

@@ -14,11 +14,7 @@ class PrestamoController extends Controller{
   }
 
   public function agregarDetalle(Request $request){
-    // Verificamos que se está agregando una cantidad menor o igual al stock de la tienda.
-    if ($request->cantidad > $request->stock) {
-      // Si la cantidad que queremos agregar al prestamo es mayor al stock en la tienda retornamos a la vista anterior con el mensaje corresóndiente.
-      return redirect('prestamo')->with('error', 'ESTÁ QUERIENDO PRESTAR MÁS DE LO QUE TIENE EN EL ALMACÉN.');
-    }
+
     // Verificamos si existe un prestamo activo (estado 1) en esta tienda y con este usuario
     if (!$prestamo = \App\Prestamo::where('usuario_id', \Auth::user()->id)->where('tienda_id', \Auth::user()->tienda_id)
       ->where('estado', 1)->first()) {
@@ -61,6 +57,18 @@ class PrestamoController extends Controller{
     $prestamo = \App\Prestamo::find($id);
     // Verificamos que dirección tiene el prestamo (dar prestamo: 1; recibir prestamo: 0).
     if ($request->direccion[0] == 1) {
+      // Verificamos que se quiere prestar una cantidad que tenemos en la tienda.
+      foreach ($prestamo->detalles as $detalle) {
+        $productoTienda = \App\ProductoTienda::where('producto_codigo', $detalle->producto_codigo)
+          ->where('tienda_id', \Auth::user()->tienda_id)->first();
+        if ($productoTienda) {
+          if ($productoTienda->cantidad < $detalle->cantidad) {
+            return redirect('prestamo')->with('error', 'ESTÁ QUERIENDO PRESTAR MÁS DE LO QUE TIENE EN EL ALMACÉN.');
+          }
+        }else {
+          return redirect('prestamo')->with('error', 'ESTÁ QUERIENDO PRESTAR MÁS DE LO QUE TIENE EN EL ALMACÉN.');
+        }
+      }
       // Si es 1, se va a dar un prestamo a una empresa externa.
       // descontamos las cantidades correspondientes de los productos en la tienda.
       foreach ($prestamo->detalles as $detalle) {
@@ -150,6 +158,14 @@ class PrestamoController extends Controller{
       }
     }else{
       // si no es 1, es por que se recibió un prestamo de una empresa externa.
+      // Verificamos si existe la cantidad necesaria para devolver el prestamo.
+      foreach ($prestamo->detalles as $detalle) {
+        $productoTienda = \App\ProductoTienda::where('tienda_id', $prestamo->tienda_id)
+          ->where('producto_codigo', $detalle->producto_codigo)->first();
+        if ($detalle->cantidad > $productoTienda->cantidad) {
+          return redirect('prestamo')->with('error', 'NO HAY STOCK SUFICIENTE PARA DEVOLVER EL PRESTAMO.');
+        }
+      }
       // Descontamos las cantidades de los productos en la tienda.
       foreach ($prestamo->detalles as $detalle) {
         $this->descontarProducto($detalle);

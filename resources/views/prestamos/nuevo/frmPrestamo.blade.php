@@ -4,6 +4,7 @@
     <div class="panel panel-default">
       <div class="panel-body" style="background-color:#bfbfbf;">
         {{Form::open(['url'=>'prestamo/terminar/'.$prestamo->id, 'id'=>'frmPrestamo'])}}
+        {{ csrf_field() }}
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
             <div class="form-group">

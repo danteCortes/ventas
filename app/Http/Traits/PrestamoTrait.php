@@ -407,8 +407,14 @@ trait PrestamoTrait{
   }
 
   private function devolverProducto(\App\Detalle $detalle){
-    $productoTienda = \App\ProductoTienda::where('producto_codigo', $detalle->producto_codigo)
-      ->where('tienda_id', $detalle->prestamo->tienda_id)->first();
+    if (!$productoTienda = \App\ProductoTienda::where('producto_codigo', $detalle->producto_codigo)
+      ->where('tienda_id', $detalle->prestamo->tienda_id)->first()) {
+      $productoTienda = new \App\ProductoTienda;
+      $productoTienda->producto_codigo = $detalle->producto_codigo;
+      $productoTienda->tienda_id = $detalle->prestamo->tienda_id;
+      $productoTienda->cantidad = 0;
+      $productoTienda->save();
+    }
     $productoTienda->cantidad += $detalle->cantidad;
     $productoTienda->save();
   }

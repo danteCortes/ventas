@@ -16,6 +16,14 @@ class Separacion extends Model{
   	return $this->belongsTo('\App\Persona');
   }
 
+  public function cierre(){
+  	return $this->belongsTo('\App\Cierre');
+  }
+
+  public function pagos(){
+    return $this->hasMany('\App\Pago');
+  }
+
   public function detalles(){
     return $this->hasMany('\App\Detalle');
   }

@@ -30,7 +30,9 @@ class CierreController extends Controller{
       return view('cajas.nuevo');
     }elseif (Auth::user()->estado_caja == 2) {
       // Si el usuario ya abrió caja, mostramos la vista para cerrar caja.
-      return view('cajas.cerrar');
+      $cierre = \App\Cierre::where('usuario_id', Auth::user()->id)
+        ->where('tienda_id', Auth::user()->tienda_id)->where('estado', 1)->first();
+      return view('cajas.cerrar')->with('cierre', $cierre);
     }else{
       // En este caso el usuario no tiene permiso para abrir caja.
       return redirect('cajero') ->with('error', 'NO TIENE PERMISO PARA ABRIR CAJA, COMUNÍQUESE CON SU ADMINISTRADOR.');

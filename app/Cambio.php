@@ -13,4 +13,8 @@ class Cambio extends Model{
   public function tarjetaVenta(){
     return $this->hasOne('\App\TarjetaVenta');
   }
+
+  public function dolar(){
+    return $this->hasOne('\App\Dolar');
+  }
 }

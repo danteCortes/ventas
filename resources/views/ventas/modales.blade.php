@@ -35,7 +35,6 @@
           <div class="panel-body">
             <p id="msjTipoCambio">DEBE CONFIGURAR EL TIPO DE CAMBIO DE DOLARES A SOLES. ESTO SOLO SE RELIAZA UNA VEZ,
               PARA ACTUALIZAR EL TIPO DE CAMBIO PULSE EL BOTÓN "Tipo Cambio".</p>
-            {{Form::open(['class'=>'form-horizontal'])}}
               <div class="form-group">
                 <label for="cambio" class="control-label col-xs-2 col-sm-2 col-md-3 col-lg-3">Cambio*:</label>
                 <div class="col-xs-10 col-sm-10 col-md-9 col-lg-9">
@@ -47,7 +46,6 @@
                   {{Form::button('Guardar', ['class'=>'btn btn-primary btn-sm', 'id'=>'btnCambio'])}}
                 </div>
               </div>
-            {{Form::close()}}
           </div>
         </div>
       </div>

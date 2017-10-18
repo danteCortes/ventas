@@ -83,6 +83,10 @@
                 required>
             </div>
             <div class="form-group">
+              <input type="date" class="form-control input-sm" placeholder="FECHA DE VENCIMIENTO" name="vencimiento" id="vencimiento"
+                required>
+            </div>
+            <div class="form-group">
               <input type="text" class="form-control moneda input-sm" placeholder="PRECIO" name="precio" id="precio">
             </div>
             <div class="form-group">

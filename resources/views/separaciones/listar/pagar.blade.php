@@ -3,7 +3,7 @@
     <div class="modal-content">
       <div class="modal-header" style="background-color:#00bb00; color:#fff;">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">PAGAR CREDITO.</h4>
+        <h4 class="modal-title" id="myModalLabel">PAGAR SEPARACIÓN.</h4>
       </div>
       {{Form::open(['id'=>'frmPagar'])}}
       {{ csrf_field() }}
