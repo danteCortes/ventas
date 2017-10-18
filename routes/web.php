@@ -90,7 +90,7 @@ Route::post('comision', 'TarjetaController@comision');
 
 Route::resource('venta', 'VentaController');
 Route::post('vuelto', 'VentaController@vuelto');
-Route::post('tipo-cambio', 'VentaController@tipoCambio')->name('tipo-cambio');
+Route::post('tipo-cambio', 'VentaController@tipoCambio');
 Route::get('imprimir-recibo/{id}', 'VentaController@imprimirRecibo');
 Route::post('listar-ventas', 'VentaController@listar');
 Route::post('buscar-venta', 'VentaController@buscar');

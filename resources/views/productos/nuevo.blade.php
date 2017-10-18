@@ -8,7 +8,7 @@
 <div class="modal fade" id="nuevo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      {{Form::open(['url'=>'producto', 'enctype'=>'multipart/form-data'])}}
+      {{Form::open(['url'=>'producto', 'enctype'=>'multipart/form-data', 'id'=>'frmNuevoProducto'])}}
       {{ csrf_field() }}
       <div class="modal-header" style="background-color:#385a94; color:#fff;">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>

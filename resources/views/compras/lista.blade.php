@@ -51,7 +51,7 @@ Compras
     <div class="table-responsive">
       <table class="table table-condensed table-hover table-bordered" id="tblCompras">
         <thead>
-          <tr style="background-color:#385a94; color:#FFF;">
+          <tr class="info">
             <th data-column-id="recibo" data-order="desc">RECIBO</th>
             <th data-column-id="proveedor">PROVEEDOR</th>
             <th data-column-id="usuario">USUARIO</th>

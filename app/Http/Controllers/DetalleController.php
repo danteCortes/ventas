@@ -114,6 +114,7 @@ class DetalleController extends Controller{
           $producto->familia_id = $request->familia_id;
           $producto->marca_id = $request->marca_id;
           $producto->descripcion = mb_strtoupper($request->descripcion);
+          $producto->vencimiento = $request->vencimiento;
           $producto->precio = $request->precio;
           // Verificamos si ya tenia una foto.
           if ($producto->foto != 'producto.png') {
@@ -134,6 +135,7 @@ class DetalleController extends Controller{
           $producto->familia_id = $request->familia_id;
           $producto->marca_id = $request->marca_id;
           $producto->descripcion = mb_strtoupper($request->descripcion);
+          $producto->vencimiento = $request->vencimiento;
           $producto->precio = $request->precio;
           $producto->foto = $nombre_foto;
           $producto->save();

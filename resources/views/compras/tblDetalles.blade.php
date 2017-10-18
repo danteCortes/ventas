@@ -119,13 +119,13 @@
                 </td>
                 <td>{{$detalle->cantidad}}</td>
                 <td>{{$detalle->producto->descripcion}}</td>
-                <td>{{$detalle->precio_unidad}}</td>
-                <td>{{$detalle->total}}</td>
+                <td style="text-align:right;">{{$detalle->precio_unidad}}</td>
+                <td style="text-align:right;">{{$detalle->total}}</td>
               </tr>
             @endforeach
             <tr>
               <th colspan="4" style="text-align: right;">Total</th>
-              <td>{{$compra->total}}</td>
+              <td style="text-align: right;">{{$compra->total}}</td>
             </tr>
           @endif
         </tbody>

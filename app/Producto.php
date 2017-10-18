@@ -20,6 +20,13 @@ class Producto extends Model{
     return number_format($value, 2, '.', ' ');
   }
 
+  public function getVencimientoAttribute($value){
+    if ($value) {
+      return \Carbon\Carbon::createFromFormat('Y-m-d', $value)->format('d/m/Y');
+    }
+    return $value;
+  }
+
   public function linea(){
     return $this->belongsTo('\App\Linea');
   }

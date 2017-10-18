@@ -41,7 +41,7 @@
           $(".foto").html(data['foto']);
           $("#producto_codigo").val(data['producto']['codigo']);
           $("#stock").val(data['stock'][1]);
-          $("#btnAgregarProducto").prop('disabled', false);          
+          $("#btnAgregarProducto").prop('disabled', false);
         });
       });
     });
@@ -285,7 +285,6 @@
         });
       }
     });
-
 
     $('#panelBuscar').on('hidden.bs.collapse', function () {
       $("#btnbuscar").html("<span class='fa fa-plus'></span>")

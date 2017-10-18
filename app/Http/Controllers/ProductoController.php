@@ -107,6 +107,7 @@ class ProductoController extends Controller{
       'familia_id' => 'required',
       'marca_id' => 'required',
       'descripcion' => 'required|max:255',
+      'vencimiento' => 'nullable|date',
       'precio' => 'required',
       'foto' => 'nullable|image|max:1024',
     ])->validate();
@@ -136,6 +137,7 @@ class ProductoController extends Controller{
     $producto->familia_id = $request->familia_id;
     $producto->marca_id = $request->marca_id;
     $producto->descripcion = mb_strtoupper($request->descripcion);
+    $producto->vencimiento = $request->vencimiento;
     $producto->precio = $request->precio;
     // Verificamos si ya tenia una foto.
     if ($producto->foto != 'producto.png') {

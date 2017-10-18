@@ -139,6 +139,10 @@
               <td class="descripcion"></td>
             </tr>
             <tr>
+              <th>Fecha de vencimiento: </th>
+              <td class="vencimiento"></td>
+            </tr>
+            <tr>
               <th>Precio: </th>
               <td class="precio"></td>
             </tr>
@@ -197,6 +201,10 @@
             </div>
             <div class="form-group">
               <input type="text" class="form-control mayuscula input-sm descripcion" placeholder="DESCRIPCIÓN" name="descripcion"
+                required>
+            </div>
+            <div class="form-group">
+              <input type="date" class="form-control input-sm vencimiento" placeholder="VENCIMIENTO" name="vencimiento"
                 required>
             </div>
             <div class="form-group">

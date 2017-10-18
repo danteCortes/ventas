@@ -105,6 +105,13 @@
             if (data['producto'] != 0) {
 
               $("#descripcion").val(data['producto']['descripcion']);
+              var vencimiento = "";
+              if (data['producto']['vencimiento']) {
+                vencimiento = data['producto']['vencimiento'];
+                vencimiento = vencimiento.split('/');
+                vencimiento = vencimiento[2]+"-"+vencimiento[1]+"-"+vencimiento[0];
+              }
+              $("#vencimiento").val(vencimiento);
               $("#precio").val(data['producto']['precio']);
               $("#linea_id").html(data['linea']);
               $("#familia_id").html(data['familia']);
@@ -113,6 +120,7 @@
             }else{
 
               $("#descripcion").val("");
+              $("#vencimiento").val("");
               $("#precio").val("");
               $("#linea_id").html(data['linea']);
               $("#familia_id").html(data['familia']);
@@ -173,6 +181,7 @@
     $('.moneda').mask("# ##0.00", {reverse: true});
     $('.numero').mask("# ##", {reverse: true});
     $('.ruc').mask("99999999999", {reverse: true});
+    $('.telefono').mask("999999999", {reverse: true});
 
   });
 </script>

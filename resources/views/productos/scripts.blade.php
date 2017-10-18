@@ -1,5 +1,18 @@
 <script type="text/javascript">
   $(document).ready(function() {
+
+    $("#frmNuevoProducto").keypress(function(event) {
+      if (event.which == 13) {
+        return false;
+      }
+    });
+
+    $("#frmEditar").keypress(function(event) {
+      if (event.which == 13) {
+        return false;
+      }
+    });
+
     $(".imprimir").click(function (){
       $("div#imgBarcode").printArea();
     });
@@ -56,6 +69,7 @@
           $(".familia").html(data['familia'][1]['nombre']);
           $(".marca").html(data['marca'][1]['nombre']);
           $(".descripcion").html(data['producto']['descripcion']);
+          $(".vencimiento").html(data['producto']['vencimiento']);
           $(".precio").html(data['producto']['precio']);
           $(".stock").html(data['stock'][0]);
           $("#ver").modal('show');
@@ -68,6 +82,13 @@
           $(".familia").html(data['familia'][0]);
           $(".marca").html(data['marca'][0]);
           $(".descripcion").val(data['producto']['descripcion']);
+          var vencimiento = "";
+          if (data['producto']['vencimiento']) {
+            vencimiento = data['producto']['vencimiento'];
+            vencimiento = vencimiento.split('/');
+            vencimiento = vencimiento[2]+"-"+vencimiento[1]+"-"+vencimiento[0];
+          }
+          $(".vencimiento").val(vencimiento);
           $(".precio").val(data['producto']['precio']);
           $("#frmEditar").prop('action', "{{url('producto')}}/" + data['producto']['codigo']);
           $("#editar").modal('show');
@@ -191,6 +212,13 @@
           if (data['producto'] != 0) {
 
             $("#descripcion").val(data['producto']['descripcion']);
+            var vencimiento = "";
+            if (data['producto']['vencimiento']) {
+              vencimiento = data['producto']['vencimiento'];
+              vencimiento = vencimiento.split('/');
+              vencimiento = vencimiento[2]+"-"+vencimiento[1]+"-"+vencimiento[0];
+            }
+            $("#vencimiento").val(vencimiento);
             $("#precio").val(data['producto']['precio']);
             $("#linea_id").html(data['linea']);
             $("#familia_id").html(data['familia']);
@@ -199,6 +227,7 @@
           }else{
 
             $("#descripcion").val("");
+            $("#vencimiento").val("");
             $("#precio").val("");
             $("#linea_id").html(data['linea']);
             $("#familia_id").html(data['familia']);

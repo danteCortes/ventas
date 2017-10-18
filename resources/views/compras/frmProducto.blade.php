@@ -32,7 +32,7 @@
             <select class="form-control input-sm" name="linea_id" id="linea_id">
               <option value="">SELECCIONAR LÍNEA</option>
               @foreach(\App\Linea::all() as $linea)
-              <option value="{{$linea->id}}">{{$linea->nombre}}</option>
+                <option value="{{$linea->id}}">{{$linea->nombre}}</option>
               @endforeach
             </select>
           </div>
@@ -75,6 +75,10 @@
         <div class="form-group">
           <input type="text" name="descripcion" class="form-control input-sm mayuscula" placeholder="DESCRIPCIÓN"
             id="descripcion">
+        </div>
+        <div class="form-group">
+          <input type="date" name="vencimiento" class="form-control input-sm" placeholder="VENCIMIENTO"
+            id="vencimiento">
         </div>
         <div class="form-group">
           <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" style="padding:0px; margin-bottom:15px;">

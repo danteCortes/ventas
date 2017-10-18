@@ -8,7 +8,7 @@
         </button>
       </h3>
     </div>
-    {{Form::open(['url'=>'compra'])}}
+    {{Form::open(['url'=>'compra', 'id'=>'frmCompra'])}}
     {{ csrf_field() }}
     <div class="panel-body collapse in" id="panelCompra" style="background-color:#bfbfbf;">
       <div class="form-group">
@@ -26,7 +26,7 @@
       </div>
       <div class="form-group">
         <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4" style="padding:0px; margin-bottom:15px;">
-          <input type="text" name="telefono" class="form-control input-sm" placeholder="TELEFONO" id="telefono">
+          <input type="text" name="telefono" class="form-control input-sm telefono" placeholder="TELEFONO" id="telefono">
         </div>
         <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8" style="padding-right:0px; margin-bottom:15px;">
           <input type="text" name="representante" class="form-control input-sm mayuscula" placeholder="REPRESENTANTE" id="representante">
