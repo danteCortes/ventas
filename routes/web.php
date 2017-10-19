@@ -11,6 +11,12 @@
 |
 */
 
+Route::prefix('descuento')->group(function(){
+  Route::get('listar-todos', 'DescuentoController@listarTodos');
+  Route::post('listar-todos', 'DescuentoController@llenarTablaTodos');
+  Route::post('guardar', 'DescuentoController@guardar');
+});
+
 Route::prefix('separacion')->group(function(){
   Route::get('/', 'SeparacionController@nuevo');
   Route::post('agregar-detalle', 'SeparacionController@agregarDetalle');
@@ -42,8 +48,8 @@ Route::prefix('prestamo')->group(function(){
   Route::post('devolver/{id}', 'PrestamoController@devolver');
   Route::get('listar-devolver', 'PrestamoController@listarDevolver');
   Route::post('listar-devolver', 'PrestamoController@llenarTablaDevolver');
-  Route::get('listar-recoger', 'PrestamoController@listarRecoger');
-  Route::post('listar-recoger', 'PrestamoController@llenarTablaRecoger');
+  Route::get('listar-pedir', 'PrestamoController@listarRecoger');
+  Route::post('listar-pedir', 'PrestamoController@llenarTablaRecoger');
   Route::delete('eliminar/{id}', 'PrestamoController@eliminar');
 });
 
