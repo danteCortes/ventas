@@ -269,6 +269,13 @@ class ProductoController extends Controller{
         }
       }
 
+      // Verificamos si el producto tiene algún descuento.
+      $descuento = \DB::table('descuentos')
+        ->where('linea_id', $producto->linea_id)
+        ->where('familia_id', $producto->familia_id)
+        ->where('marca_id', $producto->marca_id)
+        ->where('tienda_id', Auth::user()->tienda_id)->first();
+
     }else {
 
       $htmlLinea = "<option value=''>SELECCIONAR LÍNEA</option>";
@@ -293,11 +300,12 @@ class ProductoController extends Controller{
 
       $stock = 0;
       $cantidad = 0;
+      $descuento = "";
 
     }
 
     return ['producto'=>$producto, 'linea'=>[$htmlLinea, $linea], 'familia'=>[$htmlFamilia, $familia],
-      'marca'=>[$htmlMarca, $marca], 'foto'=>$htmlFoto, 'stock'=>[$stock, $cantidad]];
+      'marca'=>[$htmlMarca, $marca], 'foto'=>$htmlFoto, 'stock'=>[$stock, $cantidad], 'descuento'=>$descuento];
   }
 
   /**

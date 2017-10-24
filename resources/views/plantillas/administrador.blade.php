@@ -37,7 +37,7 @@ Administrador
 </li>
 <li class="">
   <a href="{{url('descuento/listar-todos')}}">
-    <i class="fa fa-credit-card"></i><span class="link-title">&nbsp;Descuentos</span>
+    <i class="fa fa-tags"></i><span class="link-title">&nbsp;Descuentos</span>
   </a>
 </li>
 <li class="">

@@ -31,6 +31,7 @@
           </div>
         </div>
       </div>
+      <p class="descuento"></p>
       <div class="row">
         <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 foto">
           <img src="{{url('storage/productos').'/producto.png'}}" style="width:100px;">

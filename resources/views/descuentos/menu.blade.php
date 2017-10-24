@@ -8,5 +8,5 @@
   <span class="glyphicon glyphicon-list"></span> Vencidos
 </a>
 <a href="{{url('descuento/listar-vigentes')}}" class="btn btn-primary">
-  <span class="glyphicon glyphicon-list"></span> Activos
+  <span class="glyphicon glyphicon-list"></span> Vigentes
 </a>

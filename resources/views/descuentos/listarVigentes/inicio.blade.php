@@ -5,7 +5,7 @@
 @stop
 
 @section('titulo')
-Descuentos
+Descuentos Vigentes
 @include('descuentos.menu')
 @include('descuentos.modales.nuevo')
 @stop
@@ -37,5 +37,5 @@ Descuentos
 
 @section('scripts')
   {{Html::script('bootgrid/jquery.bootgrid.min.js')}}
-  @include('descuentos.listarTodos.scripts')
+  @include('descuentos.listarVigentes.scripts')
 @stop

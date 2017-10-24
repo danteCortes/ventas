@@ -4,9 +4,9 @@ namespace App\Http\Traits\Descuentos;
 
 use Illuminate\Http\Request;
 
-trait ListarTodosTrait{
+trait ListarVigentesTrait{
 
-  public function llenarTablaTodos(Request $request){
+  public function llenarTablaVigentes(Request $request){
     $line_quantity = intVal($request->current);
     $line_number = intVal($request->rowCount);
     $where = $request->searchPhrase;
@@ -56,6 +56,7 @@ trait ListarTodosTrait{
           ->leftJoin('familias', 'familias.id', '=', 'descuentos.familia_id')
           ->leftJoin('marcas', 'marcas.id', '=', 'descuentos.marca_id')
           ->join('tiendas', 'tiendas.id', '=', 'descuentos.tienda_id')
+          ->whereDate('descuentos.fecha_fin', '>=', date('Y-m-d'))
           ->select(
             'descuentos.id as id',
             'tiendas.nombre as tienda',
@@ -79,6 +80,7 @@ trait ListarTodosTrait{
           ->leftJoin('familias', 'familias.id', '=', 'descuentos.familia_id')
           ->leftJoin('marcas', 'marcas.id', '=', 'descuentos.marca_id')
           ->join('tiendas', 'tiendas.id', '=', 'descuentos.tienda_id')
+          ->whereDate('descuentos.fecha_fin', '>=', date('Y-m-d'))
           ->where('descuentos.id', 'like', '%'.$where.'%')
           ->orWhere('tiendas.nombre', 'like', '%'.$where.'%')
           ->orWhere(\DB::raw("concat(COALESCE(lineas.nombre, ''), ' ', COALESCE(familias.nombre, ''), ' ', COALESCE(marcas.nombre, ''))"),
@@ -113,6 +115,7 @@ trait ListarTodosTrait{
           ->leftJoin('familias', 'familias.id', '=', 'descuentos.familia_id')
           ->leftJoin('marcas', 'marcas.id', '=', 'descuentos.marca_id')
           ->join('tiendas', 'tiendas.id', '=', 'descuentos.tienda_id')
+          ->whereDate('descuentos.fecha_fin', '>=', date('Y-m-d'))
           ->distinct()
           ->get();
 
@@ -123,6 +126,7 @@ trait ListarTodosTrait{
           ->leftJoin('familias', 'familias.id', '=', 'descuentos.familia_id')
           ->leftJoin('marcas', 'marcas.id', '=', 'descuentos.marca_id')
           ->join('tiendas', 'tiendas.id', '=', 'descuentos.tienda_id')
+          ->whereDate('descuentos.fecha_fin', '>=', date('Y-m-d'))
           ->where('descuentos.id', 'like', '%'.$where.'%')
           ->orWhere('tiendas.nombre', 'like', '%'.$where.'%')
           ->orWhere(\DB::raw("concat(COALESCE(lineas.nombre, ''), ' ', COALESCE(familias.nombre, ''), ' ', COALESCE(marcas.nombre, ''))"),

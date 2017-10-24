@@ -35,9 +35,17 @@
           $(".codigo").html(data['producto']['codigo']);
           $(".descripcion").html(data['producto']['descripcion']);
           $(".precio").html(data['producto']['precio']);
-          $(".precio").val(data['producto']['precio']);
           $(".cantidad").html(data['stock'][1]);
           $("#btnAgregarProducto").prop('disabled', false);
+          if (data['descuento']) {
+            var descuento = Math.round(data['producto']['precio']*data['descuento']['porcentaje']/10)/10;
+            descuento = data['producto']['precio'] - descuento;
+            $(".precio").val(descuento.toFixed(2));
+            $(".descuento").html("PRODUCTO CON DESCUENTO DEL " + data['descuento']['porcentaje'] + " %!");
+          }else {
+            $(".precio").val(data['producto']['precio']);
+            $(".descuento").empty();
+          }
           $(".foto").html(data['foto']);
           $("#producto_codigo").val(data['producto']['codigo']);
           $("#stock").val(data['stock'][1]);

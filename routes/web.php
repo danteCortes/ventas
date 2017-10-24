@@ -14,6 +14,13 @@
 Route::prefix('descuento')->group(function(){
   Route::get('listar-todos', 'DescuentoController@listarTodos');
   Route::post('listar-todos', 'DescuentoController@llenarTablaTodos');
+  Route::get('listar-vencidos', 'DescuentoController@listarVencidos');
+  Route::post('listar-vencidos', 'DescuentoController@llenarTablaVencidos');
+  Route::get('listar-vigentes', 'DescuentoController@listarVigentes');
+  Route::post('listar-vigentes', 'DescuentoController@llenarTablaVigentes');
+  Route::post('modificar/{id}', 'DescuentoController@modificar');
+  Route::delete('eliminar/{id}', 'DescuentoController@eliminar');
+  Route::post('buscar', 'DescuentoController@buscar');
   Route::post('guardar', 'DescuentoController@guardar');
 });
 
