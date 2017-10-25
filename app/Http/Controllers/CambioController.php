@@ -54,12 +54,15 @@ class CambioController extends Controller{
       $cambio->diferencia = 0;
       $cambio->save();
     }
+    // Verificamos si el producto tiene descuento vigente.
+    $producto = \App\Producto::find($request->producto_codigo);
     // Ahora guardamos los datos del detalle.
     $detalle = new \App\Detalle;
     $detalle->venta_id = $venta->id;
     $detalle->producto_codigo = $request->producto_codigo;
     $detalle->cantidad = $request->cantidad;
     $detalle->precio_unidad = $request->precio_unidad;
+    $detalle->descuento = $producto->precio - $request->precio_unidad;
     $detalle->total = $request->cantidad * $request->precio_unidad;
     $detalle->save();
     // Actualizamos el total de la venta.

@@ -31,7 +31,7 @@
           </div>
         </div>
       </div>
-      <p class="descuento"></p>
+      <strong class="descuento text-success" style="font-family: Cambria, Georgia"></strong>
       <div class="row">
         <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 foto">
           <img src="{{url('storage/productos').'/producto.png'}}" style="width:100px;">

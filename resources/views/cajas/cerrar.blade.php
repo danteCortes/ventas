@@ -12,6 +12,7 @@
         <p id="cabecera">ESTÁ A PUNTO DE CERRAR CAJA CON:</p>
         @include('cajas.reportes.ventas.efectivo')
         @include('cajas.reportes.ventas.resumenVentas')
+        @include('cajas.reportes.ventas.resumenDescuentos')
         @include('cajas.reportes.ventas.ventasProductos')
         @include('cajas.reportes.ventas.resumenTarjetas')
         @include('cajas.reportes.prestamos.prestamosHechos')

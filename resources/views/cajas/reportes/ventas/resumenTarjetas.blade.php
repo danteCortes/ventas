@@ -22,7 +22,7 @@ $pagos_tarjeta = \DB::table('tarjeta_venta')->join('cambios', 'cambios.id', '=',
 <hr>
 <table class="table table-condensed" id="tblPagosTarjeta">
   <tr>
-    <th colspan="3" style="text-align:center; border-top:rgba(255, 255, 255, 0);">RESUMEN DE PAGOS CON TARJETA</th>
+    <th colspan="4" style="text-align:center; border-top:rgba(255, 255, 255, 0);">RESUMEN DE PAGOS CON TARJETA</th>
   </tr>
   @foreach($pagos_tarjeta as $tarjeta)
     <tr>
