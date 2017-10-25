@@ -118,6 +118,15 @@ class VentaController extends Controller{
           return redirect('venta/create')->with('error', 'DEBE REGISTRAR EL PAGO CON TARJETA ANTES DE FINALLIZAR LA VENTA.');
         }
       }
+      // Verificamos si el cliente quiere canjear sus puntos.
+      if ($request->puntos) {
+        // Si quiere canjear puntos, verificamos si tiene esa cantidad de puntos.
+        if ($persona->puntos >= $request->puntos*1000) {
+          // Si tiene esa cantidad de puntos,
+          return "tiene esa cantidad de puntos";
+        }
+        return "no tiene esos puntos";
+      }return "no cajea puntos";
       // Verificamos si el total acumulado. es igual o mayor al total de la venta.
       if ($total_soles >= $venta->total) {
         // Si es mayor o igual al total de la venta, guardamos los montos en la base de datos.
@@ -156,6 +165,15 @@ class VentaController extends Controller{
         $recibo->tienda_id = \Auth::user()->tienda_id;
         $recibo->numeracion = Auth::user()->tienda->serie."-".$this->numeracion($request->documento, Auth::user()->tienda_id);
         $recibo->save();
+        // Guardamos el total de puntos en la persona si hay persona.
+        if ($persona) {
+          if ($persona->puntos) {
+            $persona->puntos += number_format($venta->total, 0, '.', '');
+          }else {
+            $persona->puntos = number_format($venta->total, 0, '.', '');
+          }
+        }
+        $persona->save();
         return redirect('imprimir-recibo/'.$venta->id)->with('correcto', 'LA VENTA SE CONCLUYÓ CON ÉXITO, PUEDE IMPRIMIR SU RECIBO.');;
       }else{
         // Si el monto acumulado es menor que el total de la venta, regresamos a la vista de la venta con un mensaje de error.

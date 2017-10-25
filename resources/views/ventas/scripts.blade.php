@@ -126,6 +126,11 @@
 
     $('.moneda').mask("# ##0.00", {reverse: true});
     $('.numero').mask("#0", {reverse: true});
+    $('.oculto').mask("0", {reverse: true});
+
+    $(".oculto").focus(function() {
+      $(this).val("");
+    });
 
     /**
     * Al cambiar el valor de la tarjeta, se tiene que registrar la venta por tarjeta con el sistema.
@@ -214,6 +219,10 @@
             $("#nombres").val(data['nombres']);
             $("#apellidos").val(data['apellidos']);
             $("#direccion").val(data['direccion']);
+            $(".puntos").html("ESTE CLIENTE TIENE " + data['puntos'] + " PUNTOS ACUMULADOS HASTA EL MOMENTO!");
+            $(".grupo-puntos").html("<span class='input-group-addon'>USAR </span>"+
+              "<input type='text' name='puntos' class='form-control oculto' placeholder='PUNTOS' style='text-align:right; required'>"+
+              "<span class='input-group-addon'> 000 PUNTOS</span>");
           });
         }else if ($(this).val().length == 11) {
           // Buscarmos los datos de la empresa que tenga este ruc, si existe mostramos los datos, de lo contrario
@@ -227,6 +236,8 @@
             $("#nombres").val("");
             $("#apellidos").val("");
             $("#direccion").val(data['direccion']);
+            $(".puntos").empty();
+            $(".grupo-puntos").empty();
           });
         }else{
           // Si no tiene 8 ni 11 dítos el documento, se limpia el formulario y se muestra un mensaje de error.
@@ -238,6 +249,8 @@
           $("#nombres").val("");
           $("#apellidos").val("");
           $("#direccion").val("");
+          $(".puntos").empty();
+          $(".grupo-puntos").empty();
           $("#mensaje").html("EL DOCUMENTO SOLO PUEDE CONTENER 8 U 11 DÍGITOS.");
           $("#errores").modal("show");
         }
@@ -251,6 +264,8 @@
         $("#nombres").val("");
         $("#apellidos").val("");
         $("#direccion").val("");
+        $(".puntos").empty();
+        $(".grupo-puntos").empty();
       }
     });
 

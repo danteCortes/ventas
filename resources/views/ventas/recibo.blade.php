@@ -36,11 +36,19 @@ Recibo
             <th colspan="3" style="text-align:center; border-top:rgba(255, 255, 255, 0);">N° DE SERIE {{$recibo->venta->tienda->ticketera}}</th>
           </tr>
           <tr>
-            <th colspan="3" style="text-align:right; border-top:rgba(255, 255, 255, 0);">{{$recibo->numeracion}}</th>
+            <th colspan="3" style="text-align:right; border-top:rgba(255, 255, 255, 0);">TICKET N° {{$recibo->numeracion}}</th>
           </tr>
           <tr>
             <th colspan="3" style="text-align:right; border-top:rgba(255, 255, 255, 0);">{{$recibo->venta->updated_at}}</th>
           </tr>
+          @if($empresa = $recibo->empresa)
+            <tr>
+              <th colspan="3" style="text-align:right; border-top:rgba(255, 255, 255, 0);">CLIENTE: {{$empresa->nombre}}</th>
+            </tr>
+            <tr>
+              <th colspan="3" style="text-align:right; border-top:rgba(255, 255, 255, 0);">DIRECCIÓN: {{$empresa->direccion}}</th>
+            </tr>
+          @endif
           @foreach($recibo->venta->detalles as $detalle)
             <tr>
               <th style="text-align:center; border-top:rgba(255, 255, 255, 0);">{{$detalle->cantidad}}</th>
@@ -50,9 +58,15 @@ Recibo
           @endforeach
           <tr>
             <th colspan="2" style="text-align:right; border-top:rgba(255, 255, 255, 0);">TOTAL</th>
-            <th colspan="2" style="text-align:right; border-top:rgba(255, 255, 255, 0);">{{$recibo->venta->total}}</th>
+            <th style="text-align:right; border-top:rgba(255, 255, 255, 0);">{{$recibo->venta->total}}</th>
           </tr>
         </table>
+        @if($persona = $recibo->persona)
+          @if($persona->puntos)
+            <p class="text-justify">SR. {{$persona->nombres}} {{$persona->apellidos}} CON ESTA COMPRA USTED ACUMULA UN TOTAL DE {{$persona->puntos}}
+              PUNTOS. RECUERDE RECLAMAR SU DESCUENTO A PARTIR DE LOS 1 000 PUNTOS.</p>
+          @endif
+        @endif
       </div>
       <div class="panel-footer">
         <button type="button" class="btn btn-primary imprimir" id="imprimir"><span class="fa fa-print"></span> Imprimir</button>
