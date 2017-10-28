@@ -106,4 +106,8 @@ class CierreController extends Controller{
     {
         //
     }
+
+  public function cierreCaja($id){
+    
+  }
 }

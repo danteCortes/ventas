@@ -74,7 +74,7 @@ Recibo
         </table>
         @if($persona = $recibo->persona)
           @if($persona->puntos)
-            <p class="text-justify">SR. {{$persona->nombres}} {{$persona->apellidos}} CON ESTA COMPRA USTED ACUMULA UN TOTAL DE {{$persona->puntos}}
+            <p class="text-justify">SR(A). {{$persona->nombres}} {{$persona->apellidos}} CON ESTA COMPRA USTED ACUMULA UN TOTAL DE {{$persona->puntos}}
               PUNTOS TÚ. RECUERDE RECLAMAR SU DESCUENTO A PARTIR DE LOS 1 000 PUNTOS.</p>
           @endif
         @endif

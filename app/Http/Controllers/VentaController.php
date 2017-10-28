@@ -59,6 +59,7 @@ class VentaController extends Controller{
         $persona->nombres = mb_strtoupper($request->nombres);
         $persona->apellidos = mb_strtoupper($request->apellidos);
         $persona->direccion = mb_strtoupper($request->direccion);
+        $persona->puntos = 0;
         $persona->save();
       }
     }elseif (strlen($request->documento) == 11) {
@@ -183,7 +184,7 @@ class VentaController extends Controller{
         $recibo->numeracion = Auth::user()->tienda->serie."-".$this->numeracion($request->documento, Auth::user()->tienda_id);
         $recibo->save();
         // Guardamos el total de puntos en la persona si hay persona.
-        if ($persona) {
+        if ($persona = \App\Persona::find($request->documento)) {
           if ($persona->puntos) {
             $persona->puntos += number_format($venta->total, 0, '.', '');
           }else {

@@ -11,6 +11,8 @@
 |
 */
 
+Route::post('cierre-caja/{id}', 'CierreController@cierreCaja');
+
 Route::prefix('descuento')->group(function(){
   Route::get('listar-todos', 'DescuentoController@listarTodos');
   Route::post('listar-todos', 'DescuentoController@llenarTablaTodos');

@@ -25,7 +25,8 @@
       </div>
       <div class="panel-footer">
         {{Form::open(['url'=>'cierre-caja/'.$cierre->id])}}
-          <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-ban-circle"></span> Cerrar</button>
+          <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save"></span> Cerrar Caja</button>
+          <a href="{{url('cajero')}}" class="btn btn-default"><span class="glyphicon glyphicon-ban-circle"></span> Cancelar</a>
           <button type="button" class="btn btn-primary imprimir pull-right"><span class="glyphicon glyphicon-print"></span> Imprimir</button>
         {{Form::close()}}
       </div>

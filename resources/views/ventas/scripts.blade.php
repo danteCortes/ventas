@@ -1,6 +1,12 @@
 <script type="text/javascript">
   $(document).ready(function() {
 
+    $("#frmNuevaVenta").keypress(function(event) {
+      if (event.which == 13) {
+        return false;
+      }
+    });
+
     /**
      * Rellena la tabla produtos.
     */
@@ -211,18 +217,33 @@
           // Buscarmos los datos de la persona que tenga este dni, si existe mostramos los datos, de lo contrario
           // solo activamos los inputs para que igresen los datos del nuevo cliente.
           $.post("{{url('buscar-persona')}}", {dni: $(this).val()}, function(data, textStatus, xhr) {
-            $("#nombre").prop('readonly', true);
-            $("#nombres").prop('readonly', false);
-            $("#apellidos").prop('readonly', false);
-            $("#direccion").prop('readonly', false);
-            $("#nombre").val("");
-            $("#nombres").val(data['nombres']);
-            $("#apellidos").val(data['apellidos']);
-            $("#direccion").val(data['direccion']);
-            $(".puntos").html("ESTE CLIENTE TIENE " + data['puntos'] + " PUNTOS ACUMULADOS HASTA EL MOMENTO!");
-            $(".grupo-puntos").html("<span class='input-group-addon'>USAR </span>"+
-              "<input type='text' name='puntos' class='form-control oculto' placeholder='PUNTOS' style='text-align:right; required'>"+
-              "<span class='input-group-addon'> 000 PUNTOS</span>");
+            if (data != 0) {
+              $("#nombre").prop('readonly', true);
+              $("#nombres").prop('readonly', false);
+              $("#apellidos").prop('readonly', false);
+              $("#direccion").prop('readonly', false);
+              $("#nombre").val("");
+              $("#nombres").val(data['nombres']);
+              $("#apellidos").val(data['apellidos']);
+              $("#direccion").val(data['direccion']);
+              if (data['puntos']) {
+                $(".puntos").html("ESTE CLIENTE TIENE " + data['puntos'] + " PUNTOS ACUMULADOS HASTA EL MOMENTO!");
+                $(".grupo-puntos").html("<span class='input-group-addon'>USAR </span>"+
+                "<input type='text' name='puntos' class='form-control oculto' placeholder='PUNTOS' style='text-align:right; required'>"+
+                "<span class='input-group-addon'> 000 PUNTOS</span>");
+              }
+            }else{
+              $("#nombre").prop('readonly', true);
+              $("#nombres").prop('readonly', false);
+              $("#apellidos").prop('readonly', false);
+              $("#direccion").prop('readonly', false);
+              $("#nombre").val("");
+              $("#nombres").val("");
+              $("#apellidos").val("");
+              $("#direccion").val("");
+              $(".puntos").html("");
+              $(".grupo-puntos").html("");
+            }
           });
         }else if ($(this).val().length == 11) {
           // Buscarmos los datos de la empresa que tenga este ruc, si existe mostramos los datos, de lo contrario

@@ -3,7 +3,7 @@
     @if($venta = \App\Venta::where('usuario_id', Auth::user()->id)->where('tienda_id', Auth::user()->tienda_id)->where('estado', 1)->first())
       <div class="panel panel-default">
       <div class="panel-body" style="background-color:#bfbfbf;">
-        {{Form::open(['url'=>'venta'])}}
+        {{Form::open(['url'=>'venta', 'id'=>'frmNuevaVenta'])}}
         <p class="puntos text-success" style="font-family: Cambria, Georgia"></p>
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
