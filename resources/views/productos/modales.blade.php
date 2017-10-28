@@ -204,8 +204,7 @@
                 required>
             </div>
             <div class="form-group">
-              <input type="date" class="form-control input-sm vencimiento" placeholder="VENCIMIENTO" name="vencimiento"
-                required>
+              <input type="date" class="form-control input-sm vencimiento" placeholder="VENCIMIENTO" name="vencimiento">
             </div>
             <div class="form-group">
               <input type="text" class="form-control moneda input-sm precio" placeholder="PRECIO" name="precio">

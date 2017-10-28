@@ -1,3 +1,4 @@
+@if(count($cierre->ventas) > 0)
 <hr>
 <table class="table table-condensed" id="tblResumenVentas">
   <tr>
@@ -20,3 +21,4 @@
       </tr>
   @endforeach
 </table>
+@endif

@@ -122,11 +122,28 @@ class VentaController extends Controller{
       if ($request->puntos) {
         // Si quiere canjear puntos, verificamos si tiene esa cantidad de puntos.
         if ($persona->puntos >= $request->puntos*1000) {
-          // Si tiene esa cantidad de puntos,
-          return "tiene esa cantidad de puntos";
+          // Si tiene esa cantidad de puntos,se va a ingresar el descuento en la tabla ventas.
+          // Revisamos cuanto puntos esta reclamando y cuanto es su descuento.
+          $descuento = $request->puntos*10;
+          $venta->descuento = $descuento;
+
+          // registramos el reclamo de los puntos en la tabla reclamos.
+          $reclamo = new \App\Reclamo;
+          $reclamo->persona_dni = $persona->dni;
+          $reclamo->venta_id = $venta->id;
+          $reclamo->puntos = $request->puntos*1000;
+          $reclamo->save();
+
+          // Reducimos el total de puntos de la persona.
+          $persona->puntos -= $request->puntos*1000;
+
+          $total_soles += $request->puntos*10;
+
+        }else {
+          return redirect('venta/create')->with('error', 'EL CLIENTE NO TIENE '.$request->puntos.'000 PUNTOS TÚ COMO TRATA DE RECLAMAR.
+            INGRESE LOS DATOS NUEVAMENTE POR FAVOR.');
         }
-        return "no tiene esos puntos";
-      }return "no cajea puntos";
+      }
       // Verificamos si el total acumulado. es igual o mayor al total de la venta.
       if ($total_soles >= $venta->total) {
         // Si es mayor o igual al total de la venta, guardamos los montos en la base de datos.

@@ -19,6 +19,7 @@ $pagos_tarjeta = \DB::table('tarjeta_venta')->join('cambios', 'cambios.id', '=',
     'tarjetas.nombre as nombre'
     )->orderBy('tarjetas.nombre')->union($pagos_tarjeta_ventas)->get();
  ?>
+ @if(count($pagos_tarjeta) > 0)
 <hr>
 <table class="table table-condensed" id="tblPagosTarjeta">
   <tr>
@@ -33,3 +34,4 @@ $pagos_tarjeta = \DB::table('tarjeta_venta')->join('cambios', 'cambios.id', '=',
     </tr>
   @endforeach
 </table>
+@endif

@@ -45,4 +45,8 @@ class Venta extends Model{
   public function cambio(){
     return $this->hasOne('\App\Cambio');
   }
+
+  public function reclamo(){
+    return $this->hasOne('\App\Reclamo');
+  }
 }

@@ -1,5 +1,9 @@
 @extends('plantillas.dashboard')
 
+@section('alertas')
+  @include('plantillas.alertas')
+@stop
+
 @section('titulo')
 Administrador
 @stop

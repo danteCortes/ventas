@@ -39,6 +39,7 @@
             </div>
           </div>
         </div>
+        <hr>
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
             <div class="form-group">
@@ -91,6 +92,7 @@
             </div>
           </div>
         </div>
+        <hr>
         <div class="row">
           <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
             <button type="submit" class="btn btn-primary">Terminar</button>

@@ -60,11 +60,22 @@ Recibo
             <th colspan="2" style="text-align:right; border-top:rgba(255, 255, 255, 0);">TOTAL</th>
             <th style="text-align:right; border-top:rgba(255, 255, 255, 0);">{{$recibo->venta->total}}</th>
           </tr>
+          @if($reclamo = $recibo->venta->reclamo)
+            <tr>
+              <th colspan="2" style="text-align:left; border-top:rgba(255, 255, 255, 0);">DESCUENTO POR CANJE DE {{$reclamo->puntos}} PUNTOS TÚ</th>
+              <th style="text-align:right; border-top:rgba(255, 255, 255, 0);">{{number_format($recibo->venta->descuento, 2, '.', ' ')}}</th>
+            </tr>
+            <tr>
+              <th colspan="2" style="text-align:right; border-top:rgba(255, 255, 255, 0);">TOTAL A PAGAR</th>
+              <th style="text-align:right; border-top:rgba(255, 255, 255, 0);">
+                {{number_format($recibo->venta->total-$recibo->venta->descuento, 2, '.', ' ')}}</th>
+            </tr>
+          @endif
         </table>
         @if($persona = $recibo->persona)
           @if($persona->puntos)
             <p class="text-justify">SR. {{$persona->nombres}} {{$persona->apellidos}} CON ESTA COMPRA USTED ACUMULA UN TOTAL DE {{$persona->puntos}}
-              PUNTOS. RECUERDE RECLAMAR SU DESCUENTO A PARTIR DE LOS 1 000 PUNTOS.</p>
+              PUNTOS TÚ. RECUERDE RECLAMAR SU DESCUENTO A PARTIR DE LOS 1 000 PUNTOS.</p>
           @endif
         @endif
       </div>

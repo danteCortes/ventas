@@ -7,6 +7,7 @@ $productos = \DB::table('detalles')->join('ventas', 'ventas.id', '=', 'detalles.
     'productos.descripcion as descripcion'
     )->groupBy('productos.codigo', 'productos.descripcion')->get();
  ?>
+ @if(count($productos) > 0)
 <hr>
 <table class="table table-condensed" id="tblVentasProductos">
   <tr>
@@ -20,3 +21,4 @@ $productos = \DB::table('detalles')->join('ventas', 'ventas.id', '=', 'detalles.
     </tr>
   @endforeach
 </table>
+@endif

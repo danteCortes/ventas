@@ -303,7 +303,7 @@ Usuarios
                             <p style="color:#fff;">ESTA A PUNTO DE RESTAURAR LA CONTRASEÑA AL USUARIO <strong>{{$usuario->persona->nombres}}</strong>,
                               CON ESTA ACCIÓN LA CONTRASEÑA DEL USUARIO VOLVERÁ A SER SU NÚMERO DE DNI, NO OLVIDE INFORMAR AL USUARIO EN CUESTIÓN DE
                               ESTE CAMBIO.</p>
-                            <p style="color:#fff;">SI QUIERE CONTINUAR CON ESTA ACCIÓN HAGA CLIC EN EL BOTÓN ELIMINAR, DE LO CONTRARIO, EN EL BOTÓN
+                            <p style="color:#fff;">SI QUIERE CONTINUAR CON ESTA ACCIÓN HAGA CLIC EN EL BOTÓN RESTAURAR, DE LO CONTRARIO, EN EL BOTÓN
                               CANCELAR.</p>
                           </div>
                         </div>
@@ -343,7 +343,7 @@ Usuarios
                             <p style="color:#fff;">ESTA A PUNTO DE ABRIR CAJA AL USUARIO <strong>{{$usuario->persona->nombres}}</strong>,
                               CON ESTA ACCIÓN EL USUARIO PODRÁ REALIZAR OPERACIONES EN SU TIENDA ASIGNADA, NO OLVIDE INFORMAR AL USUARIO EN
                               CUESTIÓN DE ESTE CAMBIO.</p>
-                            <p style="color:#fff;">SI QUIERE CONTINUAR CON ESTA ACCIÓN HAGA CLIC EN EL BOTÓN ELIMINAR, DE LO CONTRARIO, EN EL BOTÓN
+                            <p style="color:#fff;">SI QUIERE CONTINUAR CON ESTA ACCIÓN HAGA CLIC EN EL BOTÓN ABRIR CAJA, DE LO CONTRARIO, EN EL BOTÓN
                               CANCELAR.</p>
                           </div>
                         </div>
