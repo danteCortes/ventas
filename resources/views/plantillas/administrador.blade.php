@@ -45,7 +45,7 @@ Administrador
   </a>
 </li>
 <li class="">
-  <a href="#">
+  <a href="{{url('reporte')}}">
     <i class="fa fa-file"></i><span class="link-title">&nbsp;Reportes</span>
   </a>
 </li>

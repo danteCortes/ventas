@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Detalle extends Model{
 
-  public $timestamps = false;
-
   public function getPrecioUnidadAttribute($valor){
     return number_format($valor, 2, '.', ' ');
   }

@@ -74,8 +74,7 @@ class CambioController extends Controller{
     $productoTienda->cantidad -= $request->cantidad;
     $productoTienda->save();
     // Aumentamos el precio del detalle al cierre de caja actual.
-    $cierre = \App\Cierre::where('usuario_id', \Auth::user()->id)->where('tienda_id', \Auth::user()->tienda_id)
-      ->where('estado', 1)->first();
+    $cierre = $venta->cierre;
     $cierre->total = str_replace(' ', '', $cierre->total) + str_replace(' ', '', $venta->total);
     $cierre->save();
     // Actualizamos la diferencia en el cambio.
@@ -129,8 +128,7 @@ class CambioController extends Controller{
     $venta->total = str_replace(' ', '', $venta->total) - str_replace(' ', '', $detalle->total);
     $venta->save();
     // Descontamos el total del detalle que se está eliminado, del total del cierre que esta activo actualmente.
-    $cierre = \App\Cierre::where('usuario_id', \Auth::user()->id)->where('tienda_id', \Auth::user()->tienda_id)
-    ->where('estado', 1)->first();
+    $cierre = $venta->cierre;
     $cierre->total = str_replace(' ', '', $cierre->total) - str_replace(' ', '', $detalle->total);
     $cierre->save();
     // Por último eliminamos el detalle.
@@ -314,6 +312,10 @@ class CambioController extends Controller{
           $cambio->save();
           // El cierre de caja se actualizó en cada movimiento que se hizo al agregar y quitar productos.
           // La diferencia de caja se registra en el cierre abierto actualmente.
+          $cierre = \App\Cierre::where('estado', 1)->where('usuario_id', \Auth::user()->id)
+            ->where('tienda_id', \Auth::user()->tienda_id)->first();
+          $cierre->total = str_replace(' ', '', $cierre->total) + str_replace(' ', '', $cambio->diferencia);
+          $cierre->save();
           // No se emite recibo por cambio de productos.
           return redirect('venta')->with('correcto', 'EL CAMBIO SE TERMINÓ CON ÉXITO');
         }else{

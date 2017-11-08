@@ -108,6 +108,24 @@ class CierreController extends Controller{
     }
 
   public function cierreCaja($id){
-    
+    $cierre = \App\Cierre::find($id);
+    // Primero verificamos que no halla ningun proceso activo o abierto.
+    // Verificamos que no halla una venta abierta.
+    if (\App\Venta::where('estado', 1)->where('usuario_id', \Auth::user()->id)->where('tienda_id', \Auth::user()->tienda_id)->first()) {
+      // Hay una venta sin cerrar o terminar, se retorna a la vista de la venta. con el mensaje respectivo
+      return redirect('venta/create')->with('error', 'ANTES DE CERRAR CAJA DEBE CANCELAR O TERMINAR ESTA VENTA');
+    }
+    // Verificamos que no halla un cambio activo.
+
+    // Cerramos la caja.
+    $cierre->estado = 0;
+    $cierre->save();
+
+    // cambiamos el estado de caja del usuario.
+    $usuario = \App\Usuario::find(\Auth::user()->id);
+    $usuario->estado_caja = 0;
+    $usuario->save();
+
+    return redirect('cajero')->with('correcto', 'ACABA DE CERRAR SU CAJA SATISFACTORIAMENTE.');
   }
 }

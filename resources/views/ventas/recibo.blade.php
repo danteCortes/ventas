@@ -43,10 +43,13 @@ Recibo
           </tr>
           @if($empresa = $recibo->empresa)
             <tr>
-              <th colspan="3" style="text-align:right; border-top:rgba(255, 255, 255, 0);">CLIENTE: {{$empresa->nombre}}</th>
+              <th colspan="3" style="text-align:left; border-top:rgba(255, 255, 255, 0);">RUC: {{$empresa->ruc}}</th>
             </tr>
             <tr>
-              <th colspan="3" style="text-align:right; border-top:rgba(255, 255, 255, 0);">DIRECCIÓN: {{$empresa->direccion}}</th>
+              <th colspan="3" style="text-align:left; border-top:rgba(255, 255, 255, 0);">CLIENTE: {{$empresa->nombre}}</th>
+            </tr>
+            <tr>
+              <th colspan="3" style="text-align:left; border-top:rgba(255, 255, 255, 0);">DIRECCIÓN: {{$empresa->direccion}}</th>
             </tr>
           @endif
           @foreach($recibo->venta->detalles as $detalle)

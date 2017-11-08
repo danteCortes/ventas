@@ -187,11 +187,12 @@ class VentaController extends Controller{
         if ($persona = \App\Persona::find($request->documento)) {
           if ($persona->puntos) {
             $persona->puntos += number_format($venta->total, 0, '.', '');
+            $persona->save();
           }else {
             $persona->puntos = number_format($venta->total, 0, '.', '');
+            $persona->save();
           }
         }
-        $persona->save();
         return redirect('imprimir-recibo/'.$venta->id)->with('correcto', 'LA VENTA SE CONCLUYÓ CON ÉXITO, PUEDE IMPRIMIR SU RECIBO.');;
       }else{
         // Si el monto acumulado es menor que el total de la venta, regresamos a la vista de la venta con un mensaje de error.
