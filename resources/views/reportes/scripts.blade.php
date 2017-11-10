@@ -1,3 +1,4 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
 <script type="text/javascript">
   $(document).ready(function() {
 
@@ -55,9 +56,56 @@
             tienda_id: $("#tienda_kardex").val()
           },
           function(data, textStatus, xhr) {
-
+            $(".codigo").html(data['producto']['codigo']);
+            $(".descripcion").html(data['producto']['descripcion']);
+            $(".linea").html(data['producto']['linea']['nombre']);
+            $(".familia").html(data['producto']['familia']['nombre']);
+            $(".marca").html(data['producto']['marca']['nombre']);
+            $(".tienda").html(data['tienda']['nombre']);
+            $("#fichaKardex").removeClass('oculto');
+            $("#detalles-kardex").empty();
+            detalles = "<tr class='info'><td style='width:10%;'>"+data['inicio']+"</td><td style='width:39%;'>SALDO ANTERIOR</td>"+
+              "<td style='width:7%;'></td><td style='width:7%;'></td><td style='width:7%;'></td>"+
+              "<td style='width:7%;'></td><td style='width:7%;'></td><td style='width:7%;'></td>"+
+              "<td style='text-align:right; width:7%;'>"+data['saldo_anterior']+"</td><td style='text-align:right; width:7%;'>"+
+              data['producto']['precio']+
+              "</td><td style='text-align:right; width:7%;'>"+(data['producto']['precio']*data['saldo_anterior']).toFixed(2)+"</td></tr>";
+            $("#detalles-kardex").append(detalles);
+            cantidad = data['saldo_anterior'];
+            $.each(data['detalles'], function(clave, valor) {
+              unitario = valor['unitario'];
+              if (unitario == null) {
+                unitario = 0;
+              }
+              detalles = "<tr><td>"+moment(valor['fecha']).format('DD/MM/YYYY')+"</td><td>"+valor['detalle']+"</td>";
+              if (valor['tipo'] == 1) {
+                cantidad = cantidad + valor['cantidad'];
+                detalles = detalles + "<td style='text-align:right'>"+valor['cantidad']+"</td><td style='text-align:right'>"+
+                unitario.toFixed(2)+"</td><td style='text-align:right'>"+(valor['cantidad']*unitario).toFixed(2)+"</td>"+
+                "<td></td><td></td><td></td>";
+              }else {
+                cantidad = cantidad - valor['cantidad'];
+                detalles = detalles + "<td></td><td></td><td></td>"+
+                "<td style='text-align:right'>"+valor['cantidad']+"</td><td style='text-align:right'>"+
+                unitario.toFixed(2)+"</td><td style='text-align:right'>"+(valor['cantidad']*unitario).toFixed(2)+"</td>";
+              }
+              detalles = detalles + "<td style='text-align:right'>"+cantidad+"</td><td style='text-align:right'>"+data['producto']['precio']+
+                "</td><td style='text-align:right'>"+(data['producto']['precio']*cantidad).toFixed(2)+"</td></tr>";
+              $("#detalles-kardex").append(detalles);
+            });
+            detalles = "<tr class='success'><td></td><td>INVENTARIO FINAL</td>"+
+              "<td></td><td></td><td></td>"+
+              "<td></td><td></td><td></td>"+
+              "<td style='text-align:right'>"+cantidad+"</td><td style='text-align:right'>"+data['producto']['precio']+
+              "</td><td style='text-align:right'>"+(data['producto']['precio']*cantidad).toFixed(2)+"</td></tr>";
+            $("#detalles-kardex").append(detalles);
+            $("#frmKardex").modal('hide');
         });
       }
+    });
+
+    $(".imprimir").click(function (){
+      $("#imprimirKardex").printArea();
     });
 
   });

@@ -1,4 +1,4 @@
-<div class="modal fade bs-example-modal-lg" id="nuevo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade bs-example-modal-lg" id="frmKardex" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header" style="background-color:#385a94; color:#fff;">

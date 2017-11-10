@@ -1,5 +1,5 @@
 <!doctype html>
-<html style="background-color:#e69c2d">
+<html style="background-color:#fbba00">
   <head>
     <meta charset="UTF-8">
     <!--IE Compatibility modes-->
@@ -62,11 +62,11 @@
 
   </head>
 
-<body class="  " style="background-color:#e69c2d">
-  <div class="" id="wrap" style="background-color:#e69c2d">
-    <div id="top" style="background-color:#e69c2d">
+<body class="  " style="background-color:#fbba00">
+  <div class="" id="wrap" style="background-color:#fbba00">
+    <div id="top" style="background-color:#fbba00">
       <!-- .navbar -->
-      <nav class="navbar navbar-inverse navbar-static-top" style="background-color:#385a94; border-top:#385a94;">
+      <nav class="navbar navbar-inverse navbar-static-top" style="background-color:#407994; border-top:#407994;">
         <div class="container-fluid">
           <!-- Brand and toggle get grouped for better mobile display -->
           <header class="navbar-header">
@@ -119,12 +119,12 @@
       <!-- /.head -->
     </div>
     <!-- /#top -->
-    <div id="left" style="background-color:#385a94">
-      <div class="media user-media dker" style="background-color:#385a94">
-        <div class="user-media-toggleHover" style="background-color:#385a94">
+    <div id="left" style="background-color:#407994">
+      <div class="media user-media dker" style="background-color:#407994">
+        <div class="user-media-toggleHover" style="background-color:#407994">
           <span class="fa fa-user"></span>
         </div>
-          <div class="user-wrapper bg-dark" style="background-color:#385a94">
+          <div class="user-wrapper bg-dark" style="background-color:#407994">
             <a class="user-link" href="#">
               <img class="media-object img-thumbnail user-img" alt="User Picture" src="{{url('storage/usuarios/'.Auth::user()->foto)}}"
                 style="height:64px;">
@@ -162,7 +162,7 @@
     <!-- /#content -->
   </div>
   <!-- /#wrap -->
-  <footer class="Footer dker" style="background-color:#385a94">
+  <footer class="Footer dker" style="background-color:#407994">
       <p>2017 &copy; Siprom E.I.R.L</p>
   </footer>
   <!-- /#footer -->
