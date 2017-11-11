@@ -17,7 +17,9 @@ Reportes
 @section('contenido')
   @include('plantillas.mensajes')
   @include('reportes.kardex.frmKardex')
+  @include('reportes.inventario.frmInventario')
   @include('reportes.kardex.ficha')
+  @include('reportes.inventario.inventario')
 @stop
 
 @section('scripts')

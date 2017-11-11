@@ -1,10 +1,18 @@
-<a data-placement="bottom" data-original-title="E-mail" data-toggle="tooltip"
+<?php
+
+  $productosPorVencer = \DB::table('productos')->whereDate('vencimiento', '<=', date('Y-m-d', strtotime('+1 week')))
+    ->whereDate('vencimiento', '>', date('Y-m-d'))->get();
+
+  $productosVencidos = \DB::table('productos')->whereDate('vencimiento', '>', date('Y-m-d'))->get();
+
+ ?>
+<a data-placement="bottom" data-original-title="Vencen esta Semana" href="{{url('reporte/por-vencer')}}" data-toggle="tooltip"
    class="btn btn-default btn-sm">
-  <i class="fa fa-envelope"></i>
-  <span class="label label-warning">5</span>
+    <i class="fa fa-calendar-minus-o"></i>
+    <span class="label label-warning">{{count($productosPorVencer)}}</span>
 </a>
-<a data-placement="bottom" data-original-title="Mensajes" href="#" data-toggle="tooltip"
+<a data-placement="bottom" data-original-title="Vencidos" href="{{url('reporte/vencidos')}}" data-toggle="tooltip"
    class="btn btn-default btn-sm">
-    <i class="fa fa-comments"></i>
-    <span class="label label-danger">4</span>
+    <i class="fa fa-calendar-times-o"></i>
+    <span class="label label-danger">{{count($productosVencidos)}}</span>
 </a>

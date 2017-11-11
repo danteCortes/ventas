@@ -9,6 +9,17 @@ class ReporteController extends Controller{
 
   use KardexTrait;
 
+  public function porVencer(){
+    $productosPorVencer = \DB::table('productos')->whereDate('vencimiento', '<=', date('Y-m-d', strtotime('+1 week')))
+      ->whereDate('vencimiento', '>', date('Y-m-d'))->get();
+    return view('reportes.porVencer.inicio')->with('productos', $productosPorVencer);
+  }
+
+  public function vencidos(){
+    $productosVencidos = \DB::table('productos')->whereDate('vencimiento', '>', date('Y-m-d'))->get();
+    return view('reportes.vencidos.inicio')->with('productos', $productosVencidos);
+  }
+
   public function frmKardex(){
     return view('reportes.inicio');
   }
@@ -37,7 +48,19 @@ class ReporteController extends Controller{
       'producto'=>$producto, 'tienda'=>$tienda, 'inicio'=>$inicio->format('d/m/Y')];
   }
 
-  public function mostrarKardex(){
-    return view('reportes.kardex.ficha')->with('detalles', $detalles);
+  public function crearInventario(Request $request){
+
+    $tienda = \App\Tienda::find($request->tienda_id);
+
+    $productosTienda = \DB::table('producto_tienda')
+      ->join('productos', 'productos.codigo', '=', 'producto_tienda.producto_codigo')
+      ->select(
+        'productos.codigo as codigo',
+        'productos.descripcion as descripcion',
+        'producto_tienda.cantidad as cantidad',
+        'productos.precio as precio'
+      )
+      ->where('tienda_id', $request->tienda_id)->get();
+    return ['productos'=>$productosTienda, 'tienda'=>$tienda];
   }
 }

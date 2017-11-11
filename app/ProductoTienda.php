@@ -13,4 +13,8 @@ class ProductoTienda extends Model{
   public function tienda(){
     return $this->belongsTo('\App\Tienda');
   }
+
+  public function producto(){
+    return $this->belongsTo('\App\Producto', 'producto_codigo', 'codigo');
+  }
 }

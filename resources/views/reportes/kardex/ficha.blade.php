@@ -45,7 +45,7 @@
         </tbody>
       </table>
     </div>
-    <button type="button" class="btn btn-primary imprimir" id="imprimir"><span class="fa fa-print"></span> Imprimir</button>
+    <button type="button" class="btn btn-primary" id="imprimir-kardex"><span class="fa fa-print"></span> Imprimir</button>
     <a href="{{url('reporte')}}" class="btn btn-default"> Salir</a>
   </div>
 </div>

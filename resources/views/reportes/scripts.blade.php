@@ -62,7 +62,6 @@
             $(".familia").html(data['producto']['familia']['nombre']);
             $(".marca").html(data['producto']['marca']['nombre']);
             $(".tienda").html(data['tienda']['nombre']);
-            $("#fichaKardex").removeClass('oculto');
             $("#detalles-kardex").empty();
             detalles = "<tr class='info'><td style='width:10%;'>"+data['inicio']+"</td><td style='width:39%;'>SALDO ANTERIOR</td>"+
               "<td style='width:7%;'></td><td style='width:7%;'></td><td style='width:7%;'></td>"+
@@ -99,12 +98,46 @@
               "<td style='text-align:right'>"+cantidad+"</td><td style='text-align:right'>"+data['producto']['precio']+
               "</td><td style='text-align:right'>"+(data['producto']['precio']*cantidad).toFixed(2)+"</td></tr>";
             $("#detalles-kardex").append(detalles);
+            $("#inventario").addClass('oculto');
+            $("#fichaKardex").removeClass('oculto');
             $("#frmKardex").modal('hide');
         });
       }
     });
 
-    $(".imprimir").click(function (){
+    $("#btnBuscarInventario").click(function(){
+      if ($("#tienda_inventario").val() != "") {
+        $.post("{{url('reporte/inventario')}}", {tienda_id: $("#tienda_inventario").val()},
+          function(data, textStatus, xhr) {
+            // Llenamos el encabezado.
+            $(".tienda").html(data['tienda']['nombre']);
+            $(".ruc").html(data['tienda']['ruc']);
+            $(".direccion").html(data['tienda']['direccion']);
+            // Agregamos los datos de los productos.
+            $("#detalles-inventario").empty();
+            $.each(data['productos'], function(clave, valor) {
+              detalles = "<tr>"+
+                "<td>"+valor['codigo']+"</td>"+
+                "<td>"+valor['descripcion']+"</td>"+
+                "<td style='text-align:right;'>"+valor['cantidad']+"</td>"+
+                "<td style='text-align:right;'>"+valor['precio'].toFixed(2)+"</td>"+
+                "<td style='text-align:right;'>"+(valor['precio']*valor['cantidad']).toFixed(2)+"</td>"+
+              "</tr>";
+              $("#detalles-inventario").append(detalles);
+            });
+            $("#fichaKardex").addClass('oculto');
+            $("#inventario").removeClass('oculto');
+            $("#frmInventario").modal('hide');
+          }
+        );
+      }
+    });
+
+    $("#imprimir-inventario").click(function (){
+      $("#imprimirInventario").printArea();
+    });
+
+    $("#imprimir-kardex").click(function (){
       $("#imprimirKardex").printArea();
     });
 

@@ -11,10 +11,13 @@
 |
 */
 
+
 Route::prefix('reporte')->group(function(){
   Route::get('/', 'ReporteController@frmKardex');
   Route::post('kardex', 'ReporteController@crearKardex');
-  Route::get('kardex', 'ReporteController@mostrarKardex');
+  Route::post('inventario', 'ReporteController@crearInventario');
+  Route::get('por-vencer', 'ReporteController@porVencer');
+  Route::get('vencidos', 'ReporteController@vencidos');
 });
 
 Route::post('cierre-caja/{id}', 'CierreController@cierreCaja');
