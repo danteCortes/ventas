@@ -425,7 +425,9 @@ class ProductoController extends Controller{
   public function imprimirCodigo(Request $request){
     if ($producto = Producto::find($request->codigo)) {
       $imgCodigo = "<img src='".url('storage/codigosBarra/'.mb_strtolower($producto->codigo)).".png' class='img-responsive img-thumbnail' ".
-        "style='height:50px;'>";
+        "style='height:50px; width:150px;'>&nbsp;&nbsp;&nbsp;&nbsp;<img src='".url('storage/codigosBarra/'.mb_strtolower($producto->codigo)).".png' class='img-responsive img-thumbnail' ".
+          "style='height:50px; width:150px;'>&nbsp;&nbsp;&nbsp;&nbsp;<img src='".url('storage/codigosBarra/'.mb_strtolower($producto->codigo)).".png' class='img-responsive img-thumbnail' ".
+            "style='height:50px; width:150px;'>";
       return ['producto'=>$producto, 'codigoBarras'=>$imgCodigo];
     }
   }

@@ -228,9 +228,11 @@
               $("#direccion").val(data['direccion']);
               if (data['puntos']) {
                 $(".puntos").html("ESTE CLIENTE TIENE " + data['puntos'] + " PUNTOS ACUMULADOS HASTA EL MOMENTO!");
-                $(".grupo-puntos").html("<span class='input-group-addon'>USAR </span>"+
-                "<input type='text' name='puntos' class='form-control oculto' placeholder='PUNTOS' style='text-align:right; required'>"+
-                "<span class='input-group-addon'> 000 PUNTOS</span>");
+                if (data['puntos'] > 1000) {
+                  $(".grupo-puntos").html("<span class='input-group-addon'>USAR </span>"+
+                  "<input type='text' name='puntos' class='form-control oculto' placeholder='PUNTOS' style='text-align:right; required'>"+
+                  "<span class='input-group-addon'> 000 PUNTOS</span>");
+                }
               }
             }else{
               $("#nombre").prop('readonly', true);

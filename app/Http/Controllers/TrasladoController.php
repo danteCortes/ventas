@@ -38,6 +38,8 @@ class TrasladoController extends Controller
                 $traslado = new \App\Traslado;
                 $traslado->usuario_id = Auth::user()->id;
                 $traslado->tienda_origen = Auth::user()->tienda_id;
+                $traslado->cierre_id = \App\Cierre::where('estado', 1)->where('usuario_id', Auth::user()->id)
+                  ->where('tienda_id', Auth::user()->tienda_id)->first()->id;
                 $traslado->estado = 1;
                 $traslado->save();
             }
