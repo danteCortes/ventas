@@ -270,7 +270,7 @@
         <div class="panel" style="background-color:#bd7406">
           <div class="panel-body">
             <p>ESTA A PUNTO DE IMPRIMIR EL CÓDIGO DE BARRAS PARA <strong class="codigo"></strong>.</p>
-            <div class="imgBarcode" id="imgBarcode" style="text-align:center; background-color:#fff;">
+            <div class="imgBarcode" id="imgBarcode" style="text-align:center; background-color:#fff; height:25px;">
               imagen del codigo de barras
             </div>
             <p>SI QUIERE CONTINUAR CON ESTA ACCIÓN HAGA CLIC EN EL BOTÓN IMPRIMIR, DE LO CONTRARIO, EN EL BOTÓN

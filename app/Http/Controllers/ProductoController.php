@@ -85,7 +85,7 @@ class ProductoController extends Controller{
       $producto->save();
     }
     // Generamos la imagen del códgo de barras para el producto.
-    DNS1D::setStorPath(public_path("/storage/codigosBarra/"));
+    DNS1D::setStorPath(storage_path("/codigosBarra/"));
     DNS1D::getBarcodePNGPath(mb_strtolower($request->codigo), "C128");
     // Retornamos una redirección al método index de este controlador para volver a mostrar
     // la lista de productos mostrando un mensaje de satisfacción.
@@ -351,15 +351,35 @@ class ProductoController extends Controller{
 
     } else {
       if (empty($where)) {
-        $productos = Producto::distinct()
+        $productos = \DB::table('productos')->join('familias', 'familias.id', '=', 'productos.familia_id')
+          ->join('marcas', 'marcas.id', '=', 'productos.marca_id')
+          ->join('producto_tienda', 'producto_tienda.producto_codigo', '=', 'productos.codigo')
+          ->select(
+            'productos.codigo as codigo',
+            \DB::raw("concat(familias.nombre, ' ',marcas.nombre, ' ', productos.descripcion) as descripcion"),
+            'productos.precio as precio',
+            'producto_tienda.cantidad as cantidad',
+            'producto_tienda.tienda_id as tienda'
+          )
+          ->distinct()
           ->offset($skip)
           ->limit($take)
           ->orderBy($order_by, $order_name)
           ->get();
       } else {
-        $productos = Producto::where('codigo', 'like', '%'.$where.'%')
-          ->orWhere('descripcion', 'like', '%'.$where.'%')
-          ->orWhere('precio', 'like', '%'.$where.'%')
+        $productos = \DB::table('productos')->join('familias', 'familias.id', '=', 'productos.familia_id')
+          ->join('marcas', 'marcas.id', '=', 'productos.marca_id')
+          ->join('producto_tienda', 'producto_tienda.producto_codigo', '=', 'productos.codigo')
+          ->where('productos.codigo', 'like', '%'.$where.'%')
+          ->orWhere(\DB::raw("concat(familias.nombre, ' ',marcas.nombre, ' ', productos.descripcion)"), 'like', '%'.$where.'%')
+          ->orWhere('productos.precio', 'like', '%'.$where.'%')
+          ->select(
+            'productos.codigo as codigo',
+            \DB::raw("concat(familias.nombre, ' ',marcas.nombre, ' ', productos.descripcion) as descripcion"),
+            'productos.precio as precio',
+            'producto_tienda.cantidad as cantidad',
+            'producto_tienda.tienda_id as tienda'
+          )
           ->distinct()
           ->offset($skip)
           ->limit($take)
@@ -368,14 +388,27 @@ class ProductoController extends Controller{
       }
 
       if (empty($where)) {
-        $total = Producto::distinct()
+        $total = \DB::table('productos')->join('familias', 'familias.id', '=', 'productos.familia_id')
+          ->join('marcas', 'marcas.id', '=', 'productos.marca_id')
+          ->join('producto_tienda', 'producto_tienda.producto_codigo', '=', 'productos.codigo')
+          ->select(
+            'productos.codigo as codigo',
+            \DB::raw("concat(familias.nombre, ' ',marcas.nombre, ' ', productos.descripcion) as descripcion"),
+            'productos.precio as precio',
+            'producto_tienda.cantidad as cantidad',
+            'producto_tienda.tienda_id as tienda'
+          )
+          ->distinct()
           ->get();
 
         $total = count($total);
       } else {
-        $total = Producto::where('codigo', 'like', '%'.$where.'%')
-          ->orWhere('descripcion', 'like', '%'.$where.'%')
-          ->orWhere('precio', 'like', '%'.$where.'%')
+        $total = \DB::table('productos')->join('familias', 'familias.id', '=', 'productos.familia_id')
+          ->join('marcas', 'marcas.id', '=', 'productos.marca_id')
+          ->join('producto_tienda', 'producto_tienda.producto_codigo', '=', 'productos.codigo')
+          ->where('productos.codigo', 'like', '%'.$where.'%')
+          ->orWhere(\DB::raw("concat(familias.nombre, ' ',marcas.nombre, ' ', productos.descripcion)"), 'like', '%'.$where.'%')
+          ->orWhere('productos.precio', 'like', '%'.$where.'%')
           ->distinct()
           ->get();
 
@@ -386,23 +419,41 @@ class ProductoController extends Controller{
     $datas = [];
     $cantidad = 0;
     foreach ($productos as $producto):
-      if ($cantidad = \App\ProductoTienda::where('producto_codigo', $producto->codigo)
-        ->where('tienda_id', \Auth::user()->tienda_id)->first()) {
-        $cantidad = \App\ProductoTienda::where('producto_codigo', $producto->codigo)
-          ->where('tienda_id', \Auth::user()->tienda_id)->first()->cantidad;
-      }
+        if(\Auth::user()->tienda_id != null){
+          if($producto->tienda == \Auth::user()->tienda_id){
+            $data = array_merge(
+                array
+                (
+                  "codigo" => $producto->codigo,
+                  "descripcion" => $producto->descripcion,
+                  "precio" => number_format($producto->precio, 2, '.', ' '),
+                  "stock" => $producto->cantidad,
+                  "tienda" => $producto->tienda
+                )
+            );
+            //Asignamos un grupo de datos al array datas
+            $datas[] = $data;
+          }
+        }else{
+          if($producto->tienda == 1){
+            $data = array_merge(
+                array
+                (
+                  "codigo" => $producto->codigo,
+                  "descripcion" => $producto->descripcion,
+                  "precio" => number_format($producto->precio, 2, '.', ' '),
+                  "stock" => $producto->cantidad,
+                  "tienda" => $producto->tienda
+                )
+            );
+            //Asignamos un grupo de datos al array datas
+            $datas[] = $data;
+          }
+            
+        }
 
-      $data = array_merge(
-        array
-        (
-          "codigo" => $producto->codigo,
-          "descripcion" => $producto->descripcion,
-          "precio" => $producto->precio,
-          "stock" => $cantidad,
-        )
-      );
-      //Asignamos un grupo de datos al array datas
-      $datas[] = $data;
+      
+      
     endforeach;
 
     return response()->json(
@@ -425,9 +476,9 @@ class ProductoController extends Controller{
   public function imprimirCodigo(Request $request){
     if ($producto = Producto::find($request->codigo)) {
       $imgCodigo = "<img src='".url('storage/codigosBarra/'.mb_strtolower($producto->codigo)).".png' class='img-responsive img-thumbnail' ".
-        "style='height:50px; width:150px;'>&nbsp;&nbsp;&nbsp;&nbsp;<img src='".url('storage/codigosBarra/'.mb_strtolower($producto->codigo)).".png' class='img-responsive img-thumbnail' ".
-          "style='height:50px; width:150px;'>&nbsp;&nbsp;&nbsp;&nbsp;<img src='".url('storage/codigosBarra/'.mb_strtolower($producto->codigo)).".png' class='img-responsive img-thumbnail' ".
-            "style='height:50px; width:150px;'>";
+        "style='height:25px; width:95px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src='".url('storage/codigosBarra/'.mb_strtolower($producto->codigo)).".png' class='img-responsive img-thumbnail' ".
+          "style='height:25px; width:95px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src='".url('storage/codigosBarra/'.mb_strtolower($producto->codigo)).".png' class='img-responsive img-thumbnail' ".
+            "style='height:25px; width:95px;'>";
       return ['producto'=>$producto, 'codigoBarras'=>$imgCodigo];
     }
   }

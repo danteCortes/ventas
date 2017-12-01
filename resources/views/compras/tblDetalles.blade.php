@@ -118,7 +118,7 @@
                   </div>
                 </td>
                 <td>{{$detalle->cantidad}}</td>
-                <td>{{$detalle->producto->descripcion}}</td>
+                <td>{{$detalle->producto['descripcion']}}</td>
                 <td style="text-align:right;">{{$detalle->precio_unidad}}</td>
                 <td style="text-align:right;">{{$detalle->total}}</td>
               </tr>

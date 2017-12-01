@@ -145,7 +145,7 @@ class DetalleController extends Controller{
           $producto->foto = $nombre_foto;
           $producto->save();
           // Generamos la imagen del códgo de barras para el producto.
-          \DNS1D::setStorPath(public_path("/storage/codigosBarra/"));
+          \DNS1D::setStorPath(storage_path("/codigosBarra/"));
           \DNS1D::getBarcodePNGPath(mb_strtolower($request->codigo), "C128");
         }
 

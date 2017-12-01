@@ -10,7 +10,47 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+/*
+Route::get('stokear', function(){
+    foreach(\App\Producto::all() as $producto){
+        foreach(\App\Tienda::all() as $tienda){
+            $productoTienda = new \App\ProductoTienda;
+            $productoTienda->producto_codigo = $producto->codigo;
+            $productoTienda->tienda_id = $tienda->id;
+            $productoTienda->cantidad = 50;
+            $productoTienda->save();
+        }
+    }
+    return "listo";
+});
+*/
 
+Route::get('ingresar-producto', function(){
+    $ingresos = \App\TarjetaVenta::all();
+    foreach($ingresos as $ingreso){
+        if(!$detalle = \App\Venta::find($ingreso->venta_id)){
+            echo $ingreso->id."<br>";
+            //$ingreso->delete();
+        }
+    }
+});
+
+Route::get('generar-codbar', function(){
+    
+    foreach(\App\Producto::all() as $producto){
+        // Revisamos si ya tiene codigo.
+        if($producto->codigo == 'dahiav1511470861'){
+            echo "recorremos el codigo";
+            if(is_file(storage_path('codigosBarra/').$producto->codigo.'.png')){
+                echo "existe su codigo de barras ".storage_path('codigosBarra/').$producto->codigo.'.png<br>x';
+            }
+        }
+        if(is_file(storage_path('codigosBarra/').$producto->codigo.'.png')){
+            echo storage_path('codigosBarra/').$producto->codigo.'.png<br>';
+        }
+        //echo public_path('stogare/codigosBarra/').$producto->codigo.'.png<br>';
+    }
+});
 
 Route::prefix('reporte')->group(function(){
   Route::get('/', 'ReporteController@frmKardex');

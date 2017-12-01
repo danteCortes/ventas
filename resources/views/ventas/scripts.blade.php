@@ -39,7 +39,7 @@
         $.post("{{url('buscar-producto')}}", {codigo: $(this).data("row-codigo")}, function(data, textStatus, xhr) {
           // Buscamos los datos del producto y mostramos el código, descripción, y stock en la tabla de detalle.
           $(".codigo").html(data['producto']['codigo']);
-          $(".descripcion").html(data['producto']['descripcion']);
+          $(".descripcion").html(data['familia'][1]['nombre']+" "+data['marca'][1]['nombre']+" "+data['producto']['descripcion']);
           $(".precio").html(data['producto']['precio']);
           $(".cantidad").html(data['stock'][1]);
           $("#btnAgregarProducto").prop('disabled', false);
@@ -52,6 +52,8 @@
             $(".precio").val(data['producto']['precio']);
             $(".descuento").empty();
           }
+          $("#cantidad_producto").val("1");
+          $("#cantidad_producto").focus();
           $(".foto").html(data['foto']);
           $("#producto_codigo").val(data['producto']['codigo']);
           $("#stock").val(data['stock'][1]);

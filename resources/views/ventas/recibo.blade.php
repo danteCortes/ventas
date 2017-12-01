@@ -8,7 +8,7 @@
 
   }
   .table{
-    font-size: 10px;
+    font-size: 8px;
   }
 </style>
 @stop
@@ -26,80 +26,172 @@ Recibo
         <h3 class="panel-title">Recibo {{$recibo->numeracion}}</h3>
       </div>
       <div class="panel-body" id="ticket" style="padding-left:5px; padding-right:5px;">
-        <table class="table table-condensed" style="margin-bottom:0px;">
-          <tr>
-            <th colspan="4" style="text-align:center; border-top:rgba(255, 255, 255, 0);">{{$recibo->venta->tienda->nombre}}</th>
-          </tr>
-          <tr>
-            <th colspan="4" style="text-align:center; border-top:rgba(255, 255, 255, 0);">{{$recibo->venta->tienda->direccion}}</th>
-          </tr>
-          <tr>
-            <th colspan="4" style="text-align:center; border-top:rgba(255, 255, 255, 0);">R.U.C. N° {{$recibo->venta->tienda->ruc}}</th>
-          </tr>
-          <tr>
-            <th colspan="4" style="text-align:center; border-top:rgba(255, 255, 255, 0);">N° DE SERIE {{$recibo->venta->tienda->ticketera}}</th>
-          </tr>
-          <tr>
-            <th colspan="4" style="text-align:right; border-top:rgba(255, 255, 255, 0);">TICKET N° {{$recibo->numeracion}}</th>
-          </tr>
-          <tr>
-            <th colspan="4" style="text-align:right; border-top:rgba(255, 255, 255, 0);">{{$recibo->venta->updated_at}}</th>
-          </tr>
+          <div class="row">
+              <div class="col-sm-12">
+                  <p class="text-center" style="font-size: 12px; margin-bottom:1px;">{{$recibo->venta->tienda->nombre}}</p>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-sm-12">
+                  <p class="text-center" style="font-size: 12px; margin-bottom:1px;">R.U.C. N° {{$recibo->venta->tienda->ruc}}</p>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-sm-12">
+                  <p class="text-center" style="font-size: 12px; margin-bottom:1px;">{{$recibo->venta->tienda->direccion}}</p>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-sm-12">
+                  <p class="text-center" style="font-size: 12px; margin-bottom:1px;">AUTORIZACION SUNAT NRO. 0193845116923</p>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-sm-12">
+                  <p class="text-left" style="font-size: 12px; margin-bottom:1px;">TICKET N° {{$recibo->numeracion}}</p>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-sm-12">
+                  <p class="text-left" style="font-size: 12px; margin-bottom:1px;">N° DE SERIE {{$recibo->venta->tienda->ticketera}}</p>
+              </div>
+          </div>
           @if($empresa = $recibo->empresa)
-            <tr>
-              <th colspan="4" style="text-align:left; border-top:rgba(255, 255, 255, 0);">RUC: {{$empresa->ruc}}</th>
-            </tr>
-            <tr>
-              <th colspan="4" style="text-align:left; border-top:rgba(255, 255, 255, 0);">CLIENTE: {{$empresa->nombre}}</th>
-            </tr>
-            <tr>
-              <th colspan="4" style="text-align:left; border-top:rgba(255, 255, 255, 0);">DIRECCIÓN: {{$empresa->direccion}}</th>
-            </tr>
+          <div class="row">
+              <div class="col-sm-12">
+                  <p class="text-left" style="font-size: 12px; margin-bottom:1px;">RUC: {{$empresa->ruc}}</p>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-sm-12">
+                  <p class="text-left" style="font-size: 12px; margin-bottom:1px;">CLIENTE: {{$empresa->nombre}}</p>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-sm-12">
+                  <p class="text-left" style="font-size: 12px; margin-bottom:1px;">DIRECCIÓN: {{$empresa->direccion}}</p>
+              </div>
+          </div>
+          @elseif($persona = $recibo->persona)
+          <div class="row">
+              <div class="col-sm-12">
+                  <p class="text-left" style="font-size: 12px; margin-bottom:1px;">CLIENTE: {{$persona->nombres}} {{$persona->apellidos}}</p>
+              </div>
+          </div>
+          @else
+          <div class="row">
+              <div class="col-sm-12">
+                  <p class="text-left" style="font-size: 12px; margin-bottom:1px;">CLIENTE: CLIENTE VARIOS</p>
+              </div>
+          </div>
           @endif
+        <table class="table table-condensed" style="margin-bottom:5px;">
           <tr>
-            <th style="">Cant.</th>
-            <th style="">Descripción</th>
-            <th style="">Unit.</th>
-            <th style="width:70px; ">Importe</th>
+            <td style="border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;">
+                <p class="text-left" style="font-size: 12px; margin-bottom:1px;">Cant.</p>
+            </td>
+            <td style="border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;">
+                <p class="text-left" style="font-size: 12px; margin-bottom:1px;">Descripción</p>
+            </td>
+            <td style="border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;">
+                <p class="text-left" style="font-size: 12px; margin-bottom:1px;">Unit.</p>
+            </td>
+            <td style="width:50px; border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;">
+                <p class="text-left" style="font-size: 12px; margin-bottom:1px;">Importe</p>
+            </td>
           </tr>
           @foreach($recibo->venta->detalles as $detalle)
             <tr>
-              <td style="text-align:center; border-top:rgba(255, 255, 255, 0);">{{$detalle->cantidad}}</td>
-              <td style="text-align:left; border-top:rgba(255, 255, 255, 0);">{{$detalle->producto->familia->nombre}}
-                {{$detalle->producto->marca->nombre}} {{$detalle->producto->descripcion}}</td>
-              <td style="text-align:left; border-top:rgba(255, 255, 255, 0);">{{$detalle->producto->precio}}</td>
-              <td style="text-align:right; border-top:rgba(255, 255, 255, 0);">{{$detalle->total}}</td>
+                <td style="border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;">
+                    <p class="text-left" style="font-size: 12px; margin-bottom:1px;">{{$detalle->cantidad}}</p>
+                </td>
+                <td style="border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;">
+                    <p class="text-left" style="font-size: 12px; margin-bottom:1px;">{{$detalle->producto->familia->nombre}}
+                    {{$detalle->producto->marca->nombre}} {{$detalle->producto->descripcion}}</p>
+                </td>
+                <td style="border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;">
+                    <p class="text-right" style="font-size: 12px; margin-bottom:1px;">{{$detalle->producto->precio}}</p>
+                </td>
+                <td style="width:50px; border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;">
+                    <p class="text-right" style="font-size: 12px; margin-bottom:1px;">{{$detalle->total}}</p>
+                </td>
             </tr>
           @endforeach
           <tr>
-            <th colspan="3" style="text-align:right; border-top:rgba(255, 255, 255, 0);">TOTAL</th>
-            <th style="text-align:right; border-top:rgba(255, 255, 255, 0);">S/ {{$recibo->venta->total}}</th>
+            <td colspan="3" style="text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px; padding-top:1px; padding-bottom:0px;">
+                <p class="text-right" style="font-size: 12px; margin-bottom:1px;">TOTAL S/</p>
+            </td>
+            <td style="text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px; padding-top:1px; padding-bottom:0px;">
+                <p class="text-right" style="font-size: 12px; margin-bottom:1px;">{{$recibo->venta->total}}</p>
+            </td>
           </tr>
+          <?php $vuelto =  $recibo->venta->total;?>
           @if($reclamo = $recibo->venta->reclamo)
             <tr>
-              <th colspan="2" style="text-align:left; border-top:rgba(255, 255, 255, 0);">DESCUENTO POR CANJE DE {{$reclamo->puntos}} PUNTOS TÚ</th>
-              <th style="text-align:right; border-top:rgba(255, 255, 255, 0);">{{number_format($recibo->venta->descuento, 2, '.', ' ')}}</th>
+              <td colspan="2" style="text-align:left; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
+                  <p class="text-right" style="font-size: 12px; margin-bottom:1px;">DESCUENTO POR CANJE DE {{$reclamo->puntos}} PUNTOS TÚ</p></td>
+              <td style="text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
+                  <p class="text-right" style="font-size: 12px; margin-bottom:1px;">{{number_format($recibo->venta->descuento, 2, '.', ' ')}}</p></td>
             </tr>
             <tr>
-              <th colspan="2" style="text-align:right; border-top:rgba(255, 255, 255, 0);">TOTAL A PAGAR</th>
-              <th style="text-align:right; border-top:rgba(255, 255, 255, 0);">
-                {{number_format($recibo->venta->total-$recibo->venta->descuento, 2, '.', ' ')}}</th>
+              <td colspan="2" style="text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
+                  <p class="text-right" style="font-size: 12px; margin-bottom:1px;">TOTAL A PAGAR</p>
+              </td>
+              <td style="text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
+                  <p class="text-right" style="font-size: 12px; margin-bottom:1px;">{{number_format($recibo->venta->total-$recibo->venta->descuento, 2, '.', ' ')}}</p>
+              </td>
             </tr>
+          <?php $vuelto =  $recibo->venta->total-$recibo->venta->descuento;?>
+          @endif
+          @if($recibo->venta->efectivo)
+          <tr>
+            <td colspan="3" style="text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
+                <p class="text-right" style="font-size: 12px; margin-bottom:1px;">EFECTIVO S/ </p>
+            </td>
+            <td style="text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
+                <p class="text-right" style="font-size: 12px; margin-bottom:1px;">{{number_format($recibo->venta->efectivo->monto, 2, '.', ' ')}}</p>
+            </td>
+          </tr>
+          <?php $vuelto = $recibo->venta->efectivo->monto - $vuelto; ?>
+          @endif
+          @if($recibo->venta->tarjetaVenta)
+          <tr>
+            <th colspan="3" style="text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
+                <p class="text-right" style="font-size: 12px; margin-bottom:1px;"></p>TARJETA S/ </th>
+            <th style="text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
+                <p class="text-right" style="font-size: 12px; margin-bottom:1px;"></p>{{number_format($recibo->venta->tarjetaVenta->monto, 2, '.', ' ')}}</th>
+          </tr>
+          <?php $vuelto = $recibo->venta->tarjetaVenta->monto - $vuelto; ?>
           @endif
           <tr>
-            <td colspan="4">CAJERO: {{\Auth::user()->persona->nombres}} {{\Auth::user()->persona->apellidos}}</td>
+            <td colspan="3" style="text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
+                <p class="text-right" style="font-size: 12px; margin-bottom:1px;">VUELTO S/ </p></td>
+            <td style="text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
+                <p class="text-right" style="font-size: 12px; margin-bottom:1px;">{{number_format($vuelto, 2, '.', ' ')}}</p></td>
+          </tr>
+          <tr>
+            <td colspan="4" style="text-align:left; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
+                <p class="text-left" style="font-size: 12px; margin-bottom:1px;">SON: {{$letras}}</p></td>
+          </tr>
+          <tr>
+            <td colspan="4" style="text-align:left; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
+                <p class="text-left" style="font-size: 12px; margin-bottom:1px;">HUANUCO, {{\Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$recibo->venta->updated_at)->format('d/m/Y')}}
+                - HORA: {{\Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$recibo->venta->updated_at)->format('H:i A')}}</p>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="4" style="text-align:left; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
+                <p class="text-left" style="font-size: 12px; margin-bottom:1px;">CAJERA: {{$recibo->venta->usuario->persona->nombres}} {{$recibo->venta->usuario->persona->apellidos}}</p>
+            </td>
           </tr>
         </table>
-        <hr style="
-            margin-bottom: 5px;
-            margin-top: 5px;
-        ">
         @if($persona = $recibo->persona)
           @if($persona->puntos)
-            <p class="text-justify" style="font-size: 10px;">SR(A). {{$persona->nombres}} {{$persona->apellidos}} CON ESTA COMPRA USTED ACUMULA UN TOTAL DE {{$persona->puntos}}
+            <p class="text-justify" style="font-size: 12px; margin-bottom:5px;">SR(A). {{$persona->nombres}} {{$persona->apellidos}} CON ESTA COMPRA USTED ACUMULA UN TOTAL DE {{$persona->puntos}}
               PUNTOS TÚ. RECUERDE RECLAMAR SU DESCUENTO A PARTIR DE LOS 1 000 PUNTOS.</p>
           @endif
         @endif
+        <p class="text-justify" style="font-size: 12px; margin-bottom:5px;">BIENES TRANSFERIDOS EN LA AMAZONIA PARA SER CONSUMIDOS EN LA MISMA</p>
       </div>
       <div class="panel-footer">
         <button type="button" class="btn btn-primary imprimir" id="imprimir"><span class="fa fa-print"></span> Imprimir</button>

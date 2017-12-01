@@ -10,9 +10,9 @@ class Venta extends Model{
     return number_format($valor, 2, '.', ' ');
   }
 
-  public function getUpdatedAtAttribute($value){
+  /*public function getUpdatedAtAttribute($value){
     return \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $value)->format('d/m/Y H:i A');
-  }
+  }*/
 
   public function detalles(){
     return $this->hasMany('\App\Detalle');
@@ -22,6 +22,10 @@ class Venta extends Model{
     return $this->belongsTo('\App\Cierre');
   }
 
+  public function usuario(){
+    return $this->belongsTo('\App\Usuario');
+  }
+  
   public function tarjetaVenta(){
     return $this->hasOne('\App\TarjetaVenta');
   }

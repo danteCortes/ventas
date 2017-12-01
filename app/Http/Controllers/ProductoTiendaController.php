@@ -58,7 +58,11 @@ class ProductoTiendaController extends Controller{
         if ($productoTienda = ProductoTienda::where('tienda_id', $tienda->id)
           ->where('producto_codigo', $detalle->producto_codigo)->first()) {
           // Si ya existe en la tienda, actualizamos la cantidad.
-          $productoTienda->cantidad += $request->cantidades[$tienda->id];
+          if($productoTienda->cantidad >= 40){
+            $productoTienda->cantidad = $request->cantidades[$tienda->id];
+          }else{
+            $productoTienda->cantidad += $request->cantidades[$tienda->id];
+          }
           if ($request->ubicaciones[$tienda->id] != "") {
             $productoTienda->ubicacion = mb_strtoupper($request->ubicaciones[$tienda->id]);
           }
