@@ -357,7 +357,7 @@ class CompraController extends Controller{
       foreach ($compra->detalles as $detalle) {
         $detalles .= "<tr>
           <td>".$detalle->cantidad."</td>
-          <td>".$detalle->producto->descripcion."</td>
+          <td>".$detalle->producto->familia->nombre." ".$detalle->producto->marca->nombre." ".$detalle->producto->descripcion."</td>
           <td style='text-align:right;'>".$detalle->precio_unidad."</td>
           <td style='text-align:right;'>".$detalle->total."</td>
         </tr>";

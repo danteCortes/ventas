@@ -38,7 +38,7 @@
         $(".descripcion").empty();
         $.post("{{url('buscar-producto')}}", {codigo: $(this).data("row-codigo")}, function(data, textStatus, xhr) {
           $(".codigo").html(data['producto']['codigo']);
-          $(".descripcion").html(data['producto']['descripcion']);
+          $(".descripcion").html(data['familia'][1]['nombre']+" "+data['marca'][1]['nombre']+" "+data['producto']['descripcion']);
           $("#producto_codigo_kardex").val(data['producto']['codigo']);
           $("#btnBuscarKardex").prop('disabled', false);
         });

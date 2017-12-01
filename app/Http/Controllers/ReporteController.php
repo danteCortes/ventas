@@ -10,13 +10,13 @@ class ReporteController extends Controller{
   use KardexTrait;
 
   public function porVencer(){
-    $productosPorVencer = \DB::table('productos')->whereDate('vencimiento', '<=', date('Y-m-d', strtotime('+1 week')))
-      ->whereDate('vencimiento', '>', date('Y-m-d'))->get();
+    $productosPorVencer = \App\Producto::whereDate('vencimiento', '<=', date('Y-m-d', strtotime('+3 month')))
+      ->whereDate('vencimiento', '>=', date('Y-m-d'))->get();
     return view('reportes.porVencer.inicio')->with('productos', $productosPorVencer);
   }
 
   public function vencidos(){
-    $productosVencidos = \DB::table('productos')->whereDate('vencimiento', '>', date('Y-m-d'))->get();
+    $productosVencidos = \App\Producto::whereDate('vencimiento', '<', date('Y-m-d'))->get();
     return view('reportes.vencidos.inicio')->with('productos', $productosVencidos);
   }
 
@@ -54,9 +54,11 @@ class ReporteController extends Controller{
 
     $productosTienda = \DB::table('producto_tienda')
       ->join('productos', 'productos.codigo', '=', 'producto_tienda.producto_codigo')
+      ->join('familias', 'familias.id', '=', 'productos.familia_id')
+      ->join('marcas', 'marcas.id', '=', 'productos.marca_id')
       ->select(
         'productos.codigo as codigo',
-        'productos.descripcion as descripcion',
+        \DB::raw("concat(familias.nombre, ' ', marcas.nombre, ' ', productos.descripcion) as descripcion"),
         'producto_tienda.cantidad as cantidad',
         'productos.precio as precio'
       )

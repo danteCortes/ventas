@@ -20,6 +20,9 @@ Reportes
   @include('reportes.inventario.frmInventario')
   @include('reportes.kardex.ficha')
   @include('reportes.inventario.inventario')
+  <div class="row" id="lienzo_reporte">
+    
+  </div>
 @stop
 
 @section('scripts')

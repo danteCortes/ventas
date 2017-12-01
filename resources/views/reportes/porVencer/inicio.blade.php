@@ -28,12 +28,24 @@ Productos por Vencer
             <tbody>
               @foreach($productos as $producto)
                 <tr>
-                  <td>{{$producto->codigo}}</td>
-                  <td>{{$producto->descripcion}}</td>
-                  <td>{{$producto->vencimiento}}</td>
-                  <td>{{$producto->cantidad}}</td>
-                  <td>{{$producto->precio}}</td>
-                  <td>{{$producto->precio*$producto->cantidad}}</td>
+                  <td><p style="font-size: 12px">{{$producto->codigo}}</p></td>
+                  <td><p style="font-size: 12px">{{$producto->familia->nombre}} {{$producto->marca->nombre}} {{$producto->descripcion}}</p></td>
+                  <td><p style="font-size: 12px">{{$producto->vencimiento}}</p></td>
+                  <td>
+                    @foreach(\App\Tienda::all() as $tienda)
+                      <p style="font-size: 12px; margin-bottom: 0px;">{{$tienda->nombre}} = {{\App\ProductoTienda::where('producto_codigo', $producto->codigo)
+                        ->where('tienda_id', $tienda->id)->first()->cantidad}}</p>
+                    @endforeach
+                  </td>
+                  <td style="text-align:right;"><p style="font-size: 12px; margin-bottom: 0px;">{{number_format($producto->precio, 2, '.', ' ')}}</p></td>
+                  <td style="text-align:right; width:70px;">
+                    <?php $total = 0; ?>
+                    @foreach(\App\Tienda::all() as $tienda)
+                    <?php $total += \App\ProductoTienda::where('producto_codigo', $producto->codigo)
+                      ->where('tienda_id', $tienda->id)->first()->cantidad * $producto->precio; ?>
+                    @endforeach
+                    <p style="font-size: 12px; margin-bottom: 0px;">{{number_format($total, 2, '.', ' ')}}</p>
+                  </td>
                 </tr>
               @endforeach
             </tbody>

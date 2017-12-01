@@ -4,8 +4,9 @@
       <table class="table table-bordered">
         <thead>
           <tr>
-            <th style="width:195px;">Operaciones</th>
+            <th style="width:130px;">Operaciones</th>
             <th style="width:50px;">Cant.</th>
+            <th>Código</th>
             <th>Descripción</th>
             <th>P. unit.</th>
             <th>P. Total</th>
@@ -20,7 +21,7 @@
                     {{ csrf_field() }}
                     <button class="btn btn-xs btn-danger">Quitar</button>
                   {{Form::close()}}
-                  <button type="button" class="btn btn-xs btn-success" data-toggle="modal" data-target="#tiendas_{{$detalle->id}}" style="margin-left:5px;">
+                  <button type="button" class="btn btn-xs{{(!\App\Ingreso::where('detalle_id', $detalle->id)->first())? " btn-warning":" btn-success"}}" data-toggle="modal" data-target="#tiendas_{{$detalle->id}}" style="margin-left:5px;">
                     Tiendas</button>
                   <div class="modal fade" id="tiendas_{{$detalle->id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                     <div class="modal-dialog" role="document">
@@ -118,13 +119,14 @@
                   </div>
                 </td>
                 <td>{{$detalle->cantidad}}</td>
-                <td>{{$detalle->producto['descripcion']}}</td>
+                <td>{{$detalle->producto->codigo}}</td>
+                <td>{{$detalle->producto->familia->nombre}} {{$detalle->producto['descripcion']}}</td>
                 <td style="text-align:right;">{{$detalle->precio_unidad}}</td>
                 <td style="text-align:right;">{{$detalle->total}}</td>
               </tr>
             @endforeach
             <tr>
-              <th colspan="4" style="text-align: right;">Total</th>
+              <th colspan="5" style="text-align: right;">Total</th>
               <td style="text-align: right;">{{$compra->total}}</td>
             </tr>
           @endif
