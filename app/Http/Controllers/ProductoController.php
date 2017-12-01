@@ -351,15 +351,23 @@ class ProductoController extends Controller{
 
     } else {
       if (empty($where)) {
-        $productos = \DB::table('productos')->join('familias', 'familias.id', '=', 'productos.familia_id')
-          ->join('marcas', 'marcas.id', '=', 'productos.marca_id')
-          ->join('producto_tienda', 'producto_tienda.producto_codigo', '=', 'productos.codigo')
+        $productos = \DB::table('productos as p')
+          ->join('familias as f', 'f.id', '=', 'p.familia_id')
+          ->join('marcas as m', 'm.id', '=', 'p.marca_id')
+          ->join('producto_tienda as pt', 'pt.producto_codigo', '=', 'p.codigo')
+          ->where(function($consulta){
+            if (\Auth::user()->tienda_id) {
+              $consulta->where('pt.tienda_id', \Auth::user()->tienda_id);
+            }else{
+              $consulta->where('pt.tienda_id', \DB::table('tiendas')->first()->id);
+            }
+          })
           ->select(
-            'productos.codigo as codigo',
-            \DB::raw("concat(familias.nombre, ' ',marcas.nombre, ' ', productos.descripcion) as descripcion"),
-            'productos.precio as precio',
-            'producto_tienda.cantidad as cantidad',
-            'producto_tienda.tienda_id as tienda'
+            'p.codigo as codigo',
+            \DB::raw("concat(f.nombre, ' ',m.nombre, ' ', p.descripcion) as descripcion"),
+            'p.precio as precio',
+            'pt.cantidad as cantidad',
+            'pt.tienda_id as tienda'
           )
           ->distinct()
           ->offset($skip)
@@ -367,18 +375,27 @@ class ProductoController extends Controller{
           ->orderBy($order_by, $order_name)
           ->get();
       } else {
-        $productos = \DB::table('productos')->join('familias', 'familias.id', '=', 'productos.familia_id')
-          ->join('marcas', 'marcas.id', '=', 'productos.marca_id')
-          ->join('producto_tienda', 'producto_tienda.producto_codigo', '=', 'productos.codigo')
-          ->where('productos.codigo', 'like', '%'.$where.'%')
-          ->orWhere(\DB::raw("concat(familias.nombre, ' ',marcas.nombre, ' ', productos.descripcion)"), 'like', '%'.$where.'%')
-          ->orWhere('productos.precio', 'like', '%'.$where.'%')
+        $productos = \DB::table('productos as p')
+          ->join('familias as f', 'f.id', '=', 'p.familia_id')
+          ->join('marcas as m', 'm.id', '=', 'p.marca_id')
+          ->join('producto_tienda as pt', 'pt.producto_codigo', '=', 'p.codigo')
+          ->where(function($consulta){
+            if (\Auth::user()->tienda_id) {
+              $consulta->where('pt.tienda_id', \Auth::user()->tienda_id);
+            }else{
+              $consulta->where('pt.tienda_id', \DB::table('tiendas')->first()->id);
+            }
+          })
+          ->where(function($query) use ($where){
+            $query->where('p.codigo', 'like', '%'.$where.'%')
+            ->orWhere(\DB::raw("concat(f.nombre, ' ',m.nombre, ' ', p.descripcion)"), 'like', '%'.$where.'%');
+          })
           ->select(
-            'productos.codigo as codigo',
-            \DB::raw("concat(familias.nombre, ' ',marcas.nombre, ' ', productos.descripcion) as descripcion"),
-            'productos.precio as precio',
-            'producto_tienda.cantidad as cantidad',
-            'producto_tienda.tienda_id as tienda'
+            'p.codigo as codigo',
+            \DB::raw("concat(f.nombre, ' ',m.nombre, ' ', p.descripcion) as descripcion"),
+            'p.precio as precio',
+            'pt.cantidad as cantidad',
+            'pt.tienda_id as tienda'
           )
           ->distinct()
           ->offset($skip)
@@ -388,27 +405,51 @@ class ProductoController extends Controller{
       }
 
       if (empty($where)) {
-        $total = \DB::table('productos')->join('familias', 'familias.id', '=', 'productos.familia_id')
-          ->join('marcas', 'marcas.id', '=', 'productos.marca_id')
-          ->join('producto_tienda', 'producto_tienda.producto_codigo', '=', 'productos.codigo')
+        $total = \DB::table('productos as p')
+          ->join('familias as f', 'f.id', '=', 'p.familia_id')
+          ->join('marcas as m', 'm.id', '=', 'p.marca_id')
+          ->join('producto_tienda as pt', 'pt.producto_codigo', '=', 'p.codigo')
+          ->where(function($consulta){
+            if (\Auth::user()->tienda_id) {
+              $consulta->where('pt.tienda_id', \Auth::user()->tienda_id);
+            }else{
+              $consulta->where('pt.tienda_id', \DB::table('tiendas')->first()->id);
+            }
+          })
           ->select(
-            'productos.codigo as codigo',
-            \DB::raw("concat(familias.nombre, ' ',marcas.nombre, ' ', productos.descripcion) as descripcion"),
-            'productos.precio as precio',
-            'producto_tienda.cantidad as cantidad',
-            'producto_tienda.tienda_id as tienda'
+            'p.codigo as codigo',
+            \DB::raw("concat(f.nombre, ' ',m.nombre, ' ', p.descripcion) as descripcion"),
+            'p.precio as precio',
+            'pt.cantidad as cantidad',
+            'pt.tienda_id as tienda'
           )
           ->distinct()
           ->get();
 
         $total = count($total);
       } else {
-        $total = \DB::table('productos')->join('familias', 'familias.id', '=', 'productos.familia_id')
-          ->join('marcas', 'marcas.id', '=', 'productos.marca_id')
-          ->join('producto_tienda', 'producto_tienda.producto_codigo', '=', 'productos.codigo')
-          ->where('productos.codigo', 'like', '%'.$where.'%')
-          ->orWhere(\DB::raw("concat(familias.nombre, ' ',marcas.nombre, ' ', productos.descripcion)"), 'like', '%'.$where.'%')
-          ->orWhere('productos.precio', 'like', '%'.$where.'%')
+        $total = \DB::table('productos as p')
+          ->join('familias as f', 'f.id', '=', 'p.familia_id')
+          ->join('marcas as m', 'm.id', '=', 'p.marca_id')
+          ->join('producto_tienda as pt', 'pt.producto_codigo', '=', 'p.codigo')
+          ->where(function($consulta){
+            if (\Auth::user()->tienda_id) {
+              $consulta->where('pt.tienda_id', \Auth::user()->tienda_id);
+            }else{
+              $consulta->where('pt.tienda_id', \DB::table('tiendas')->first()->id);
+            }
+          })
+          ->where(function($query) use ($where){
+            $query->where('p.codigo', 'like', '%'.$where.'%')
+            ->orWhere(\DB::raw("concat(f.nombre, ' ',m.nombre, ' ', p.descripcion)"), 'like', '%'.$where.'%');
+          })
+          ->select(
+            'p.codigo as codigo',
+            \DB::raw("concat(f.nombre, ' ',m.nombre, ' ', p.descripcion) as descripcion"),
+            'p.precio as precio',
+            'pt.cantidad as cantidad',
+            'pt.tienda_id as tienda'
+          )
           ->distinct()
           ->get();
 
@@ -419,41 +460,18 @@ class ProductoController extends Controller{
     $datas = [];
     $cantidad = 0;
     foreach ($productos as $producto):
-        if(\Auth::user()->tienda_id != null){
-          if($producto->tienda == \Auth::user()->tienda_id){
-            $data = array_merge(
-                array
-                (
-                  "codigo" => $producto->codigo,
-                  "descripcion" => $producto->descripcion,
-                  "precio" => number_format($producto->precio, 2, '.', ' '),
-                  "stock" => $producto->cantidad,
-                  "tienda" => $producto->tienda
-                )
-            );
-            //Asignamos un grupo de datos al array datas
-            $datas[] = $data;
-          }
-        }else{
-          if($producto->tienda == 1){
-            $data = array_merge(
-                array
-                (
-                  "codigo" => $producto->codigo,
-                  "descripcion" => $producto->descripcion,
-                  "precio" => number_format($producto->precio, 2, '.', ' '),
-                  "stock" => $producto->cantidad,
-                  "tienda" => $producto->tienda
-                )
-            );
-            //Asignamos un grupo de datos al array datas
-            $datas[] = $data;
-          }
-            
-        }
-
-      
-      
+      $data = array_merge(
+        array
+        (
+          "codigo" => $producto->codigo,
+          "descripcion" => $producto->descripcion,
+          "precio" => number_format($producto->precio, 2, '.', ' '),
+          "stock" => $producto->cantidad,
+          "tienda" => $producto->tienda
+        )
+      );
+      //Asignamos un grupo de datos al array datas
+      $datas[] = $data;
     endforeach;
 
     return response()->json(
