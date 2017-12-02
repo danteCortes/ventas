@@ -367,161 +367,161 @@ class VentaController extends Controller{
     $letras = $this->numtoletras($total);
     return view('ventas.recibo')->with('recibo', $recibo)->with('letras', $letras);
   }
-  
+
   private function numtoletras($xcifra){
-	$xarray = array(0 => "Cero",
-			1 => "UN", "DOS", "TRES", "CUATRO", "CINCO", "SEIS", "SIETE", "OCHO", "NUEVE",
-			"DIEZ", "ONCE", "DOCE", "TRECE", "CATORCE", "QUINCE", "DIECISEIS", "DIECISIETE", "DIECIOCHO", "DIECINUEVE",
-			"VEINTI", 30 => "TREINTA", 40 => "CUARENTA", 50 => "CINCUENTA", 60 => "SESENTA", 70 => "SETENTA", 80 => "OCHENTA", 90 => "NOVENTA",
-			100 => "CIENTO", 200 => "DOSCIENTOS", 300 => "TRESCIENTOS", 400 => "CUATROCIENTOS", 500 => "QUINIENTOS", 600 => "SEISCIENTOS", 700 => "SETECIENTOS", 800 => "OCHOCIENTOS", 900 => "NOVECIENTOS"
-	);
+  	$xarray = array(0 => "Cero",
+  			1 => "UN", "DOS", "TRES", "CUATRO", "CINCO", "SEIS", "SIETE", "OCHO", "NUEVE",
+  			"DIEZ", "ONCE", "DOCE", "TRECE", "CATORCE", "QUINCE", "DIECISEIS", "DIECISIETE", "DIECIOCHO", "DIECINUEVE",
+  			"VEINTI", 30 => "TREINTA", 40 => "CUARENTA", 50 => "CINCUENTA", 60 => "SESENTA", 70 => "SETENTA", 80 => "OCHENTA", 90 => "NOVENTA",
+  			100 => "CIENTO", 200 => "DOSCIENTOS", 300 => "TRESCIENTOS", 400 => "CUATROCIENTOS", 500 => "QUINIENTOS", 600 => "SEISCIENTOS", 700 => "SETECIENTOS", 800 => "OCHOCIENTOS", 900 => "NOVECIENTOS"
+  	);
 
-	$xcifra = trim($xcifra);
-	$xlength = strlen($xcifra);
-	$xpos_punto = strpos($xcifra, ".");
-	$xaux_int = $xcifra;
-	$xdecimales = "00";
-	if (!($xpos_punto === false)) {
-		if ($xpos_punto == 0) {
-			$xcifra = "0" . $xcifra;
-			$xpos_punto = strpos($xcifra, ".");
-		}
-		$xaux_int = substr($xcifra, 0, $xpos_punto); // obtengo el entero de la cifra a covertir
-		$xdecimales = substr($xcifra . "00", $xpos_punto + 1, 2); // obtengo los valores decimales
-	}
+  	$xcifra = trim($xcifra);
+  	$xlength = strlen($xcifra);
+  	$xpos_punto = strpos($xcifra, ".");
+  	$xaux_int = $xcifra;
+  	$xdecimales = "00";
+  	if (!($xpos_punto === false)) {
+  		if ($xpos_punto == 0) {
+  			$xcifra = "0" . $xcifra;
+  			$xpos_punto = strpos($xcifra, ".");
+  		}
+  		$xaux_int = substr($xcifra, 0, $xpos_punto); // obtengo el entero de la cifra a covertir
+  		$xdecimales = substr($xcifra . "00", $xpos_punto + 1, 2); // obtengo los valores decimales
+  	}
 
-	$XAUX = str_pad($xaux_int, 18, " ", STR_PAD_LEFT);
-	$xcadena = "";
-	for ($xz = 0; $xz < 3; $xz++) {
-			$xaux = substr($XAUX, $xz * 6, 6);
-			$xi = 0;
-			$xlimite = 6; // inicializo el contador de centenas xi y establezco el límite a 6 dígitos en la parte entera
-			$xexit = true; // bandera para controlar el ciclo del While
-			while ($xexit) {
-					if ($xi == $xlimite) { // si ya llegó al límite máximo de enteros
-							break; // termina el ciclo
-					}
+  	$XAUX = str_pad($xaux_int, 18, " ", STR_PAD_LEFT);
+  	$xcadena = "";
+  	for ($xz = 0; $xz < 3; $xz++) {
+  			$xaux = substr($XAUX, $xz * 6, 6);
+  			$xi = 0;
+  			$xlimite = 6; // inicializo el contador de centenas xi y establezco el límite a 6 dígitos en la parte entera
+  			$xexit = true; // bandera para controlar el ciclo del While
+  			while ($xexit) {
+  					if ($xi == $xlimite) { // si ya llegó al límite máximo de enteros
+  							break; // termina el ciclo
+  					}
 
-					$x3digitos = ($xlimite - $xi) * -1; // comienzo con los tres primeros digitos de la cifra, comenzando por la izquierda
-					$xaux = substr($xaux, $x3digitos, abs($x3digitos)); // obtengo la centena (los tres dígitos)
-					for ($xy = 1; $xy < 4; $xy++) { // ciclo para revisar centenas, decenas y unidades, en ese orden
-							switch ($xy) {
-									case 1: // checa las centenas
-											if (substr($xaux, 0, 3) < 100) { // si el grupo de tres dígitos es menor a una centena ( < 99) no hace nada y pasa a revisar las decenas
+  					$x3digitos = ($xlimite - $xi) * -1; // comienzo con los tres primeros digitos de la cifra, comenzando por la izquierda
+  					$xaux = substr($xaux, $x3digitos, abs($x3digitos)); // obtengo la centena (los tres dígitos)
+  					for ($xy = 1; $xy < 4; $xy++) { // ciclo para revisar centenas, decenas y unidades, en ese orden
+  							switch ($xy) {
+  									case 1: // checa las centenas
+  											if (substr($xaux, 0, 3) < 100) { // si el grupo de tres dígitos es menor a una centena ( < 99) no hace nada y pasa a revisar las decenas
 
-											} else {
-													$key = (int) substr($xaux, 0, 3);
-													if (TRUE === array_key_exists($key, $xarray)){  // busco si la centena es número redondo (100, 200, 300, 400, etc..)
-															$xseek = $xarray[$key];
-															$xsub = $this->subfijo($xaux); // devuelve el subfijo correspondiente (Millón, Millones, Mil o nada)
-															if (substr($xaux, 0, 3) == 100)
-																	$xcadena = " " . $xcadena . " CIEN " . $xsub;
-															else
-																	$xcadena = " " . $xcadena . " " . $xseek . " " . $xsub;
-															$xy = 3; // la centena fue redonda, entonces termino el ciclo del for y ya no reviso decenas ni unidades
-													}
-													else { // entra aquí si la centena no fue numero redondo (101, 253, 120, 980, etc.)
-															$key = (int) substr($xaux, 0, 1) * 100;
-															$xseek = $xarray[$key]; // toma el primer caracter de la centena y lo multiplica por cien y lo busca en el arreglo (para que busque 100,200,300, etc)
-															$xcadena = " " . $xcadena . " " . $xseek;
-													} // ENDIF ($xseek)
-											} // ENDIF (substr($xaux, 0, 3) < 100)
-											break;
-									case 2: // checa las decenas (con la misma lógica que las centenas)
-											if (substr($xaux, 1, 2) < 10) {
+  											} else {
+  													$key = (int) substr($xaux, 0, 3);
+  													if (TRUE === array_key_exists($key, $xarray)){  // busco si la centena es número redondo (100, 200, 300, 400, etc..)
+  															$xseek = $xarray[$key];
+  															$xsub = $this->subfijo($xaux); // devuelve el subfijo correspondiente (Millón, Millones, Mil o nada)
+  															if (substr($xaux, 0, 3) == 100)
+  																	$xcadena = " " . $xcadena . " CIEN " . $xsub;
+  															else
+  																	$xcadena = " " . $xcadena . " " . $xseek . " " . $xsub;
+  															$xy = 3; // la centena fue redonda, entonces termino el ciclo del for y ya no reviso decenas ni unidades
+  													}
+  													else { // entra aquí si la centena no fue numero redondo (101, 253, 120, 980, etc.)
+  															$key = (int) substr($xaux, 0, 1) * 100;
+  															$xseek = $xarray[$key]; // toma el primer caracter de la centena y lo multiplica por cien y lo busca en el arreglo (para que busque 100,200,300, etc)
+  															$xcadena = " " . $xcadena . " " . $xseek;
+  													} // ENDIF ($xseek)
+  											} // ENDIF (substr($xaux, 0, 3) < 100)
+  											break;
+  									case 2: // checa las decenas (con la misma lógica que las centenas)
+  											if (substr($xaux, 1, 2) < 10) {
 
-											} else {
-													$key = (int) substr($xaux, 1, 2);
-													if (TRUE === array_key_exists($key, $xarray)) {
-															$xseek = $xarray[$key];
-															$xsub = $this->subfijo($xaux);
-															if (substr($xaux, 1, 2) == 20)
-																	$xcadena = " " . $xcadena . " VEINTE " . $xsub;
-															else
-																	$xcadena = " " . $xcadena . " " . $xseek . " " . $xsub;
-															$xy = 3;
-													}
-													else {
-															$key = (int) substr($xaux, 1, 1) * 10;
-															$xseek = $xarray[$key];
-															if (20 == substr($xaux, 1, 1) * 10)
-																	$xcadena = " " . $xcadena . " " . $xseek;
-															else
-																	$xcadena = " " . $xcadena . " " . $xseek . " Y ";
-													} // ENDIF ($xseek)
-											} // ENDIF (substr($xaux, 1, 2) < 10)
-											break;
-									case 3: // checa las unidades
-											if (substr($xaux, 2, 1) < 1) { // si la unidad es cero, ya no hace nada
+  											} else {
+  													$key = (int) substr($xaux, 1, 2);
+  													if (TRUE === array_key_exists($key, $xarray)) {
+  															$xseek = $xarray[$key];
+  															$xsub = $this->subfijo($xaux);
+  															if (substr($xaux, 1, 2) == 20)
+  																	$xcadena = " " . $xcadena . " VEINTE " . $xsub;
+  															else
+  																	$xcadena = " " . $xcadena . " " . $xseek . " " . $xsub;
+  															$xy = 3;
+  													}
+  													else {
+  															$key = (int) substr($xaux, 1, 1) * 10;
+  															$xseek = $xarray[$key];
+  															if (20 == substr($xaux, 1, 1) * 10)
+  																	$xcadena = " " . $xcadena . " " . $xseek;
+  															else
+  																	$xcadena = " " . $xcadena . " " . $xseek . " Y ";
+  													} // ENDIF ($xseek)
+  											} // ENDIF (substr($xaux, 1, 2) < 10)
+  											break;
+  									case 3: // checa las unidades
+  											if (substr($xaux, 2, 1) < 1) { // si la unidad es cero, ya no hace nada
 
-											} else {
-													$key = (int) substr($xaux, 2, 1);
-													$xseek = $xarray[$key]; // obtengo directamente el valor de la unidad (del uno al nueve)
-													$xsub = $this->subfijo($xaux);
-													$xcadena = " " . $xcadena . " " . $xseek . " " . $xsub;
-											} // ENDIF (substr($xaux, 2, 1) < 1)
-											break;
-							} // END SWITCH
-					} // END FOR
-					$xi = $xi + 3;
-			} // ENDDO
+  											} else {
+  													$key = (int) substr($xaux, 2, 1);
+  													$xseek = $xarray[$key]; // obtengo directamente el valor de la unidad (del uno al nueve)
+  													$xsub = $this->subfijo($xaux);
+  													$xcadena = " " . $xcadena . " " . $xseek . " " . $xsub;
+  											} // ENDIF (substr($xaux, 2, 1) < 1)
+  											break;
+  							} // END SWITCH
+  					} // END FOR
+  					$xi = $xi + 3;
+  			} // ENDDO
 
-			if (substr(trim($xcadena), -5, 5) == "ILLON") // si la cadena obtenida termina en MILLON o BILLON, entonces le agrega al final la conjuncion DE
-					$xcadena.= " DE";
+  			if (substr(trim($xcadena), -5, 5) == "ILLON") // si la cadena obtenida termina en MILLON o BILLON, entonces le agrega al final la conjuncion DE
+  					$xcadena.= " DE";
 
-			if (substr(trim($xcadena), -7, 7) == "ILLONES") // si la cadena obtenida en MILLONES o BILLONES, entoncea le agrega al final la conjuncion DE
-					$xcadena.= " DE";
+  			if (substr(trim($xcadena), -7, 7) == "ILLONES") // si la cadena obtenida en MILLONES o BILLONES, entoncea le agrega al final la conjuncion DE
+  					$xcadena.= " DE";
 
-			// ----------- esta línea la puedes cambiar de acuerdo a tus necesidades o a tu país -------
-			if (trim($xaux) != "") {
-					switch ($xz) {
-							case 0:
-									if (trim(substr($XAUX, $xz * 6, 6)) == "1")
-											$xcadena.= "UN BILLON ";
-									else
-											$xcadena.= " BILLONES ";
-									break;
-							case 1:
-									if (trim(substr($XAUX, $xz * 6, 6)) == "1")
-											$xcadena.= "UN MILLON ";
-									else
-											$xcadena.= " MILLONES ";
-									break;
-							case 2:
-									if ($xcifra < 1) {
-											$xcadena = "CERO Y $xdecimales/100 SOLES";
-									}
-									if ($xcifra >= 1 && $xcifra < 2) {
-											$xcadena = "UNO Y $xdecimales/100 SOLES";
-									}
-									if ($xcifra >= 2) {
-											$xcadena.= " Y $xdecimales/100 SOLES"; //
-									}
-									break;
-					} // endswitch ($xz)
-			} // ENDIF (trim($xaux) != "")
-			// ------------------      en este caso, para México se usa esta leyenda     ----------------
-			$xcadena = str_replace("VEINTI ", "VEINTI", $xcadena); // quito el espacio para el VEINTI, para que quede: VEINTICUATRO, VEINTIUN, VEINTIDOS, etc
-			$xcadena = str_replace("  ", " ", $xcadena); // quito espacios dobles
-			$xcadena = str_replace("UN UN", "UN", $xcadena); // quito la duplicidad
-			$xcadena = str_replace("  ", " ", $xcadena); // quito espacios dobles
-			$xcadena = str_replace("BILLON DE MILLONES", "BILLON DE", $xcadena); // corrigo la leyenda
-			$xcadena = str_replace("BILLONES DE MILLONES", "BILLONES DE", $xcadena); // corrigo la leyenda
-			$xcadena = str_replace("DE UN", "UN", $xcadena); // corrigo la leyenda
-	}
-	return trim($xcadena);
-  }
+  			// ----------- esta línea la puedes cambiar de acuerdo a tus necesidades o a tu país -------
+  			if (trim($xaux) != "") {
+  					switch ($xz) {
+  							case 0:
+  									if (trim(substr($XAUX, $xz * 6, 6)) == "1")
+  											$xcadena.= "UN BILLON ";
+  									else
+  											$xcadena.= " BILLONES ";
+  									break;
+  							case 1:
+  									if (trim(substr($XAUX, $xz * 6, 6)) == "1")
+  											$xcadena.= "UN MILLON ";
+  									else
+  											$xcadena.= " MILLONES ";
+  									break;
+  							case 2:
+  									if ($xcifra < 1) {
+  											$xcadena = "CERO Y $xdecimales/100 SOLES";
+  									}
+  									if ($xcifra >= 1 && $xcifra < 2) {
+  											$xcadena = "UNO Y $xdecimales/100 SOLES";
+  									}
+  									if ($xcifra >= 2) {
+  											$xcadena.= " Y $xdecimales/100 SOLES"; //
+  									}
+  									break;
+  					} // endswitch ($xz)
+  			} // ENDIF (trim($xaux) != "")
+  			// ------------------      en este caso, para México se usa esta leyenda     ----------------
+  			$xcadena = str_replace("VEINTI ", "VEINTI", $xcadena); // quito el espacio para el VEINTI, para que quede: VEINTICUATRO, VEINTIUN, VEINTIDOS, etc
+  			$xcadena = str_replace("  ", " ", $xcadena); // quito espacios dobles
+  			$xcadena = str_replace("UN UN", "UN", $xcadena); // quito la duplicidad
+  			$xcadena = str_replace("  ", " ", $xcadena); // quito espacios dobles
+  			$xcadena = str_replace("BILLON DE MILLONES", "BILLON DE", $xcadena); // corrigo la leyenda
+  			$xcadena = str_replace("BILLONES DE MILLONES", "BILLONES DE", $xcadena); // corrigo la leyenda
+  			$xcadena = str_replace("DE UN", "UN", $xcadena); // corrigo la leyenda
+  	}
+  	return trim($xcadena);
+    }
 
-  private function subfijo($xx){
-	$xx = trim($xx);
-	$xstrlen = strlen($xx);
-	if ($xstrlen == 1 || $xstrlen == 2 || $xstrlen == 3)
-			$xsub = "";
+    private function subfijo($xx){
+  	$xx = trim($xx);
+  	$xstrlen = strlen($xx);
+  	if ($xstrlen == 1 || $xstrlen == 2 || $xstrlen == 3)
+  			$xsub = "";
 
-	if ($xstrlen == 4 || $xstrlen == 5 || $xstrlen == 6)
-			$xsub = "MIL";
+  	if ($xstrlen == 4 || $xstrlen == 5 || $xstrlen == 6)
+  			$xsub = "MIL";
 
-	return $xsub;
+  	return $xsub;
   }
 
   public function listar(Request $request){
@@ -641,37 +641,178 @@ class VentaController extends Controller{
   public function buscar(Request $request){
     $venta = Venta::find($request->id);
     $recibo = $venta->recibo;
-    $tablaTicket = "<table class='table table-condensed'>
+    $total = $recibo->venta->total;
+    if($reclamo = $recibo->venta->reclamo){
+        $total -= $recibo->venta->descuento;
+    }
+    $letras = $this->numtoletras($total);
+    $tablaTicket = "--Copia del ticket original--<div class='row'>
+        <div class='col-sm-12'>
+            <p class='text-center' style='font-size: 12px; margin-bottom:1px;'>".$recibo->venta->tienda->nombre."</p>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-sm-12'>
+            <p class='text-center' style='font-size: 12px; margin-bottom:1px;'>R.U.C. N° ".$recibo->venta->tienda->ruc."</p>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-sm-12'>
+            <p class='text-center' style='font-size: 12px; margin-bottom:1px;'>".$recibo->venta->tienda->direccion."</p>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-sm-12'>
+            <p class='text-center' style='font-size: 12px; margin-bottom:1px;'>AUTORIZACION SUNAT NRO. 0193845116923</p>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-sm-12'>
+            <p class='text-left' style='font-size: 12px; margin-bottom:1px;'>TICKET N° $recibo->numeracion</p>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-sm-12'>
+            <p class='text-left' style='font-size: 12px; margin-bottom:1px;'>N° DE SERIE ".$recibo->venta->tienda->ticketera."</p>
+        </div>
+    </div>";
+    if($empresa = $recibo->empresa){
+      $tablaTicket .= "<div class='row'>
+          <div class='col-sm-12'>
+              <p class='text-left' style='font-size: 12px; margin-bottom:1px;'>RUC: $empresa->ruc</p>
+          </div>
+      </div>
+      <div class='row'>
+          <div class='col-sm-12'>
+              <p class='text-left' style='font-size: 12px; margin-bottom:1px;'>CLIENTE: $empresa->nombre</p>
+          </div>
+      </div>
+      <div class='row'>
+          <div class='col-sm-12'>
+              <p class='text-left' style='font-size: 12px; margin-bottom:1px;'>DIRECCIÓN: $empresa->direccion</p>
+          </div>
+      </div>";
+    }elseif($persona = $recibo->persona){
+      $tablaTicket .= "<div class='row'>
+          <div class='col-sm-12'>
+              <p class='text-left' style='font-size: 12px; margin-bottom:1px;'>CLIENTE: $persona->nombres $persona->apellidos</p>
+          </div>
+      </div>";
+    }else{
+      $tablaTicket .= "<div class='row'>
+          <div class='col-sm-12'>
+              <p class='text-left' style='font-size: 12px; margin-bottom:1px;'>CLIENTE: CLIENTE VARIOS</p>
+          </div>
+      </div>";
+    }
+    $tablaTicket .= "<table class='table table-condensed' style='margin-bottom:5px;'>
       <tr>
-        <th colspan='3' style='text-align:center; border-top:rgba(255, 255, 255, 0);'>".$recibo->venta->tienda->nombre."</th>
-      </tr>
-      <tr>
-        <th colspan='3' style='text-align:center; border-top:rgba(255, 255, 255, 0);'>".$recibo->venta->tienda->direccion."</th>
-      </tr>
-      <tr>
-        <th colspan='3' style='text-align:center; border-top:rgba(255, 255, 255, 0);'>R.U.C. N° ".$recibo->venta->tienda->ruc."</th>
-      </tr>
-      <tr>
-        <th colspan='3' style='text-align:center; border-top:rgba(255, 255, 255, 0);'>N° DE SERIE ".$recibo->venta->tienda->ticketera."</th>
-      </tr>
-      <tr>
-        <th colspan='3' style='text-align:right; border-top:rgba(255, 255, 255, 0);'>".$recibo->numeracion."</th>
-      </tr>
-      <tr>
-        <th colspan='3' style='text-align:right; border-top:rgba(255, 255, 255, 0);'>".$recibo->venta->updated_at."</th>
+        <td style='border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;'>
+            <p class='text-left' style='font-size: 12px; margin-bottom:1px;'>Cant.</p>
+        </td>
+        <td style='border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;'>
+            <p class='text-left' style='font-size: 12px; margin-bottom:1px;'>Descripción</p>
+        </td>
+        <td style='border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;'>
+            <p class='text-left' style='font-size: 12px; margin-bottom:1px;'>Unit.</p>
+        </td>
+        <td style='width:50px; border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;'>
+            <p class='text-left' style='font-size: 12px; margin-bottom:1px;'>Importe</p>
+        </td>
       </tr>";
       foreach($recibo->venta->detalles as $detalle){
         $tablaTicket .= "<tr>
-          <th style='text-align:center; border-top:rgba(255, 255, 255, 0);'>".$detalle->cantidad."</th>
-          <th style='text-align:left; border-top:rgba(255, 255, 255, 0);'>".$detalle->producto->descripcion."</th>
-          <th style='text-align:right; border-top:rgba(255, 255, 255, 0);'>".$detalle->total."</th>
+            <td style='border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;'>
+                <p class='text-left' style='font-size: 12px; margin-bottom:1px;'>$detalle->cantidad</p>
+            </td>
+            <td style='border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;'>
+                <p class='text-left' style='font-size: 12px; margin-bottom:1px;'>".$detalle->producto->familia->nombre.
+                " ".$detalle->producto->marca->nombre." ".$detalle->producto->descripcion."</p>
+            </td>
+            <td style='border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;'>
+                <p class='text-right' style='font-size: 12px; margin-bottom:1px;'>".$detalle->producto->precio."</p>
+            </td>
+            <td style='width:50px; border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;'>
+                <p class='text-right' style='font-size: 12px; margin-bottom:1px;'>$detalle->total</p>
+            </td>
         </tr>";
       }
       $tablaTicket .= "<tr>
-        <th colspan='2' style='text-align:right; border-top:rgba(255, 255, 255, 0);'>TOTAL</th>
-        <th colspan='2' style='text-align:right; border-top:rgba(255, 255, 255, 0);'>".$recibo->venta->total."</th>
+        <td colspan='3' style='text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px; padding-top:1px; padding-bottom:0px;'>
+            <p class='text-right' style='font-size: 12px; margin-bottom:1px;'>TOTAL S/</p>
+        </td>
+        <td style='text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px; padding-top:1px; padding-bottom:0px;'>
+            <p class='text-right' style='font-size: 12px; margin-bottom:1px;'>".$recibo->venta->total."</p>
+        </td>
+      </tr>";
+      $vuelto =  $recibo->venta->total;
+      if($reclamo = $recibo->venta->reclamo){
+        $tablaTicket .= "<tr>
+          <td colspan='2' style='text-align:left; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;'>
+              <p class='text-right' style='font-size: 12px; margin-bottom:1px;'>DESCUENTO POR CANJE DE $reclamo->puntos PUNTOS TÚ</p></td>
+          <td style='text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;'>
+              <p class='text-right' style='font-size: 12px; margin-bottom:1px;'>".number_format($recibo->venta->descuento, 2, '.', ' ')."</p></td>
+        </tr>
+        <tr>
+          <td colspan='2' style='text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;'>
+              <p class='text-right' style='font-size: 12px; margin-bottom:1px;'>TOTAL A PAGAR</p>
+          </td>
+          <td style='text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;'>
+              <p class='text-right' style='font-size: 12px; margin-bottom:1px;'>".number_format($recibo->venta->total-$recibo->venta->descuento, 2, '.', ' ')."</p>
+          </td>
+        </tr>";
+        $vuelto =  $recibo->venta->total-$recibo->venta->descuento;
+      }
+      if($recibo->venta->efectivo){
+        $tablaTicket .= "<tr>
+          <td colspan='3' style='text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;'>
+              <p class='text-right' style='font-size: 12px; margin-bottom:1px;'>EFECTIVO S/ </p>
+          </td>
+          <td style='text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;'>
+              <p class='text-right' style='font-size: 12px; margin-bottom:1px;'>".number_format($recibo->venta->efectivo->monto, 2, '.', ' ')."</p>
+          </td>
+        </tr>";
+        $vuelto = $recibo->venta->efectivo->monto - $vuelto;
+      }
+      if($recibo->venta->tarjetaVenta){
+        $tablaTicket .= "<tr>
+          <th colspan='3' style='text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;'>
+              <p class='text-right' style='font-size: 12px; margin-bottom:1px;'></p>TARJETA S/ </th>
+          <th style='text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;'>
+              <p class='text-right' style='font-size: 12px; margin-bottom:1px;'></p>".number_format($recibo->venta->tarjetaVenta->monto, 2, '.', ' ')."</th>
+        </tr>";
+        $vuelto = $recibo->venta->tarjetaVenta->monto - $vuelto;
+      }
+      $tablaTicket .= "<tr>
+        <td colspan='3' style='text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;'>
+            <p class='text-right' style='font-size: 12px; margin-bottom:1px;'>VUELTO S/ </p></td>
+        <td style='text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;'>
+            <p class='text-right' style='font-size: 12px; margin-bottom:1px;'>".number_format($vuelto, 2, '.', ' ')."</p></td>
+      </tr>
+      <tr>
+        <td colspan='4' style='text-align:left; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;'>
+            <p class='text-left' style='font-size: 12px; margin-bottom:1px;'>SON: $letras</p></td>
+      </tr>
+      <tr>
+        <td colspan='4' style='text-align:left; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;'>
+            <p class='text-left' style='font-size: 12px; margin-bottom:1px;'>HUANUCO, ".\Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$recibo->venta->updated_at)->format('d/m/Y')."
+            - HORA: ".\Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$recibo->venta->updated_at)->format('H:i A')."</p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan='4' style='text-align:left; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;'>
+            <p class='text-left' style='font-size: 12px; margin-bottom:1px;'>CAJERA: ".$recibo->venta->usuario->persona->nombres." ".$recibo->venta->usuario->persona->apellidos."</p>
+        </td>
       </tr>
     </table>";
+    if($persona = $recibo->persona){
+      if($persona->puntos){
+        $tablaTicket .= "<p class='text-justify' style='font-size: 12px; margin-bottom:5px;'>SR(A). $persona->nombres $persona->apellidos CON ESTA COMPRA USTED ACUMULA UN TOTAL DE $persona->puntos
+          PUNTOS TÚ. RECUERDE RECLAMAR SU DESCUENTO A PARTIR DE LOS 1 000 PUNTOS.</p>";
+      }
+    }
+    $tablaTicket .= "<p class='text-justify' style='font-size: 12px; margin-bottom:5px;'>BIENES TRANSFERIDOS EN LA AMAZONIA PARA SER CONSUMIDOS EN LA MISMA</p>--Copia del ticket original--";
+
     return ['ticket'=>$tablaTicket, 'recibo'=>$recibo, 'venta'=>$venta];
   }
 

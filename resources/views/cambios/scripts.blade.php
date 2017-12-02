@@ -32,6 +32,8 @@
         }
       }
     }).on("loaded.rs.jquery.bootgrid", function(){
+      /* poner el focus en el input de busqueda */
+      $("#tblVentas-header > div > div > div.search.form-group > div > input").focus();
       /* Se ejecuta despues de cargar y procesar los datos */
       grid.find(".command-show").on("click", function(e){
         $.post("{{url('buscar-venta')}}", {id: $(this).data('row-codigo')}, function(data, textStatus, xhr) {

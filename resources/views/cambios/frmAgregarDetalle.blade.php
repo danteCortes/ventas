@@ -48,7 +48,7 @@
             </div>
             <div class="input-group">
               <span class="input-group-addon">Cantidad: </span>
-              <input type="text" class="form-control" placeholder="CANTIDAD" name="cantidad" required>
+              <input type="text" class="form-control" placeholder="CANTIDAD" id="cantidad" name="cantidad" required>
               <span class="input-group-btn">
                 <button class="btn btn-default" type="submit"><span class="fa fa-check"></span> Agregar</button>
               </span>
