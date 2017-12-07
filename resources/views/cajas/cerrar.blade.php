@@ -9,7 +9,7 @@
         </h3>
       </div>
       <div data-spy="scroll" data-target="#cabecera" data-offset="0" class="panel-body" id="reporteDiario">
-        <p id="cabecera">ESTÁ A PUNTO DE CERRAR CAJA CON:</p>
+        <p id="cabecera">CIERRE DE CAJA {{\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $cierre->created_at)->format('d/m/Y')}}:</p>
         @include('cajas.reportes.ventas.efectivo')
         @include('cajas.reportes.ventas.resumenVentas')
         @include('cajas.reportes.ventas.resumenDescuentos')

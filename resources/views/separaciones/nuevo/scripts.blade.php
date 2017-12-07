@@ -31,6 +31,8 @@
         }
       }
     }).on("loaded.rs.jquery.bootgrid", function(){
+      /* poner el focus en el input de busqueda */
+      $("#tblProductos-header > div > div > div.search.form-group > div > input").focus();
       /* Se ejecuta despues de cargar y procesar los datos */
       grid.find(".command-agregar").on("click", function(e){
         $.post("{{url('buscar-producto')}}", {codigo: $(this).data("row-codigo")}, function(data, textStatus, xhr) {

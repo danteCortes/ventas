@@ -295,11 +295,14 @@ class VentaController extends Controller{
       // Identificamos la cantidad de productos que se vedio.
       $cantidad = $detalle->cantidad;
       // Regresamos la cantidad a la tienda de origen.
-      $productoTienda = \App\productoTienda::where('producto_codigo', $producto->codigo)
+      $productoTienda = \App\ProductoTienda::where('producto_codigo', $producto->codigo)
         ->where('tienda_id', $tienda->id)->first();
       $productoTienda->cantidad += $cantidad;
       $productoTienda->save();
     }
+    // descontamos el total del cierre.
+    $cierre = $venta->cierre;
+    $cierre->total -= $venta->total;
     // Ya regresados las cantidades de los productos a las tiendas de origen, procedemos a eliminar la venta.
     $venta->delete();
     return redirect('venta')->with('info', 'SE ELIMINÓ UNA VENTA DE ESTA TIENDA, ESTE CAMBIO SE REGISTRÓ

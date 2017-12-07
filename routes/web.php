@@ -36,28 +36,28 @@ Route::get('ingresar-producto', function(){
 });
 
 Route::get('generar-codbar', function(){
-    
-    foreach(\App\Producto::all() as $producto){
-        // Revisamos si ya tiene codigo.
-        if($producto->codigo == 'dahiav1511470861'){
-            echo "recorremos el codigo";
-            if(is_file(storage_path('codigosBarra/').$producto->codigo.'.png')){
-                echo "existe su codigo de barras ".storage_path('codigosBarra/').$producto->codigo.'.png<br>x';
-            }
-        }
-        if(is_file(storage_path('codigosBarra/').$producto->codigo.'.png')){
-            echo storage_path('codigosBarra/').$producto->codigo.'.png<br>';
-        }
-        //echo public_path('stogare/codigosBarra/').$producto->codigo.'.png<br>';
+  set_time_limit(0);
+  // codigos de barras.
+  $i = 1;
+  foreach(\App\Producto::all() as $producto){
+    // Revisamos si ya tiene codigo.
+    if(!$producto->codbar){
+      $codbar = time()+$i;
+      DNS1D::setStorPath(storage_path("/codigosBarra/".$codbar.".png"));
+      DNS1D::getBarcodePNG(mb_strtolower("este#(/bhfs)"), "C128");
     }
+    $i++;break;
+  }
 });
 
 Route::prefix('reporte')->group(function(){
   Route::get('/', 'ReporteController@frmKardex');
   Route::post('kardex', 'ReporteController@crearKardex');
   Route::post('inventario', 'ReporteController@crearInventario');
+  Route::post('cierre', 'ReporteController@crearCierre');
   Route::get('por-vencer', 'ReporteController@porVencer');
   Route::get('vencidos', 'ReporteController@vencidos');
+  Route::post('ventas', 'ReporteController@ventas');
 });
 
 Route::post('cierre-caja/{id}', 'CierreController@cierreCaja');

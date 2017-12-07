@@ -32,6 +32,8 @@
         }
       }
     }).on("loaded.rs.jquery.bootgrid", function(){
+      /* poner el focus en el input de busqueda */
+      $("#tblProductos-header > div > div > div.search.form-group > div > input").focus();
       /* Se ejecuta despues de cargar y procesar los datos */
       grid.find(".command-show").on("click", function(e){
         $(".codigo").empty();
@@ -99,8 +101,28 @@
               "</td><td style='text-align:right'>"+(data['producto']['precio']*cantidad).toFixed(2)+"</td></tr>";
             $("#detalles-kardex").append(detalles);
             $("#inventario").addClass('oculto');
+            $("#fichaVentas").addClass('oculto');
             $("#fichaKardex").removeClass('oculto');
             $("#frmKardex").modal('hide');
+        });
+      }
+    });
+
+    $("#btnBuscarVentas").click(function() {
+      if ($("#inicio_ventas").val() != "" && $("#fin_ventas").val() != "" && $("#tienda_ventas").val() != "") {
+
+        $.post("{{url('reporte/ventas')}}",
+          {
+            inicio: $("#inicio_ventas").val(),
+            fin: $("#fin_ventas").val(),
+            tienda_id: $("#tienda_ventas").val()
+          },
+          function(data, textStatus, xhr) {
+            $("#resumen-ventas").html(data);
+            $("#inventario").addClass('oculto');
+            $("#fichaKardex").addClass('oculto');
+            $("#fichaVentas").removeClass('oculto');
+            $("#frmVentas").modal('hide');
         });
       }
     });
@@ -126,10 +148,27 @@
               $("#detalles-inventario").append(detalles);
             });
             $("#fichaKardex").addClass('oculto');
+            $("#fichaVentas").addClass('oculto');
             $("#inventario").removeClass('oculto');
             $("#frmInventario").modal('hide');
           }
         );
+      }
+    });
+
+    $("#btnBuscarCierre").click(function(){
+      if ($("#tienda_cierre").val() != ""  && $("#fecha_cierre").val() != "") {
+
+        $.post("{{url('reporte/cierre')}}", {tienda_id: $("#tienda_cierre").val(), fecha: $("#fecha_cierre").val()},
+          function(data, textStatus, xhr) {
+            // Llenamos el encabezado.
+            $("#resumen-cierres").empty();
+            $("#resumen-cierres").html(data);
+            $("#frmCierres").modal("hide");
+
+          }
+        );
+
       }
     });
 
@@ -139,6 +178,10 @@
 
     $("#imprimir-kardex").click(function (){
       $("#imprimirKardex").printArea();
+    });
+
+    $("#imprimir-ventas").click(function (){
+      $("#imprimirVentas").printArea();
     });
 
   });

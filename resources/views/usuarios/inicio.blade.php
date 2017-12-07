@@ -318,86 +318,88 @@ Usuarios
                     </div>
                   </div>
                 </div>
-                @if(!$usuario->estado_caja)
-                <!--Botón para mostrar un modal de advertencia antes de abrir caja  al usuario.-->
-                <!--Fecha: 16/09/2017-->
-                <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#abrir{{$usuario->id}}"
-                  style="background-color:#fff; border-color:black; color:#000;">
-                  <span class="fa fa-upload"></span>
-                </button>
-                <!--Modal de advertencia para abrir caja al usuario. Contiene un formuario que envia el id del
-                  usuario al que se le va a abrir caja al método abrirCaja del controlador UsuarioController.-->
-                <!--Fecha: 16/09/2017-->
-                <div class="modal fade" id="abrir{{$usuario->id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                  <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                      {{Form::open(['url'=>'abrir-caja'])}}
-                      {{ csrf_field() }}
-                      <div class="modal-header" style="background-color:#dddddd; color:#000;">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">ABRIR CAJA</h4>
-                      </div>
-                      <div class="modal-body" style="background-color:#e69c2d">
-                        <div class="panel" style="background-color:#bd7406">
-                          <div class="panel-body">
-                            <p style="color:#fff;">ESTA A PUNTO DE ABRIR CAJA AL USUARIO <strong>{{$usuario->persona->nombres}}</strong>,
-                              CON ESTA ACCIÓN EL USUARIO PODRÁ REALIZAR OPERACIONES EN SU TIENDA ASIGNADA, NO OLVIDE INFORMAR AL USUARIO EN
-                              CUESTIÓN DE ESTE CAMBIO.</p>
-                            <p style="color:#fff;">SI QUIERE CONTINUAR CON ESTA ACCIÓN HAGA CLIC EN EL BOTÓN ABRIR CAJA, DE LO CONTRARIO, EN EL BOTÓN
-                              CANCELAR.</p>
+                @if($usuario->tipo != 1)
+                  @if(!$usuario->estado_caja)
+                    <!--Botón para mostrar un modal de advertencia antes de abrir caja  al usuario.-->
+                    <!--Fecha: 16/09/2017-->
+                    <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#abrir{{$usuario->id}}"
+                      style="background-color:#fff; border-color:black; color:#000;">
+                      <span class="fa fa-upload"></span>
+                    </button>
+                    <!--Modal de advertencia para abrir caja al usuario. Contiene un formuario que envia el id del
+                      usuario al que se le va a abrir caja al método abrirCaja del controlador UsuarioController.-->
+                    <!--Fecha: 16/09/2017-->
+                    <div class="modal fade" id="abrir{{$usuario->id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        {{Form::open(['url'=>'abrir-caja'])}}
+                        {{ csrf_field() }}
+                        <div class="modal-header" style="background-color:#dddddd; color:#000;">
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                          <h4 class="modal-title" id="myModalLabel">ABRIR CAJA</h4>
+                        </div>
+                        <div class="modal-body" style="background-color:#e69c2d">
+                          <div class="panel" style="background-color:#bd7406">
+                            <div class="panel-body">
+                              <p style="color:#fff;">ESTA A PUNTO DE ABRIR CAJA AL USUARIO <strong>{{$usuario->persona->nombres}}</strong>,
+                                CON ESTA ACCIÓN EL USUARIO PODRÁ REALIZAR OPERACIONES EN SU TIENDA ASIGNADA, NO OLVIDE INFORMAR AL USUARIO EN
+                                CUESTIÓN DE ESTE CAMBIO.</p>
+                              <p style="color:#fff;">SI QUIERE CONTINUAR CON ESTA ACCIÓN HAGA CLIC EN EL BOTÓN ABRIR CAJA, DE LO CONTRARIO, EN EL BOTÓN
+                                CANCELAR.</p>
+                            </div>
                           </div>
                         </div>
+                        <div class="modal-footer" style="background-color:#dddddd">
+                          {{Form::hidden('usuario_id', $usuario->id)}}
+                          <button type="button" class="btn btn-default" data-dismiss="modal">
+                            <span class="glyphicon glyphicon-ban-circle"></span> Cancelar</button>
+                          <button type="submit" class="btn btn-primary"><span class="fa fa-upload"></span> Abrir Caja</button>
+                        </div>
+                        {{Form::close()}}
                       </div>
-                      <div class="modal-footer" style="background-color:#dddddd">
-                        {{Form::hidden('usuario_id', $usuario->id)}}
-                        <button type="button" class="btn btn-default" data-dismiss="modal">
-                          <span class="glyphicon glyphicon-ban-circle"></span> Cancelar</button>
-                        <button type="submit" class="btn btn-primary"><span class="fa fa-upload"></span> Abrir Caja</button>
-                      </div>
-                      {{Form::close()}}
                     </div>
                   </div>
-                </div>
-                @else
-                <!--Botón para mostrar un modal de advertencia antes de cerrar caja  al usuario.-->
-                <!--Fecha: 16/09/2017-->
-                <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#cerrar{{$usuario->id}}"
-                  style="background-color:#fff; border-color:black; color:#000;">
-                  <span class="fa fa-download"></span>
-                </button>
-                <!--Modal de advertencia para cerrar caja al usuario. Contiene un formuario que envia el id del
-                  usuario al que se le va a cerrar caja al método cerrarCaja del controlador UsuarioController.-->
-                <!--Fecha: 16/09/2017-->
-                <div class="modal fade" id="cerrar{{$usuario->id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                  <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                      {{Form::open(['url'=>'abrir-caja'])}}
-                      {{ csrf_field() }}
-                      <div class="modal-header" style="background-color:#dddddd; color:#000;">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="myModalLabel">CERRAR CAJA</h4>
-                      </div>
-                      <div class="modal-body" style="background-color:#e69c2d">
-                        <div class="panel" style="background-color:#bd7406">
-                          <div class="panel-body">
-                            <p style="color:#fff;">ESTA A PUNTO DE CERRAR CAJA AL USUARIO <strong>{{$usuario->persona->nombres}}</strong>,
-                              CON ESTA ACCIÓN EL USUARIO YA NO PODRÁ REALIZAR OPERACIONES EN SU TIENDA ASIGNADA, NO OLVIDE INFORMAR AL USUARIO EN
-                              CUESTIÓN DE ESTE CAMBIO.</p>
-                            <p style="color:#fff;">SI QUIERE CONTINUAR CON ESTA ACCIÓN HAGA CLIC EN EL BOTÓN CERRAR CAJA, DE LO CONTRARIO, EN EL BOTÓN
-                              CANCELAR.</p>
+                  @else
+                    <!--Botón para mostrar un modal de advertencia antes de cerrar caja  al usuario.-->
+                    <!--Fecha: 16/09/2017-->
+                    <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#cerrar{{$usuario->id}}"
+                      style="background-color:#fff; border-color:black; color:#000;">
+                      <span class="fa fa-download"></span>
+                    </button>
+                    <!--Modal de advertencia para cerrar caja al usuario. Contiene un formuario que envia el id del
+                      usuario al que se le va a cerrar caja al método cerrarCaja del controlador UsuarioController.-->
+                    <!--Fecha: 16/09/2017-->
+                    <div class="modal fade" id="cerrar{{$usuario->id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        {{Form::open(['url'=>'abrir-caja'])}}
+                        {{ csrf_field() }}
+                        <div class="modal-header" style="background-color:#dddddd; color:#000;">
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                          <h4 class="modal-title" id="myModalLabel">CERRAR CAJA</h4>
+                        </div>
+                        <div class="modal-body" style="background-color:#e69c2d">
+                          <div class="panel" style="background-color:#bd7406">
+                            <div class="panel-body">
+                              <p style="color:#fff;">ESTA A PUNTO DE CERRAR CAJA AL USUARIO <strong>{{$usuario->persona->nombres}}</strong>,
+                                CON ESTA ACCIÓN EL USUARIO YA NO PODRÁ REALIZAR OPERACIONES EN SU TIENDA ASIGNADA, NO OLVIDE INFORMAR AL USUARIO EN
+                                CUESTIÓN DE ESTE CAMBIO.</p>
+                              <p style="color:#fff;">SI QUIERE CONTINUAR CON ESTA ACCIÓN HAGA CLIC EN EL BOTÓN CERRAR CAJA, DE LO CONTRARIO, EN EL BOTÓN
+                                CANCELAR.</p>
+                            </div>
                           </div>
                         </div>
+                        <div class="modal-footer" style="background-color:#dddddd">
+                          {{Form::hidden('usuario_id', $usuario->id)}}
+                          <button type="button" class="btn btn-default" data-dismiss="modal">
+                            <span class="glyphicon glyphicon-ban-circle"></span> Cancelar</button>
+                          <button type="submit" class="btn btn-primary"><span class="fa fa-download"></span> Cerrar Caja</button>
+                        </div>
+                        {{Form::close()}}
                       </div>
-                      <div class="modal-footer" style="background-color:#dddddd">
-                        {{Form::hidden('usuario_id', $usuario->id)}}
-                        <button type="button" class="btn btn-default" data-dismiss="modal">
-                          <span class="glyphicon glyphicon-ban-circle"></span> Cancelar</button>
-                        <button type="submit" class="btn btn-primary"><span class="fa fa-download"></span> Cerrar Caja</button>
-                      </div>
-                      {{Form::close()}}
                     </div>
                   </div>
-                </div>
+                  @endif
                 @endif
               </td>
             </tr>

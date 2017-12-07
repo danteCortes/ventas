@@ -34,16 +34,16 @@ $total_soles += $total_pagos->monto;
 ?>
 <table class="table table-condensed" id="tblDinero">
   <tr>
-    <th style="text-align:right; border-top:rgba(255, 255, 255, 0);">Inicio: </th>
-    <th style="text-align:right; border-top:rgba(255, 255, 255, 0);">{{number_format($cierre->inicio, 2, '.', ' ')}}</th>
+    <td style="text-align:right; border-top:rgba(255, 255, 255, 0);"><p>Inicio: </p></td>
+    <td style="text-align:right; border-top:rgba(255, 255, 255, 0);"><p>{{number_format($cierre->inicio, 2, '.', ' ')}}</p></td>
   </tr>
   <hr>
   <tr>
-    <th colspan="2" style="text-align:center; border-top:rgba(255, 255, 255, 0);">EFECTIVO TOTAL EN VENTAS</th>
+    <td colspan="2" style="text-align:center; border-top:rgba(255, 255, 255, 0);"><p>EFECTIVO TOTAL EN VENTAS</p></td>
   </tr>
   <tr>
-    <th style="text-align:right; border-top:rgba(255, 255, 255, 0);">Efectivo Soles: </th>
-    <th style="text-align:right; border-top:rgba(255, 255, 255, 0);">{{number_format($total_soles-$cierre->inicio, 2, '.', ' ')}}</th>
+    <td style="text-align:right; border-top:rgba(255, 255, 255, 0);"><p>Efectivo Soles: </p></td>
+    <td style="text-align:right; border-top:rgba(255, 255, 255, 0);"><p>{{number_format($total_soles-$cierre->inicio, 2, '.', ' ')}}</p></td>
   </tr>
   <tr>
     <th style="text-align:right; border-top:rgba(255, 255, 255, 0);">Efectivo Dólares: </th>

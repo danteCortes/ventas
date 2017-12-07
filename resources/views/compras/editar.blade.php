@@ -646,7 +646,7 @@ Compras
     });
 
     $('.moneda').mask("# ##0.00", {reverse: true});
-    $('.numero').mask("# ##", {reverse: true});
+    $('.numero').mask("###", {reverse: true});
     $('.ruc').mask("99999999999", {reverse: true});
 
   });

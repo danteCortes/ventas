@@ -18,10 +18,13 @@ Reportes
   @include('plantillas.mensajes')
   @include('reportes.kardex.frmKardex')
   @include('reportes.inventario.frmInventario')
+  @include('reportes.ventas.frmVentas')
+  @include('reportes.cierres.frmCierre')
   @include('reportes.kardex.ficha')
+  @include('reportes.ventas.ventas')
   @include('reportes.inventario.inventario')
   <div class="row" id="lienzo_reporte">
-    
+
   </div>
 @stop
 
