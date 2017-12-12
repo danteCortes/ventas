@@ -4,25 +4,33 @@
 
  ?>
 @if(count($ventas) > 0)
-<hr>
-<table class="table table-condensed" id="tblResumenVentas">
+<hr style="margin-bottom: 1px; margin-top: 0px;">
+<table class="table table-condensed" id="tblResumenVentas" style="margin-bottom:0px;">
   <tr>
-    <th colspan="3" style="text-align:center; border-top:rgba(255, 255, 255, 0);">RESUMEN DE VENTAS</th>
+    <th colspan="3" style="text-align:center; border-top:rgba(255, 255, 255, 0);">
+      <p class="text-center" style="font-size: 12px; margin-bottom:1px;">RESUMEN DE VENTAS</p></th>
   </tr>
   @foreach($ventas as $venta)
     <tr>
-      <th colspan="3" style="text-align:left;">Venta Nro {{$venta->recibo->numeracion}}</th>
+      <td colspan="3" style="text-align:left;">
+        <p class="text-center" style="font-size: 12px; margin-bottom:1px;">Venta Nro {{$venta->recibo->numeracion}}</p></td>
     </tr>
       @foreach($venta->detalles as $detalle)
         <tr>
-          <th style="text-align:left; border-top:rgba(255, 255, 255, 0); width:20px;">{{$detalle->cantidad}}</th>
-          <th style="text-align:left; border-top:rgba(255, 255, 255, 0);">{{$detalle->producto->descripcion}}</th>
-          <th style="text-align:right; border-top:rgba(255, 255, 255, 0);">{{$detalle->total}}</th>
+          <td style="border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;">
+            <p class="text-left" style="font-size: 12px; margin-bottom:1px;">{{$detalle->cantidad}}</p></td>
+          <td style="border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;">
+            <p class="text-left" style="font-size: 12px; margin-bottom:1px;">{{$detalle->producto->familia->nombre}}
+              {{$detalle->producto->marca->nombre}} {{$detalle->producto->descripcion}}</p></td>
+          <td style="border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;">
+            <p class="text-right" style="font-size: 12px; margin-bottom:1px;">{{$detalle->total}}</p></td>
         </tr>
       @endforeach
       <tr>
-        <th colspan="2" style="text-align:right; border-top:rgba(255, 255, 255, 0);">Total</th>
-        <th style="text-align:right; border-top:rgba(255, 255, 255, 0);">{{$venta->total}}</th>
+        <td colspan="2" style="border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;">
+          <p class="text-right" style="font-size: 12px; margin-bottom:1px;">Total</p></td>
+        <td style="border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;">
+          <p class="text-right" style="font-size: 12px; margin-bottom:1px;">{{$venta->total}}</p></td>
       </tr>
   @endforeach
 </table>

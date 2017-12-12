@@ -303,6 +303,7 @@ class VentaController extends Controller{
     // descontamos el total del cierre.
     $cierre = $venta->cierre;
     $cierre->total -= $venta->total;
+    $cierre->save();
     // Ya regresados las cantidades de los productos a las tiendas de origen, procedemos a eliminar la venta.
     $venta->delete();
     return redirect('venta')->with('info', 'SE ELIMINÓ UNA VENTA DE ESTA TIENDA, ESTE CAMBIO SE REGISTRÓ

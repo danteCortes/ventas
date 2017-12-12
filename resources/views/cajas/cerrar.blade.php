@@ -2,14 +2,17 @@
 
 @section('contenido')
 <div class="row">
-  <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+  <div class="col-xs-12 col-sm-12 col-md-4 col-md-offset-4 col-lg-4 col-lg-offset-4">
     <div class="panel panel-default">
       <div class="panel-heading">
         <h3 class="panel-title">Cerrar Caja
         </h3>
       </div>
       <div data-spy="scroll" data-target="#cabecera" data-offset="0" class="panel-body" id="reporteDiario">
-        <p id="cabecera">CIERRE DE CAJA {{\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $cierre->created_at)->format('d/m/Y')}}:</p>
+        <p class="text-center" style="font-size: 12px; margin-bottom:1px;" id="cabecera">
+          CIERRE DE CAJA {{\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $cierre->created_at)->format('d/m/Y')}}:
+        </p>
+        <hr style="margin-bottom: 1px; margin-top: 1px;">
         @include('cajas.reportes.ventas.efectivo')
         @include('cajas.reportes.ventas.resumenVentas')
         @include('cajas.reportes.ventas.resumenDescuentos')

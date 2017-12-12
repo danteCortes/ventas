@@ -10,45 +10,6 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-/*
-Route::get('stokear', function(){
-    foreach(\App\Producto::all() as $producto){
-        foreach(\App\Tienda::all() as $tienda){
-            $productoTienda = new \App\ProductoTienda;
-            $productoTienda->producto_codigo = $producto->codigo;
-            $productoTienda->tienda_id = $tienda->id;
-            $productoTienda->cantidad = 50;
-            $productoTienda->save();
-        }
-    }
-    return "listo";
-});
-*/
-
-Route::get('ingresar-producto', function(){
-    $ingresos = \App\TarjetaVenta::all();
-    foreach($ingresos as $ingreso){
-        if(!$detalle = \App\Venta::find($ingreso->venta_id)){
-            echo $ingreso->id."<br>";
-            //$ingreso->delete();
-        }
-    }
-});
-
-Route::get('generar-codbar', function(){
-  set_time_limit(0);
-  // codigos de barras.
-  $i = 1;
-  foreach(\App\Producto::all() as $producto){
-    // Revisamos si ya tiene codigo.
-    if(!$producto->codbar){
-      $codbar = time()+$i;
-      DNS1D::setStorPath(storage_path("/codigosBarra/".$codbar.".png"));
-      DNS1D::getBarcodePNG(mb_strtolower("este#(/bhfs)"), "C128");
-    }
-    $i++;break;
-  }
-});
 
 Route::prefix('reporte')->group(function(){
   Route::get('/', 'ReporteController@frmKardex');

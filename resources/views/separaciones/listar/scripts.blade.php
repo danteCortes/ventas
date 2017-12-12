@@ -45,6 +45,8 @@
         }
       }
     }).on("loaded.rs.jquery.bootgrid", function(){
+      /* poner el focus en el input de busqueda */
+      $("#tblSeparaciones-header > div > div > div.search.form-group > div > input").focus();
       /* Se ejecuta despues de cargar y procesar los datos */
       grid.find(".command-show").on("click", function(e){
         $.post("{{url('separacion/buscar')}}", {id: $(this).data("row-id")}, function(data, textStatus, xhr) {
