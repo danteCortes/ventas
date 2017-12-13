@@ -93,32 +93,26 @@ Recibo
             <td style="border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;">
                 <p class="text-left" style="font-size: 12px; margin-bottom:1px;">Descripción</p>
             </td>
-            <td style="border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;">
-                <p class="text-left" style="font-size: 12px; margin-bottom:1px;">Unit.</p>
-            </td>
             <td style="width:50px; border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;">
                 <p class="text-left" style="font-size: 12px; margin-bottom:1px;">Importe</p>
             </td>
           </tr>
           @foreach($recibo->venta->detalles as $detalle)
             <tr>
-                <td style="border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;">
-                    <p class="text-left" style="font-size: 12px; margin-bottom:1px;">{{$detalle->cantidad}}</p>
-                </td>
-                <td style="border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;">
-                    <p class="text-left" style="font-size: 12px; margin-bottom:1px;">{{$detalle->producto->familia->nombre}}
-                    {{$detalle->producto->marca->nombre}} {{$detalle->producto->descripcion}}</p>
-                </td>
-                <td style="border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;">
-                    <p class="text-right" style="font-size: 12px; margin-bottom:1px;">{{$detalle->producto->precio}}</p>
-                </td>
-                <td style="width:50px; border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;">
-                    <p class="text-right" style="font-size: 12px; margin-bottom:1px;">{{$detalle->total}}</p>
-                </td>
+              <td style="border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;">
+                  <p class="text-left" style="font-size: 12px; margin-bottom:1px;">{{$detalle->cantidad}}</p>
+              </td>
+              <td style="border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;">
+                  <p class="text-left" style="font-size: 12px; margin-bottom:1px;">{{$detalle->producto->familia->nombre}}
+                  {{$detalle->producto->marca->nombre}} {{$detalle->producto->descripcion}}</p>
+              </td>
+              <td style="width:50px; border-top:rgba(130, 130, 130, 0.5); padding-top:1px; padding-bottom:0px;">
+                  <p class="text-right" style="font-size: 12px; margin-bottom:1px;">{{$detalle->total}}</p>
+              </td>
             </tr>
           @endforeach
           <tr>
-            <td colspan="3" style="text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px; padding-top:1px; padding-bottom:0px;">
+            <td colspan="2" style="text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px; padding-top:1px; padding-bottom:0px;">
                 <p class="text-right" style="font-size: 12px; margin-bottom:1px;">TOTAL S/</p>
             </td>
             <td style="text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px; padding-top:1px; padding-bottom:0px;">
@@ -145,7 +139,7 @@ Recibo
           @endif
           @if($recibo->venta->efectivo)
           <tr>
-            <td colspan="3" style="text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
+            <td colspan="2" style="text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
                 <p class="text-right" style="font-size: 12px; margin-bottom:1px;">EFECTIVO S/ </p>
             </td>
             <td style="text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
@@ -156,7 +150,7 @@ Recibo
           @endif
           @if($recibo->venta->tarjetaVenta)
           <tr>
-            <th colspan="3" style="text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
+            <th colspan="2" style="text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
                 <p class="text-right" style="font-size: 12px; margin-bottom:1px;"></p>TARJETA S/ </th>
             <th style="text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
                 <p class="text-right" style="font-size: 12px; margin-bottom:1px;"></p>{{number_format($recibo->venta->tarjetaVenta->monto, 2, '.', ' ')}}</th>
@@ -164,23 +158,23 @@ Recibo
           <?php $vuelto = $recibo->venta->tarjetaVenta->monto - $vuelto; ?>
           @endif
           <tr>
-            <td colspan="3" style="text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
+            <td colspan="2" style="text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
                 <p class="text-right" style="font-size: 12px; margin-bottom:1px;">VUELTO S/ </p></td>
             <td style="text-align:right; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
                 <p class="text-right" style="font-size: 12px; margin-bottom:1px;">{{number_format($vuelto, 2, '.', ' ')}}</p></td>
           </tr>
           <tr>
-            <td colspan="4" style="text-align:left; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
+            <td colspan="3" style="text-align:left; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
                 <p class="text-left" style="font-size: 12px; margin-bottom:1px;">SON: {{$letras}}</p></td>
           </tr>
           <tr>
-            <td colspan="4" style="text-align:left; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
+            <td colspan="3" style="text-align:left; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
                 <p class="text-left" style="font-size: 12px; margin-bottom:1px;">HUANUCO, {{\Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$recibo->venta->updated_at)->format('d/m/Y')}}
                 - HORA: {{\Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$recibo->venta->updated_at)->format('H:i A')}}</p>
             </td>
           </tr>
           <tr>
-            <td colspan="4" style="text-align:left; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
+            <td colspan="3" style="text-align:left; border-top:rgba(255, 255, 255, 0); padding-top:1px; padding-bottom:0px;">
                 <p class="text-left" style="font-size: 12px; margin-bottom:1px;">CAJERA: {{$recibo->venta->usuario->persona->nombres}} {{$recibo->venta->usuario->persona->apellidos}}</p>
             </td>
           </tr>

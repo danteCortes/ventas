@@ -15,10 +15,10 @@
         <hr style="margin-bottom: 1px; margin-top: 1px;">
         @include('cajas.reportes.ventas.efectivo')
         @include('cajas.reportes.ventas.resumenVentas')
+        @include('cajas.reportes.cambios.resumenCambios')
         @include('cajas.reportes.ventas.resumenDescuentos')
         @include('cajas.reportes.ventas.ventasProductos')
         @include('cajas.reportes.ventas.resumenTarjetas')
-        @include('cajas.reportes.cambios.resumenCambios')
         @include('cajas.reportes.prestamos.prestamosHechos')
         @include('cajas.reportes.prestamos.prestamosEntrada')
         @include('cajas.reportes.prestamos.prestamosRecogidos')

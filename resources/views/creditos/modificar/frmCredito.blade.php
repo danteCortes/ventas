@@ -38,7 +38,7 @@
           <div class="col-xs-12 col-sm-12 col-md-4 col-lg-6">
             <div class="form-group">
               <input type="date" name="fecha" class="form-control" placeholder="FECHA" id="fecha"
-                value="{{\Carbon\Carbon::createFromFormat('d/m/Y', $credito->fecha)->format('Y-m-d')}}">
+                value="{{($credito->fecha) ? '' : \Carbon\Carbon::createFromFormat('d/m/Y', $credito->fecha)->format('Y-m-d')}}">
             </div>
           </div>
         </div>

@@ -44,7 +44,7 @@
           <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
             <div class="input-group">
               <span class="input-group-addon">Prec. Unit.: S/</span>
-              <input type="text" class="form-control precio" placeholder="PRECIO" id="precio_venta" data-mask="##9.00" name="precio_unidad" required>
+              <input type="text" class="form-control moneda precio" placeholder="PRECIO" id="precio_venta" name="precio_unidad" required>
             </div>
             <div class="input-group">
               <span class="input-group-addon">Cantidad: </span>

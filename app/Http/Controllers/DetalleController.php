@@ -73,11 +73,11 @@ class DetalleController extends Controller{
         $detalle->venta_id = $venta->id;
         $detalle->producto_codigo = $request->producto_codigo;
         $detalle->cantidad = $request->cantidad;
-        $detalle->precio_unidad = $request->precio_unidad;
-        if ($producto->precio - $request->precio_unidad > 0) {
-          $detalle->descuento = $producto->precio - $request->precio_unidad;
+        $detalle->precio_unidad = str_replace(' ', '', $request->precio_unidad);
+        if ($producto->precio - str_replace(' ', '', $request->precio_unidad) > 0) {
+          $detalle->descuento = $producto->precio - str_replace(' ', '', $request->precio_unidad);
         }
-        $detalle->total = $request->cantidad * $request->precio_unidad;
+        $detalle->total = $request->cantidad * str_replace(' ', '', $request->precio_unidad);
         $detalle->save();
         // Actualizamos el total de la venta.
         $venta->total += $detalle->total;
