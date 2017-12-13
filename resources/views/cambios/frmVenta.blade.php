@@ -94,6 +94,8 @@
                   @else
                     <input type="text" name="tarjeta" class="form-control moneda" placeholder="TARJETA" id="tarjeta">
                   @endif
+                @else
+                  <input type="text" name="tarjeta" class="form-control moneda" placeholder="TARJETA" id="tarjeta">
                 @endif
                 <span class="input-group-btn">
                   <button class="btn btn-default" type="button" id="btnRegistrarTarjeta">Registrar</button>
@@ -104,7 +106,12 @@
           <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
             <div class="form-group">
               @if($cambio = $venta->cambio)
-                <input type="text" name="vuelto" class="form-control" value="{{number_format($cambio->diferencia, 2, '.', ' ')}}" placeholder="VUELTO" readonly id="vuelto">
+                @if($tarjetaVenta = $cambio->tarjetaVenta)
+                  <input type="text" name="vuelto" class="form-control" placeholder="VUELTO"
+                    value="{{number_format($tarjetaVenta->monto-$cambio->diferencia, 2, '.', ' ')}}" readonly id="vuelto">
+                @else
+                  <input type="text" name="vuelto" class="form-control" placeholder="VUELTO" readonly id="vuelto">
+                @endif
               @else
                 <input type="text" name="vuelto" class="form-control" placeholder="VUELTO" readonly id="vuelto">
               @endif
