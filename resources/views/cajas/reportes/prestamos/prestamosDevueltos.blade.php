@@ -4,20 +4,26 @@ $prestamos = \App\Prestamo::where('cierre_id', '=', $cierre->id)->where('devuelt
 
 ?>
 @if(count($prestamos) > 0)
-<hr>
-<table class="table table-condensed" id="tblPrestamosHechos">
+<hr style="margin-bottom: 1px; margin-top: 0px;">
+<table class="table table-condensed" id="tblPrestamosHechos" style="margin-bottom:0px;">
   <tr>
-    <th colspan="2" style="text-align:center; border-top:rgba(255, 255, 255, 0);">PRESTAMOS DEVUELTOS</th>
+    <th colspan="2" style="border-top:rgba(255, 255, 255, 0);">
+      <p class="text-center" style="font-size: 12px; margin-bottom:1px;">PRESTAMOS DEVUELTOS</p></th>
   </tr>
   @foreach($prestamos as $prestamo)
   <tr>
-    <th colspan="3" style="text-align:left;">Prestamo Nro {{$prestamo->id}}</th>
+    <td colspan="3">
+      <p class="text-center" style="font-size: 12px; margin-bottom:1px;">Prestamo Nro {{$prestamo->id}}</p></td>
   </tr>
     @foreach($prestamo->detalles as $detalle)
     <tr>
-      <th style="text-align:left; border-top:rgba(255, 255, 255, 0);">{{$detalle->producto->codigo}}</th>
-      <th style="text-align:left; border-top:rgba(255, 255, 255, 0);">{{$detalle->producto->descripcion}}</th>
-      <th style="text-align:right; border-top:rgba(255, 255, 255, 0);">{{$detalle->cantidad}}</th>
+      <td style="border-top:rgba(255, 255, 255, 0);">
+        <p class="text-left" style="font-size: 12px; margin-bottom:1px;">{{$detalle->producto->codigo}}</p></td>
+      <td style="border-top:rgba(255, 255, 255, 0);">
+        <p class="text-left" style="font-size: 12px; margin-bottom:1px;">{{$detalle->producto->familia->nombre}}
+        {{$detalle->producto->marca->nombre}} {{$detalle->producto->descripcion}}</p></td>
+      <td style="border-top:rgba(255, 255, 255, 0);">
+        <p class="text-right" style="font-size: 12px; margin-bottom:1px;">PRESTAMOS RECOGIDOS</p>{{$detalle->cantidad}}</td>
     </tr>
     @endforeach
   @endforeach

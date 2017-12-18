@@ -41,7 +41,7 @@
             "<button type='button' class='btn btn-xs btn-danger command-delete' data-row-id='"+row.id+"' style='margin:2px'>"+
               "<span class='fa fa-trash'></span></button>"+
             "<button type='button' class='btn btn-xs btn-success command-devolver' data-row-id='"+row.id+"' style='margin:2px'>"+
-              "<span class='fa fa-external-link'></span></button>";
+              "<span class='fa fa-mail-reply'></span></button>";
         }
       }
     }).on("loaded.rs.jquery.bootgrid", function(){
@@ -58,7 +58,7 @@
           $(".caj_telefono").html(data['usuario']['persona']['telefono']);
           $(".detalles").empty();
           $.each(data['detalles'], function(clave, valor){
-            detalle = "<tr><td>"+valor['cantidad']+"</td><td>"+valor['producto']['descripcion']+"</td></tr>";
+            detalle = "<tr><td>"+valor['cantidad']+"</td><td>"+valor['producto']['descripcion']+" "+"</td></tr>";
             $(".detalles").append(detalle);
           });
           $(".fecha_prestamo").html(data['created_at']);

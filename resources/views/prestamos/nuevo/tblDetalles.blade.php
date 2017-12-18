@@ -19,7 +19,7 @@
                   <button class="btn btn-xs btn-danger">Quitar</button>
                 {{Form::close()}}</td>
               <td>{{$detalle->cantidad}}</td>
-              <td>{{$detalle->producto->descripcion}}</td>
+              <td>{{$detalle->producto->familia->nombre}} {{$detalle->producto->marca->nombre}} {{$detalle->producto->descripcion}}</td>
             </tr>
           @endforeach
         </tbody>
