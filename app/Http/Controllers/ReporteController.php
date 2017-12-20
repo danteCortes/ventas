@@ -118,4 +118,63 @@ class ReporteController extends Controller{
     $html .= "</tbody>";
     return $html;
   }
+
+  public function resumenVentas(Request $request){
+    $inicio = \Carbon\Carbon::createFromFormat('Y-m-d', $request->inicio)->startOfDay();
+    $fin = \Carbon\Carbon::createFromFormat('Y-m-d', $request->fin)->endOfDay();
+    if ($inicio > $fin) {
+      return redirect('reporte')->with('error', 'LAS FECHAS SON INCORRECTAS.');
+    }
+    $ventas = \DB::table('ventas as v')
+      ->join('recibos as r', 'r.venta_id', '=', 'v.id')
+      ->where('v.tienda_id', $request->tienda_id)
+      ->select(
+        \DB::raw('count(r.id) as total_ventas'),
+        \DB::raw('min(r.numeracion) as minimo'),
+        \DB::raw('max(r.numeracion) as maximo'),
+        \DB::raw('sum(v.total) as total'),
+        \DB::raw('date(v.created_at) as created_at')
+        )
+      ->groupBy(\DB::raw('date(v.created_at)'))
+      ->having('v.created_at', '>=', $inicio)
+      ->having('v.created_at', '<=', $fin)
+      ->get();
+
+    $tienda = \App\Tienda::find($request->tienda_id);
+
+    $html = "<thead>
+      <tr>
+        <th colspan='3' rowspan='2'align='left' style='vertical-align:middle; border-right-width:0px;
+        border-right-width:0px;'><p style='margin-bottom:0px;'>".$tienda->nombre." - ".$tienda->direccion."</p></th>
+        <th style='border-left-width:0px; border-bottom-width:0px;'><p style='margin-bottom:0px;'>Fecha: ".
+        \Carbon\Carbon::now()->format('d/m/Y')."</p></th>
+      </tr>
+      <tr>
+        <th style='border-left-width:0px; border-bottom-width:0px; border-top-width:0px;'><p style='margin-bottom:0px;'>
+        Hora: ".\Carbon\Carbon::now()->format('H:i:s')."</p></th>
+      </tr>
+      <tr>
+        <th colspan='4' style='border-top-width:0px;'><p align='center' style='margin-bottom:0px; vertical-align:middle;'>
+        TICKETS BOLETAS del ".$inicio->format('d/m/Y')." al ".$fin->format('d/m/Y')."</p></th>
+      </tr>
+      <tr>
+        <th>Fecha</th>
+        <th>Del</th>
+        <th>Al</th>
+        <th>P. Total</th>
+      </tr>
+    </thead>
+    <tbody>";
+
+    foreach($ventas as $venta){
+      $html .= "<tr>
+      <td align='right'>".\Carbon\Carbon::createFromFormat('Y-m-d', $venta->created_at)->format('d/m/Y')."</td>
+      <td align='right'>".$venta->minimo."</td>
+      <td align='right'>".$venta->maximo."</td>
+      <td align='right'>".number_format($venta->total, 2, '.', ' ')."</td>
+      </tr>";
+    }
+    $html .= "</tbody>";
+    return $html;
+  }
 }

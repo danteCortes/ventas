@@ -19,6 +19,7 @@ Route::prefix('reporte')->group(function(){
   Route::get('por-vencer', 'ReporteController@porVencer');
   Route::get('vencidos', 'ReporteController@vencidos');
   Route::post('ventas', 'ReporteController@ventas');
+  Route::post('resumenVentas', 'ReporteController@resumenVentas');
 });
 
 Route::post('cierre-caja/{id}', 'CierreController@cierreCaja');

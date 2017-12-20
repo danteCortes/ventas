@@ -127,6 +127,27 @@
       }
     });
 
+    $("#btnBuscarResumenVentas").click(function() {
+      if ($("#inicio_resumenVentas").val() != "" && $("#fin_resumenVentas").val() != "" &&
+        $("#tienda_resumenVentas").val() != "") {
+
+        $.post("{{url('reporte/resumenVentas')}}",
+          {
+            inicio: $("#inicio_resumenVentas").val(),
+            fin: $("#fin_resumenVentas").val(),
+            tienda_id: $("#tienda_resumenVentas").val()
+          },
+          function(data, textStatus, xhr) {
+            $("#resumen-ventas-tienda").html(data);
+            $("#inventario").addClass('oculto');
+            $("#fichaKardex").addClass('oculto');
+            $("#fichaVentas").addClass('oculto');
+            $("#fichaResumenVentas").removeClass('oculto');
+            $("#frmResumenVentas").modal('hide');
+        });
+      }
+    });
+
     $("#btnBuscarInventario").click(function(){
       if ($("#tienda_inventario").val() != "") {
         $.post("{{url('reporte/inventario')}}", {tienda_id: $("#tienda_inventario").val()},
@@ -182,6 +203,10 @@
 
     $("#imprimir-ventas").click(function (){
       $("#imprimirVentas").printArea();
+    });
+
+    $("#imprimir-resumenVentas").click(function (){
+      $("#imprimirResumenVentas").printArea();
     });
 
   });
