@@ -128,6 +128,8 @@ class ReporteController extends Controller{
     $ventas = \DB::table('ventas as v')
       ->join('recibos as r', 'r.venta_id', '=', 'v.id')
       ->where('v.tienda_id', $request->tienda_id)
+      ->where('v.estado', 0)
+      ->whereNull('r.empresa_ruc')
       ->select(
         \DB::raw('count(r.id) as total_ventas'),
         \DB::raw('min(r.numeracion) as minimo'),
@@ -166,7 +168,9 @@ class ReporteController extends Controller{
     </thead>
     <tbody>";
 
+    $total = 0;
     foreach($ventas as $venta){
+      $total += $venta->total;
       $html .= "<tr>
       <td align='right'>".\Carbon\Carbon::createFromFormat('Y-m-d', $venta->created_at)->format('d/m/Y')."</td>
       <td align='right'>".$venta->minimo."</td>
@@ -174,7 +178,199 @@ class ReporteController extends Controller{
       <td align='right'>".number_format($venta->total, 2, '.', ' ')."</td>
       </tr>";
     }
-    $html .= "</tbody>";
+    $html .= "</tbody>
+    <tfood>
+    <tr>
+    <td align='right'></td>
+    <td align='right'></td>
+    <td align='right'></td>
+    <td align='right'>".number_format($total, 2, '.', ' ')."</td>
+    </tr>
+    </tfood>";
+    return $html;
+  }
+
+  public function resumenVentasTickets(Request $request){
+    $inicio = \Carbon\Carbon::createFromFormat('Y-m-d', $request->inicio)->startOfDay();
+    $fin = \Carbon\Carbon::createFromFormat('Y-m-d', $request->fin)->endOfDay();
+    if ($inicio > $fin) {
+      return redirect('reporte')->with('error', 'LAS FECHAS SON INCORRECTAS.');
+    }
+    $boletas = \DB::table('ventas as v')
+      ->join('recibos as r', 'r.venta_id', '=', 'v.id')
+      ->where('v.tienda_id', $request->tienda_id)
+      ->where('v.estado', 0)
+      ->whereNull('r.empresa_ruc')
+      ->select(
+        \DB::raw('sum(v.total) as total'),
+        \DB::raw('date(v.created_at) as created_at')
+        )
+      ->groupBy(\DB::raw('date(v.created_at)'))
+      ->having('v.created_at', '>=', $inicio)
+      ->having('v.created_at', '<=', $fin)
+      ->get();
+
+    $facturas = \DB::table('ventas as v')
+      ->join('recibos as r', 'r.venta_id', '=', 'v.id')
+      ->where('v.tienda_id', $request->tienda_id)
+      ->where('v.estado', 0)
+      ->whereNotNull('r.empresa_ruc')
+      ->select(
+        \DB::raw('sum(v.total) as total'),
+        \DB::raw('date(v.created_at) as created_at')
+        )
+      ->groupBy(\DB::raw('date(v.created_at)'))
+      ->having('v.created_at', '>=', $inicio)
+      ->having('v.created_at', '<=', $fin)
+      ->get();
+
+    $tienda = \App\Tienda::find($request->tienda_id);
+
+    $html = "<thead>
+      <tr>
+        <th colspan='3' rowspan='2'align='left' style='vertical-align:middle; border-right-width:0px;
+        border-right-width:0px;'><p style='margin-bottom:0px;'>".$tienda->nombre." - ".$tienda->direccion."</p></th>
+        <th style='border-left-width:0px; border-bottom-width:0px;'><p style='margin-bottom:0px;'>Fecha: ".
+        \Carbon\Carbon::now()->format('d/m/Y')."</p></th>
+      </tr>
+      <tr>
+        <th style='border-left-width:0px; border-bottom-width:0px; border-top-width:0px;'><p style='margin-bottom:0px;'>
+        Hora: ".\Carbon\Carbon::now()->format('H:i:s')."</p></th>
+      </tr>
+      <tr>
+        <th colspan='4' style='border-top-width:0px;'><p align='center' style='margin-bottom:0px; vertical-align:middle;'>
+        RESUMEN DE VENTAS del ".$inicio->format('d/m/Y')." al ".$fin->format('d/m/Y')."</p></th>
+      </tr>
+      <tr>
+        <th></th>
+        <th>Tickets Boletas</th>
+        <th>Tickets Facturas</th>
+        <th></th>
+      </tr>
+      <tr>
+        <th>Fecha</th>
+        <th> Serie ".$tienda->serie."</th>
+        <th> Serie ".$tienda->serie."</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>";
+
+    $total_boletas = 0;
+    $total_facturas = 0;
+    $total = 0;
+    foreach($boletas as $boleta){
+      $total_boletas += $boleta->total;
+      foreach ($facturas as $factura) {
+        if($boleta->created_at == $factura->created_at){
+          $total += $boleta->total+$factura->total;
+          $total_facturas += $factura->total;
+          $html .= "<tr>
+          <td align='right'>".\Carbon\Carbon::createFromFormat('Y-m-d', $boleta->created_at)->format('d/m/Y')."</td>
+          <td align='right'>".number_format($boleta->total, 2, '.', ' ')."</td>
+          <td align='right'>".number_format($factura->total, 2, '.', ' ')."</td>
+          <td align='right'>".number_format($boleta->total+$factura->total, 2, '.', ' ')."</td>
+          </tr>";
+          break;
+        }else{
+          $total += $boleta->total;
+          $html .= "<tr>
+          <td align='right'>".\Carbon\Carbon::createFromFormat('Y-m-d', $boleta->created_at)->format('d/m/Y')."</td>
+          <td align='right'>".number_format($boleta->total, 2, '.', ' ')."</td>
+          <td align='right'>0.00</td>
+          <td align='right'>".number_format($boleta->total, 2, '.', ' ')."</td>
+          </tr>";
+          break;
+        }
+      }
+    }
+    $html .= "</tbody>
+    <tfood>
+    <tr>
+    <td align='right'></td>
+    <td align='right'>".number_format($total_boletas, 2, '.', ' ')."</td>
+    <td align='right'>".number_format($total_facturas, 2, '.', ' ')."</td>
+    <td align='right'>".number_format($total, 2, '.', ' ')."</td>
+    </tr>
+    </tfood>";
+    return $html;
+  }
+
+  public function ventasDiarias(Request $request){
+    $inicio = \Carbon\Carbon::createFromFormat('Y-m-d', $request->inicio)->startOfDay();
+    $fin = \Carbon\Carbon::createFromFormat('Y-m-d', $request->fin)->endOfDay();
+    if ($inicio > $fin) {
+      return redirect('reporte')->with('error', 'LAS FECHAS SON INCORRECTAS.');
+    }
+    $boletas = \DB::table('ventas as v')
+      ->join('recibos as r', 'r.venta_id', '=', 'v.id')
+      ->where('v.tienda_id', $request->tienda_id)
+      ->where('v.estado', 0)
+      ->whereNull('r.empresa_ruc', 0)
+      ->select(
+        \DB::raw('count(r.id) as total_ventas'),
+        \DB::raw('count(r.id) as total_ventas'),
+        \DB::raw('min(r.numeracion) as minimo'),
+        \DB::raw('max(r.numeracion) as maximo'),
+        \DB::raw('sum(v.total) as total'),
+        \DB::raw('date(v.created_at) as created_at')
+        )
+      ->groupBy(\DB::raw('date(v.created_at)'))
+      ->having('v.created_at', '>=', $inicio)
+      ->having('v.created_at', '<=', $fin)
+      ->get();
+
+    $tienda = \App\Tienda::find($request->tienda_id);
+
+    $html = "<thead>
+      <tr>
+        <th colspan='3' rowspan='2'align='left' style='vertical-align:middle; border-right-width:0px;
+        border-right-width:0px;'><p style='margin-bottom:0px;'>".$tienda->nombre." - ".$tienda->direccion."</p></th>
+        <th style='border-left-width:0px; border-bottom-width:0px;'><p style='margin-bottom:0px;'>Fecha: ".
+        \Carbon\Carbon::now()->format('d/m/Y')."</p></th>
+      </tr>
+      <tr>
+        <th style='border-left-width:0px; border-bottom-width:0px; border-top-width:0px;'><p style='margin-bottom:0px;'>
+        Hora: ".\Carbon\Carbon::now()->format('H:i:s')."</p></th>
+      </tr>
+      <tr>
+        <th colspan='4' style='border-top-width:0px;'><p align='center' style='margin-bottom:0px; vertical-align:middle;'>
+        RESUMEN DE VENTAS del ".$inicio->format('d/m/Y')." al ".$fin->format('d/m/Y')."</p></th>
+      </tr>
+      <tr>
+        <th></th>
+        <th>Tickets Boletas</th>
+        <th>Tiquets Facturas</th>
+        <th></th>
+      </tr>
+      <tr>
+        <th>Fecha</th>
+        <th>".$tienda->serie."</th>
+        <th>".$tienda->serie."</th>
+        <th>P. Total</th>
+      </tr>
+    </thead>
+    <tbody>";
+
+    $total = 0;
+    foreach($boletas as $venta){
+      $total += $venta->total;
+      $html .= "<tr>
+      <td align='right'>".\Carbon\Carbon::createFromFormat('Y-m-d', $venta->created_at)->format('d/m/Y')."</td>
+      <td align='right'>".$venta->minimo."</td>
+      <td align='right'>".$venta->maximo."</td>
+      <td align='right'>".number_format($venta->total, 2, '.', ' ')."</td>
+      </tr>";
+    }
+    $html .= "</tbody>
+    <tfood>
+    <tr>
+    <td align='right'></td>
+    <td align='right'></td>
+    <td align='right'></td>
+    <td align='right'>".number_format($total, 2, '.', ' ')."</td>
+    </tr>
+    </tfood>";
     return $html;
   }
 }

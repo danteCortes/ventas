@@ -148,6 +148,28 @@
       }
     });
 
+    $("#btnBuscarResumenVentasTickets").click(function() {
+      if ($("#inicio_resumenVentasTickets").val() != "" && $("#fin_resumenVentasTickets").val() != "" &&
+        $("#tienda_resumenVentasTickets").val() != "") {
+
+        $.post("{{url('reporte/resumenVentasTickets')}}",
+          {
+            inicio: $("#inicio_resumenVentasTickets").val(),
+            fin: $("#fin_resumenVentasTickets").val(),
+            tienda_id: $("#tienda_resumenVentasTickets").val()
+          },
+          function(data, textStatus, xhr) {
+            $("#resumen-ventas-tickets").html(data);
+            $("#inventario").addClass('oculto');
+            $("#fichaKardex").addClass('oculto');
+            $("#fichaVentas").addClass('oculto');
+            $("#fichaResumenVentas").addClass('oculto');
+            $("#fichaResumenVentasTickets").removeClass('oculto');
+            $("#frmResumenVentasTickets").modal('hide');
+        });
+      }
+    });
+
     $("#btnBuscarInventario").click(function(){
       if ($("#tienda_inventario").val() != "") {
         $.post("{{url('reporte/inventario')}}", {tienda_id: $("#tienda_inventario").val()},
@@ -207,6 +229,10 @@
 
     $("#imprimir-resumenVentas").click(function (){
       $("#imprimirResumenVentas").printArea();
+    });
+
+    $("#imprimir-resumenVentasTickets").click(function (){
+      $("#imprimirResumenVentasTickets").printArea();
     });
 
   });

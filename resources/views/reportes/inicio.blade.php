@@ -21,10 +21,12 @@ Reportes
   @include('reportes.ventas.frmVentas')
   @include('reportes.cierres.frmCierre')
   @include('reportes.resumenVentas.frmResumenVentas')
+  @include('reportes.resumenVentasTickets.frmResumenVentas')
   @include('reportes.kardex.ficha')
   @include('reportes.inventario.inventario')
   @include('reportes.ventas.ventas')
   @include('reportes.resumenVentas.resumenVentas')
+  @include('reportes.resumenVentasTickets.resumenVentas')
   <div class="row" id="lienzo_reporte">
 
   </div>

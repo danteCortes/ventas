@@ -13,3 +13,6 @@
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#frmResumenVentas">
   <span class="glyphicon glyphicon-plus"></span> Resumen de Ventas
 </button>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#frmResumenVentasTickets">
+  <span class="glyphicon glyphicon-plus"></span> Resumen de Tickets
+</button>
