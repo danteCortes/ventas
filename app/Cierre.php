@@ -21,4 +21,8 @@ class Cierre extends Model{
   public function prestamos(){
     return $this->hasMany('\App\Prestamo');
   }
+
+  public function usuario(){
+    return $this->belongsTo('\App\Usuario');
+  }
 }

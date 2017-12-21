@@ -67,17 +67,12 @@ class ReporteController extends Controller{
   }
 
   public function crearCierre(Request $request){
-    $cierres = \App\Cierre::where('tienda_id', $request->tienda_id)->where('estado', 1)
-      ->whereDate('created_at', $request->fecha)->get();
+    $cierres = \App\Cierre::where('tienda_id', $request->tienda_id)->where('estado', 0)
+      ->whereDate(\DB::raw('date(created_at)'), $request->fecha_cierre)->get();
 
-    $html = "<tr>
-      <td><p class='text-center' style='font-size: 12px; margin-bottom:1px;'>Cierres del día ".
-        \Carbon\Carbon::createFromFormat('Y-m-d', $request->fecha)->format('d/m/Y')."</p></td>";
-    foreach ($cierres as $cierre) {
-      $html .= "";
-    }
-    $html .= "</tr>";
-    return $html;
+    return view('reportes.cierres.vista')->with('cierres', $cierres);
+
+
   }
 
   public function ventas(Request $request){
@@ -129,6 +124,8 @@ class ReporteController extends Controller{
       ->join('recibos as r', 'r.venta_id', '=', 'v.id')
       ->where('v.tienda_id', $request->tienda_id)
       ->where('v.estado', 0)
+      ->where('v.created_at', '>=', $inicio)
+      ->where('v.created_at', '<=', $fin)
       ->whereNull('r.empresa_ruc')
       ->select(
         \DB::raw('count(r.id) as total_ventas'),
@@ -138,8 +135,6 @@ class ReporteController extends Controller{
         \DB::raw('date(v.created_at) as created_at')
         )
       ->groupBy(\DB::raw('date(v.created_at)'))
-      ->having('v.created_at', '>=', $inicio)
-      ->having('v.created_at', '<=', $fin)
       ->get();
 
     $tienda = \App\Tienda::find($request->tienda_id);
@@ -200,28 +195,28 @@ class ReporteController extends Controller{
       ->join('recibos as r', 'r.venta_id', '=', 'v.id')
       ->where('v.tienda_id', $request->tienda_id)
       ->where('v.estado', 0)
+      ->where('v.created_at', '>=', $inicio)
+      ->where('v.created_at', '<=', $fin)
       ->whereNull('r.empresa_ruc')
       ->select(
         \DB::raw('sum(v.total) as total'),
         \DB::raw('date(v.created_at) as created_at')
         )
       ->groupBy(\DB::raw('date(v.created_at)'))
-      ->having('v.created_at', '>=', $inicio)
-      ->having('v.created_at', '<=', $fin)
       ->get();
 
     $facturas = \DB::table('ventas as v')
       ->join('recibos as r', 'r.venta_id', '=', 'v.id')
       ->where('v.tienda_id', $request->tienda_id)
       ->where('v.estado', 0)
+      ->where('v.created_at', '>=', $inicio)
+      ->where('v.created_at', '<=', $fin)
       ->whereNotNull('r.empresa_ruc')
       ->select(
         \DB::raw('sum(v.total) as total'),
         \DB::raw('date(v.created_at) as created_at')
         )
       ->groupBy(\DB::raw('date(v.created_at)'))
-      ->having('v.created_at', '>=', $inicio)
-      ->having('v.created_at', '<=', $fin)
       ->get();
 
     $tienda = \App\Tienda::find($request->tienda_id);

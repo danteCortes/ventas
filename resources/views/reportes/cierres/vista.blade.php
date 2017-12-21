@@ -1,4 +1,4 @@
-@extends('plantillas.cajero')
+@extends('plantillas.administrador')
 
 @section('contenido')
 <div class="row">
@@ -9,6 +9,7 @@
         </h3>
       </div>
       <div data-spy="scroll" data-target="#cabecera" data-offset="0" class="panel-body" id="reporteDiario">
+        @foreach($cierres as $cierre)
         <p class="text-center" style="font-size: 12px; margin-bottom:1px;" id="cabecera">
           <strong>CIERRE DE CAJA {{\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $cierre->created_at)->format('d/m/Y')}}</strong>
         </p>
@@ -29,11 +30,12 @@
         @include('cajas.reportes.creditos.resumenCreditos')
         @include('cajas.reportes.creditos.creditosProductos')
         @include('cajas.reportes.creditos.pagos')
+        <hr>
+        @endforeach
       </div>
       <div class="panel-footer">
         {{Form::open(['url'=>'cierre-caja/'.$cierre->id])}}
-          <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save"></span> Cerrar Caja</button>
-          <a href="{{url('cajero')}}" class="btn btn-default"><span class="glyphicon glyphicon-ban-circle"></span> Cancelar</a>
+          <a href="{{url('reporte')}}" class="btn btn-default"><span class="glyphicon glyphicon-ban-circle"></span> Cancelar</a>
           <button type="button" class="btn btn-primary imprimir pull-right"><span class="glyphicon glyphicon-print"></span> Imprimir</button>
         {{Form::close()}}
       </div>

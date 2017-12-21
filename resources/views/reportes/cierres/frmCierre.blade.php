@@ -1,6 +1,7 @@
 <div class="modal fade" id="frmCierres" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
+      {{Form::open(['url'=>'reporte/cierre'])}}
       <div class="modal-header" style="background-color:#407994; color:#fff;">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel">Cierres Diarios</h4>
@@ -31,9 +32,10 @@
       <div class="modal-footer" style="background-color:#407994">
         <button type="button" class="btn btn-default" data-dismiss="modal">
           <span class="glyphicon glyphicon-ban-circle"></span> Cancelar</button>
-        <button type="button" class="btn btn-primary" id="btnBuscarCierre">
+        <button type="submit" class="btn btn-primary">
           <span class="fa fa-address-card"></span> Cierre</button>
       </div>
+      {{Form::close()}}
     </div>
   </div>
 </div>

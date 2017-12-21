@@ -100,6 +100,8 @@
               "<td style='text-align:right'>"+cantidad+"</td><td style='text-align:right'>"+data['producto']['precio']+
               "</td><td style='text-align:right'>"+(data['producto']['precio']*cantidad).toFixed(2)+"</td></tr>";
             $("#detalles-kardex").append(detalles);
+            $("#fichaResumenVentas").addClass('oculto');
+            $("#fichaResumenVentasTickets").addClass('oculto');
             $("#inventario").addClass('oculto');
             $("#fichaVentas").addClass('oculto');
             $("#fichaKardex").removeClass('oculto');
@@ -119,6 +121,8 @@
           },
           function(data, textStatus, xhr) {
             $("#resumen-ventas").html(data);
+            $("#fichaResumenVentas").addClass('oculto');
+            $("#fichaResumenVentasTickets").addClass('oculto');
             $("#inventario").addClass('oculto');
             $("#fichaKardex").addClass('oculto');
             $("#fichaVentas").removeClass('oculto');
@@ -142,6 +146,7 @@
             $("#inventario").addClass('oculto');
             $("#fichaKardex").addClass('oculto');
             $("#fichaVentas").addClass('oculto');
+            $("#fichaResumenVentasTickets").addClass('oculto');
             $("#fichaResumenVentas").removeClass('oculto');
             $("#frmResumenVentas").modal('hide');
         });
@@ -190,6 +195,8 @@
               "</tr>";
               $("#detalles-inventario").append(detalles);
             });
+            $("#fichaResumenVentas").addClass('oculto');
+            $("#fichaResumenVentasTickets").addClass('oculto');
             $("#fichaKardex").addClass('oculto');
             $("#fichaVentas").addClass('oculto');
             $("#inventario").removeClass('oculto');
