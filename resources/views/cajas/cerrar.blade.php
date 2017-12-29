@@ -22,6 +22,8 @@
         @include('cajas.reportes.ventas.resumenDescuentos')
         @include('cajas.reportes.ventas.ventasProductos')
         @include('cajas.reportes.ventas.resumenTarjetas')
+        @include('cajas.reportes.ingresos.resumenIngresos')
+        @include('cajas.reportes.gastos.resumenGastos')
         @include('cajas.reportes.prestamos.prestamosHechos')
         @include('cajas.reportes.prestamos.prestamosEntrada')
         @include('cajas.reportes.prestamos.prestamosRecogidos')

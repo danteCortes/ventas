@@ -10,6 +10,21 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::prefix('movimiento')->group(function(){
+  Route::get('/', 'MovimientoController@inicio');
+  Route::get('ingresos', 'MovimientoController@ingresos');
+  Route::get('gastos', 'MovimientoController@gastos');
+  Route::post('ingreso', 'MovimientoController@nuevoIngreso');
+  Route::post('gasto', 'MovimientoController@nuevoGasto');
+  Route::post('listar-ingresos', 'MovimientoController@listarIngresos');
+  Route::post('listar-gastos', 'MovimientoController@listarGastos');
+  Route::post('buscar-ingreso', 'MovimientoController@buscarIngreso');
+  Route::post('buscar-gasto', 'MovimientoController@buscarGasto');
+  Route::put('ingreso/{id}', 'MovimientoController@modificarIngreso');
+  Route::put('gasto/{id}', 'MovimientoController@modificarGasto');
+  Route::delete('ingreso/{id}', 'MovimientoController@eliminarIngreso');
+  Route::delete('gasto/{id}', 'MovimientoController@eliminarGasto');
+});
 
 Route::prefix('reporte')->group(function(){
   Route::get('/', 'ReporteController@frmKardex');

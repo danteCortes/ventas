@@ -37,6 +37,11 @@ Cajero
   </a>
 </li>
 <li class="">
+  <a href="{{(Auth::user()->estado_caja == 2) ? url('movimiento') : url('caja/create')}}">
+    <i class="fa fa-circle-o-notch"></i><span class="link-title">&nbsp;Otros Movimientos</span>
+  </a>
+</li>
+<li class="">
   <a href="{{url('caja/create')}}">
     <i class="fa fa-home"></i><span class="link-title">&nbsp;Caja</span>
   </a>
