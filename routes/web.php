@@ -10,6 +10,15 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::prefix('consultora')->group(function(){
+  Route::get('/', 'ConsultoraController@inicio');
+  Route::get('ingresar', 'ConsultoraController@ingresar');
+  Route::post('ingresar', 'ConsultoraController@nuevoIngreso');
+  Route::get('sacar', 'ConsultoraController@sacar');
+  Route::post('sacar', 'ConsultoraController@nuevaSalida');
+});
+
+
 Route::prefix('movimiento')->group(function(){
   Route::get('/', 'MovimientoController@inicio');
   Route::get('ingresos', 'MovimientoController@ingresos');

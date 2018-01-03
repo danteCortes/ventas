@@ -42,6 +42,11 @@ Cajero
   </a>
 </li>
 <li class="">
+  <a href="{{(Auth::user()->estado_caja == 2) ? url('consultora') : url('caja/create')}}">
+    <i class="fa fa-handshake-o"></i><span class="link-title">&nbsp;Consultoras</span>
+  </a>
+</li>
+<li class="">
   <a href="{{url('caja/create')}}">
     <i class="fa fa-home"></i><span class="link-title">&nbsp;Caja</span>
   </a>

@@ -13,6 +13,9 @@
           <strong>CIERRE DE CAJA {{\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $cierre->created_at)->format('d/m/Y')}}</strong>
         </p>
         <p class="text-center" style="font-size: 12px; margin-bottom:1px;" id="cabecera">
+          <strong>TIENDA: {{$cierre->usuario->tienda->nombre}}</strong>
+        </p>
+        <p class="text-center" style="font-size: 12px; margin-bottom:1px;" id="cabecera">
           <strong>USUARIO: {{$cierre->usuario->persona->nombres}} {{$cierre->usuario->persona->apellidos}}</strong>
         </p>
         <hr style="margin-bottom: 1px; margin-top: 1px;">
