@@ -132,8 +132,6 @@ class DetalleController extends Controller{
             $producto->foto = $nombre_foto;
           }
           // Generamos la imagen del códgo de barras para el producto.
-          \DNS1D::setStorPath(storage_path("/codigosBarra/"));
-          \DNS1D::getBarcodePNGPath(mb_strtolower($producto->codigo), "C128");
           $producto->save();
         }else{
           //Si no exite el producto, creamos uno nuevo con sus datos.
@@ -148,8 +146,6 @@ class DetalleController extends Controller{
           $producto->foto = $nombre_foto;
           $producto->save();
           // Generamos la imagen del códgo de barras para el producto.
-          \DNS1D::setStorPath(storage_path("/codigosBarra/"));
-          \DNS1D::getBarcodePNGPath(mb_strtolower($request->codigo), "C128");
         }
 
         // Verificamos si es una compra nueva o se está modificando una compra.

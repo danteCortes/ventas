@@ -1,5 +1,5 @@
 *
-!usuarios/*
-!productos/*
-!codigosBarra/*
+!usuarios/
+!productos/
+!codigosBarra/
 !.gitignore

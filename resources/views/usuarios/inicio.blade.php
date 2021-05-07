@@ -112,6 +112,7 @@ Usuarios
         </thead>
         <tbody>
           @foreach(App\Usuario::where('id', '!=', Auth::user()->id)->get() as $usuario)
+            @if($usuario->persona)
             <tr>
               <td>{{$usuario->persona->dni}}</td>
               <td>{{$usuario->persona->nombres}} {{$usuario->persona->apellidos}}</td>
@@ -403,6 +404,7 @@ Usuarios
                 @endif
               </td>
             </tr>
+            @endif
           @endforeach
         </tbody>
       </table>
