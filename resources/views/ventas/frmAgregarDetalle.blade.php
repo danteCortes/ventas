@@ -36,25 +36,24 @@
         <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 foto">
           <img src="{{url('storage/productos').'/producto.png'}}" style="width:100px;">
         </div>
-        {{Form::open(['url'=>'detalle'])}}
-          {{ csrf_field() }}
-          {{Form::hidden('producto_codigo', null, ['id'=>'producto_codigo', 'required'=>''])}}
-          {{Form::hidden('stock', null, ['id'=>'stock', 'required'=>''])}}
-          {{Form::hidden('tipo', 1)}}
-          <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-            <div class="input-group">
-              <span class="input-group-addon">Prec. Unit.: S/</span>
-              <input type="text" class="form-control moneda precio" placeholder="PRECIO" id="precio_venta" name="precio_unidad" required>
-            </div>
-            <div class="input-group">
-              <span class="input-group-addon">Cantidad: </span>
-              <input type="text" class="form-control" placeholder="CANTIDAD" name="cantidad" required id="cantidad_producto">
-              <span class="input-group-btn">
-                <button class="btn btn-default" type="submit" disabled id="btnAgregarProducto"><span class="fa fa-check"></span> Vender</button>
-              </span>
-            </div>
+        {{Form::hidden('producto_codigo', null, ['id'=>'producto_codigo', 'required'=>''])}}
+        {{Form::hidden('stock', null, ['id'=>'stock', 'required'=>''])}}
+        {{Form::hidden('tipo', 1, ['id' => 'tipo'])}}
+        <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+          <div class="input-group">
+            <span class="input-group-addon">Prec. Unit.: S/</span>
+            <input type="text" class="form-control moneda precio" placeholder="PRECIO" id="precio_unidad" name="precio_unidad" required>
           </div>
-        {{Form::close()}}
+          <div class="input-group">
+            <span class="input-group-addon">Cantidad: </span>
+            <input type="text" class="form-control" placeholder="CANTIDAD" name="cantidad" required id="cantidad_producto">
+            <span class="input-group-btn">
+              <button class="btn btn-default" type="button" disabled id="btnAgregarProducto" onclick="agregarDetalle()">
+                <span class="fa fa-check"></span> Vender
+              </button>
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   </div>

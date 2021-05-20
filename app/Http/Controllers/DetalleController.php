@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Detalle;
+use App\TarjetaVenta;
 use Illuminate\Http\Request;
 use Auth;
 use Validator;
@@ -39,20 +40,20 @@ class DetalleController extends Controller{
 
       case 1:
         // El detalle es de una venta, Validamos los valores enviados desde el formulario.
-        Validator::make(
+        $validator = Validator::make(
           $request->all(),
           [
+            'producto_codigo' => 'required',
             'precio_unidad' => 'required',
             'cantidad' => 'required',
+            'stock' => 'required'
           ]
         );
-        // Verificamos que se halla escogido un producto.
-        if (!$request->producto_codigo || ($request->stock == null)) {
-          return redirect('venta/create')->with('error', 'DEBE ESCOGER UN PRODUCTO PARA AGREGAR UN DETALLE DE VENTA.');
+        if($validator->fails()){
+          return response()->json($validator->errors()->all(), 422);
         }
-        // Verificamos que la cantidad por vender sea menor o igual al stock en tiendas.
-        if ($request->cantidad > $request->stock) {
-          return redirect('venta/create')->with('error', 'ESTÁ QUERIENDO VENDER MÁS DE LO QUE TIENE EN EL ALMACÉN.');
+        if($request->cantidad > $request->stock){
+          return response()->json(['La cantidad vendida es superior al stock del producto.'], 422);
         }
         // Verificamos si ya existe una venta abierta para este usuario.
         if(!$venta = \App\Venta::where('usuario_id', Auth::user()->id)->where('tienda_id', Auth::user()->tienda_id)->where('estado', 1)->first()){
@@ -87,8 +88,36 @@ class DetalleController extends Controller{
           ->where('tienda_id', \Auth::user()->tienda_id)->first();
         $productoTienda->cantidad -= $request->cantidad;
         $productoTienda->save();
-        // Retornamos a la vista de venta nueva.
-        return redirect('venta/create');
+    
+        $detalles = Detalle::join('productos as p', 'p.codigo', '=', 'detalles.producto_codigo')
+          ->join('familias as f', 'f.id', '=', 'p.familia_id')
+          ->join('marcas as m', 'm.id', '=', 'p.marca_id')
+          ->select(
+            'detalles.id',
+            'detalles.cantidad',
+            'p.codigo',
+            \DB::raw("concat(f.nombre, ' ', m.nombre, ' ', p.descripcion) as descripcion"),
+            'detalles.precio_unidad',
+            'detalles.total'
+          )
+          ->where('detalles.venta_id', $venta->id)
+          ->get()
+        ;
+
+        $tarjetaVenta = TarjetaVenta::join('tarjetas as t', 't.id', '=', 'tarjeta_venta.tarjeta_id')
+          ->select(
+            'tarjeta_venta.id',
+            \DB::raw("concat('COMISIÓN POR USO DE TARJETA ', t.nombre, ' ', t.comision, '%') as descripcion"),
+            'tarjeta_venta.comision'
+          )
+          ->where('tarjeta_venta.venta_id', $venta->id)
+          ->first()
+        ;
+        return [
+          'venta' => $venta,
+          'detalles' => $detalles,
+          'tarjetaVenta' => $tarjetaVenta
+        ];
         break;
 
       case 2:
@@ -313,7 +342,37 @@ class DetalleController extends Controller{
           ->where('tienda_id', \Auth::user()->tienda_id)->first();
         $productoTienda->cantidad += $detalle->cantidad;
         $productoTienda->save();
-        return redirect('venta/create')->with('info', 'SE ELIMINÓ EL DETALLE DE ESTA VENTA');
+    
+        $detalles = Detalle::join('productos as p', 'p.codigo', '=', 'detalles.producto_codigo')
+          ->join('familias as f', 'f.id', '=', 'p.familia_id')
+          ->join('marcas as m', 'm.id', '=', 'p.marca_id')
+          ->select(
+            'detalles.id',
+            'detalles.cantidad',
+            'p.codigo',
+            \DB::raw("concat(f.nombre, ' ', m.nombre, ' ', p.descripcion) as descripcion"),
+            'detalles.precio_unidad',
+            'detalles.total'
+          )
+          ->where('detalles.venta_id', $venta->id)
+          ->get()
+        ;
+
+        $tarjetaVenta = TarjetaVenta::join('tarjetas as t', 't.id', '=', 'tarjeta_venta.tarjeta_id')
+          ->select(
+            'tarjeta_venta.id',
+            \DB::raw("concat('COMISIÓN POR USO DE TARJETA ', t.nombre, ' ', t.comision, '%') as descripcion"),
+            'tarjeta_venta.comision'
+          )
+          ->where('tarjeta_venta.venta_id', $venta->id)
+          ->first()
+        ;
+
+        return [
+          'venta' => $venta,
+          'detalles' => $detalles,
+          'tarjetaVenta' => $tarjetaVenta
+        ];
       }
     }
     return "no se reconoce la venta.";

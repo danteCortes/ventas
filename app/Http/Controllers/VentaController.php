@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Venta;
+use App\TarjetaVenta;
+use App\Tarjeta;
+use App\Detalle;
 use Illuminate\Http\Request;
 use Auth;
 use Validator;
@@ -596,7 +599,7 @@ class VentaController extends Controller{
       }
 
       if (empty($where)) {
-        $total = Venta::where('tienda_id', \Auth::user()->tienda_id);
+        $total = Venta::where('tienda_id', \Auth::user()->tienda_id)->get();
 
         $total = count($total);
       } else {
@@ -814,5 +817,58 @@ class VentaController extends Controller{
     return ['ticket'=>$tablaTicket, 'recibo'=>$recibo, 'venta'=>$venta];
   }
 
+  public function obtenerDetalles(Request $request)
+  {
+    $detalles = [];
+    $tarjetaVenta = null;
+    $venta = Venta::where('usuario_id', \Auth::user()->id)
+      ->where('tienda_id', \Auth::user()->tienda_id)
+      ->where('estado', 1)
+      ->first()
+    ;
+    
+    if($venta){
 
+      $detalles = Detalle::join('productos as p', 'p.codigo', '=', 'detalles.producto_codigo')
+        ->join('familias as f', 'f.id', '=', 'p.familia_id')
+        ->join('marcas as m', 'm.id', '=', 'p.marca_id')
+        ->select(
+          'detalles.id',
+          'detalles.cantidad',
+          'p.codigo',
+          \DB::raw("concat(f.nombre, ' ', m.nombre, ' ', p.descripcion) as descripcion"),
+          'detalles.precio_unidad',
+          'detalles.total'
+        )
+        ->where('detalles.venta_id', $venta->id)
+        ->get()
+      ;
+  
+      $tarjetaVenta = TarjetaVenta::join('tarjetas as t', 't.id', '=', 'tarjeta_venta.tarjeta_id')
+        ->select(
+          'tarjeta_venta.id',
+          \DB::raw("concat('COMISIÓN POR USO DE TARJETA ', t.nombre, ' ', t.comision, '%') as descripcion"),
+          'tarjeta_venta.comision',
+          'tarjeta_venta.monto',
+          'tarjeta_venta.tarjeta_id',
+          'tarjeta_venta.operacion'
+        )
+        ->where('tarjeta_venta.venta_id', $venta->id)
+        ->first()
+      ;
+    }
+
+    return [
+      'venta' => $venta,
+      'detalles' => $detalles,
+      'tarjetaVenta' => $tarjetaVenta
+    ];
+  }
+
+  public function mdlRegistrarPagoTarjeta(Request $request)
+  {
+    return [
+      'tarjetas' => Tarjeta::get()
+    ];
+  }
 }

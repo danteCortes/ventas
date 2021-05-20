@@ -1,7 +1,7 @@
 @extends('plantillas.cajero')
 
 @section('estilos')
-{{Html::style('bootgrid/jquery.bootgrid.min.css')}}
+  {{Html::style('bootgrid/jquery.bootgrid.min.css')}}
 @stop
 
 @section('titulo')
@@ -20,7 +20,7 @@ Ventas
 @stop
 
 @section('scripts')
-{{Html::script('bootgrid/jquery.bootgrid.min.js')}}
-{{Html::script('assets/lib/mask/jquery.mask.js')}}
-@include('ventas.scripts')
+  {{Html::script('bootgrid/jquery.bootgrid.min.js')}}
+  {{Html::script('assets/lib/mask/jquery.mask.js')}}
+  {{Html::script('sistema/ventas/nuevo.js')}}
 @stop

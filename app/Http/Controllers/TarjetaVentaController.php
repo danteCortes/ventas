@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Detalle;
 use App\TarjetaVenta;
 use Illuminate\Http\Request;
 
@@ -34,11 +35,15 @@ class TarjetaVentaController extends Controller{
    * @return \Illuminate\Http\Response
    */
   public function store(Request $request){
-    \Validator::make($request->all(), [
+    $validator = \Validator::make($request->all(), [
       'tarjeta_id'=>'required',
       'operacion'=>'required',
       'monto'=>'required',
-    ])->validate();
+    ]);
+    if($validator->fails()){
+      return response()->json($validator->errors()->all(), 422);
+    }
+
     // Verificamos si existe una venta activa para este usuario.
     if ($venta = \App\Venta::where('usuario_id', \Auth::user()->id)->where('tienda_id', \Auth::user()->tienda_id)->where('estado', 1)->first()) {
       // Calculamos la comisión por uso de tarjeta.
@@ -73,9 +78,40 @@ class TarjetaVentaController extends Controller{
           $venta->save();
         }
       }
-      return redirect('venta/create')->with('correcto', 'EL PAGO CON TARJETA FUE REGISTRADO CON ÉXITO, PUEDE PROCEDER A TERMINAR LA VENTA.');
+    
+      $detalles = Detalle::join('productos as p', 'p.codigo', '=', 'detalles.producto_codigo')
+        ->join('familias as f', 'f.id', '=', 'p.familia_id')
+        ->join('marcas as m', 'm.id', '=', 'p.marca_id')
+        ->select(
+          'detalles.id',
+          'detalles.cantidad',
+          'p.codigo',
+          \DB::raw("concat(f.nombre, ' ', m.nombre, ' ', p.descripcion) as descripcion"),
+          'detalles.precio_unidad',
+          'detalles.total'
+        )
+        ->where('detalles.venta_id', $venta->id)
+        ->get()
+      ;
+  
+      $tarjetaVenta = TarjetaVenta::join('tarjetas as t', 't.id', '=', 'tarjeta_venta.tarjeta_id')
+        ->select(
+          'tarjeta_venta.id',
+          \DB::raw("concat('COMISIÓN POR USO DE TARJETA ', t.nombre, ' ', t.comision, '%') as descripcion"),
+          'tarjeta_venta.comision'
+        )
+        ->where('tarjeta_venta.venta_id', $venta->id)
+        ->first()
+      ;
+  
+      return [
+        'venta' => $venta,
+        'detalles' => $detalles,
+        'tarjetaVenta' => $tarjetaVenta
+      ];
     }
-    return 0;
+
+    return response()->json(['No hay una venta activa en este momento, agregue detalles para comenzar una venta.'], 422);
   }
 
   /**

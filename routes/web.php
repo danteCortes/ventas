@@ -145,6 +145,8 @@ Route::post('tipo-cambio', 'VentaController@tipoCambio');
 Route::get('imprimir-recibo/{id}', 'VentaController@imprimirRecibo');
 Route::post('listar-ventas', 'VentaController@listar');
 Route::post('buscar-venta', 'VentaController@buscar');
+Route::get('obtener-detalles', 'VentaController@obtenerDetalles');
+Route::get('mdl-registrar-pago-tarjeta', 'VentaController@mdlRegistrarPagoTarjeta');
 
 Route::get('/', 'LoginController@inicio');
 Route::get('login', 'LoginController@frmInicioSesion');

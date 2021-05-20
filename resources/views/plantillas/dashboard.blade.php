@@ -35,6 +35,9 @@
     <!-- animate.css stylesheet -->
     {{Html::style('assets/lib/animate.css/animate.css')}}
 
+    <!-- toastr -->
+    {{Html::style('//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css')}}
+
     <style media="screen">
       .mayuscula{
         text-transform: uppercase;
@@ -210,7 +213,10 @@
     {{Html::script('assets/js/app.js')}}
 
     {{Html::script('assets/lib/mask/jquery.mask.js')}}
-
+    
+    {{Html::script('https://unpkg.com/axios/dist/axios.min.js')}}
+    
+    {{Html::script('//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js')}}
 
     @yield('scripts')
 </body>
