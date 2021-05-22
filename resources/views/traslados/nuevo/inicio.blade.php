@@ -15,7 +15,7 @@ Nuevo Traslado
   @include('traslados.tblProductos')
 	@include('traslados.nuevo.frmAgregarDetalle')
 </div>
-@if($counttraslados > 0 )
+@if($traslados)
 <div class="row">
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <div class="table-responsive">

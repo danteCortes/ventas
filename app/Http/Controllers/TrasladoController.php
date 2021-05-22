@@ -18,13 +18,15 @@ class TrasladoController extends Controller
 
     public function create()
     {
-        $traslados = Traslado::where('usuario_id', Auth::user()->id)->where('tienda_origen', Auth::user()->tienda_id)->where('estado', 1)->first();
-
-        $counttraslados = count($traslados);
+        $traslados = Traslado::where('usuario_id', Auth::user()->id)
+            ->where('tienda_origen', Auth::user()->tienda_id)
+            ->where('estado', 1)
+            ->first()
+        ;
 
         $tiendas = Tienda::select('id', 'nombre')->where('id', '!=', \Auth::user()->tienda_id)->get();
 
-        return view('traslados.nuevo.inicio', compact('tiendas', 'traslados', 'counttraslados'));
+        return view('traslados.nuevo.inicio', compact('tiendas', 'traslados'));
     }
 
     public function store(Request $request)
