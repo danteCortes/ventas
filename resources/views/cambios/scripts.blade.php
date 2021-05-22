@@ -37,7 +37,7 @@
       /* Se ejecuta despues de cargar y procesar los datos */
       grid.find(".command-show").on("click", function(e){
         $.post("{{url('buscar-venta')}}", {id: $(this).data('row-codigo')}, function(data, textStatus, xhr) {
-          $("#impTicket").html(data['ticket']);
+          $("#impTicket").html(`--Copia del ticket original--${data['ticket']}--Copia del ticket original--`);
           $(".numeracion").html(data['recibo']['numeracion']);
           $("#verTicket").modal("show");
         });

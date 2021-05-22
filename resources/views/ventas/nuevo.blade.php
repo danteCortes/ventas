@@ -17,10 +17,12 @@ Ventas
 @include('ventas.tblDetalles')
 @include('ventas.frmVenta')
 @include('ventas.modales')
+@include('ventas.modals.mdlTicket')
 @stop
 
 @section('scripts')
   {{Html::script('bootgrid/jquery.bootgrid.min.js')}}
   {{Html::script('assets/lib/mask/jquery.mask.js')}}
-  {{Html::script('sistema/ventas/nuevo.js')}}
+  {{Html::script('assets/js/jquery.printarea.js')}}
+  {{Html::script('sistema/ventas/nuevo.js?v=2')}}
 @stop

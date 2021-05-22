@@ -17,11 +17,6 @@ Cajero
   </a>
 </li>
 <li class="">
-  <a href="{{(Auth::user()->estado_caja == 2) ? url('prestamo') : url('caja/create')}}">
-    <i class="fa fa-refresh"></i><span class="link-title">&nbsp;Prestamos</span>
-  </a>
-</li>
-<li class="">
   <a href="{{(Auth::user()->estado_caja == 2) ? url('credito') : url('caja/create')}}">
     <i class="fa fa-money"></i><span class="link-title">&nbsp;Creditos</span>
   </a>
@@ -39,11 +34,6 @@ Cajero
 <li class="">
   <a href="{{(Auth::user()->estado_caja == 2) ? url('movimiento') : url('caja/create')}}">
     <i class="fa fa-circle-o-notch"></i><span class="link-title">&nbsp;Otros Movimientos</span>
-  </a>
-</li>
-<li class="">
-  <a href="{{(Auth::user()->estado_caja == 2) ? url('consultora') : url('caja/create')}}">
-    <i class="fa fa-handshake-o"></i><span class="link-title">&nbsp;Consultoras</span>
   </a>
 </li>
 <li class="">

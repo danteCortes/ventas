@@ -167,9 +167,9 @@ $(function() {
               if (data['puntos']) {
                 $(".puntos").html("ESTE CLIENTE TIENE " + data['puntos'] + " PUNTOS ACUMULADOS HASTA EL MOMENTO!");
                 if (data['puntos'] > 1000) {
-                  $(".grupo-puntos").html("<span class='input-group-addon'>USAR </span>"+
-                  "<input type='text' name='puntos' class='form-control oculto' placeholder='PUNTOS' style='text-align:right; required'>"+
-                  "<span class='input-group-addon'> 000 PUNTOS</span>");
+                  $(".grupo-puntos").html(`<span class='input-group-addon'>USAR </span>
+                    <input type='text' name='puntos' id='puntos' class='form-control oculto' placeholder='PUNTOS' style='text-align:right;'>
+                  <span class='input-group-addon'> 000 PUNTOS</span>`);
                 }
               }
             }else{
@@ -536,4 +536,71 @@ const calcularVuelto = async () => {
     }
     $("#monto_tarjeta").val($("#tarjeta").val());
   }catch(errors){console.log(errors)}
+}
+
+const guardarVenta = async () => {
+  try{
+    let config = {
+      method: 'POST',
+      url: `/venta`,
+      data: {
+        documento: $("#documento").val(),
+        nombre: $("#nombre").val(),
+        nombres: $("#nombres").val(),
+        apellidos: $("#apellidos").val(),
+        direccion: $("#direccion").val(),
+        soles: $("#efectivo").val(),
+        dolares: $("#dolares").val(),
+        tarjeta: $("#tarjeta").val(),
+        vuelto: $("#vuelto").val(),
+        puntos: $("#puntos").val()
+      }
+    }
+    let response = await axios(config)
+    console.log(response.data)
+    venta = {
+      detalles: [],
+      tarjetaVenta: {}
+    }
+    $("#tblDetalles").hide()
+    $("#frmVenta").hide()
+    $("#documento").val('')
+    $("#nombre").val('')
+    $("#nombres").val('')
+    $("#apellidos").val('')
+    $("#direccion").val('')
+    $("#efectivo").val('')
+    $("#dolares").val('')
+    $("#tarjeta").val('')
+    $("#vuelto").val('')
+    $("#puntos").val('')
+
+    toastr.success('La venta se realizó con éxito.')
+    mostrarTicket(response.data.id)
+  }catch(errors){
+    if(errors.response.status == 422){
+      errors.response.data.map(error => toastr.error(error))
+    }else{
+      toastr.error('Hubo un error en el sistema, comuníquese con el administrador del sistema.')
+    }
+  }
+}
+
+const mostrarTicket = async (id) => {
+  try{
+    let config = {
+      method: 'POST',
+      url: `/buscar-venta`,
+      data: {id}
+    }
+    let response = await axios(config)
+    
+    $("#impTicket").html(response.data.ticket);
+    $(".numeracion").html(response.data.recibo.numeracion);
+    $("#verTicket").modal("show");
+  }catch(errors){console.log(errors)}
+}
+
+const imprimirTicket = () => {
+  $("div#impTicket").printArea();
 }

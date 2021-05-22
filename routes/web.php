@@ -149,7 +149,7 @@ Route::get('obtener-detalles', 'VentaController@obtenerDetalles');
 Route::get('mdl-registrar-pago-tarjeta', 'VentaController@mdlRegistrarPagoTarjeta');
 
 Route::get('/', 'LoginController@inicio');
-Route::get('login', 'LoginController@frmInicioSesion');
+Route::get('login', 'LoginController@frmInicioSesion')->name('login');
 Route::post('ingresar', 'LoginController@ingresar');
 Route::get('verificar-tipo', 'LoginController@verificarTipo');
 Route::get('salir', 'LoginController@salir');

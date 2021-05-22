@@ -12,6 +12,11 @@ use Validator;
 
 class VentaController extends Controller{
 
+  public function __construct()
+  {
+    $this->middleware('auth');
+  }
+
   /**
    * Muestra una lista de ventas hechas en esta tienda.
    *
@@ -102,8 +107,8 @@ class VentaController extends Controller{
           $total_soles += number_format($request->dolares * $configuracion->cambio, 2, '.', ' ');
         }else{
           // Si no se configuró el tipo de cambio retornamos a la vista de venta nueva con un mensaje de error.
-          return redirect('venta/create')->with('error', 'DEBE CONFIGURAR EL TIPO DE CAMBIO ANTES DE RELIZAR UN PAGO EN DOLARES.
-            DEBE HACER CLICK EN EL BOTÓN "Tipo Cambio"');
+          return response()->json(['DEBE CONFIGURAR EL TIPO DE CAMBIO ANTES DE RELIZAR UN PAGO EN DOLARES.
+            DEBE HACER CLICK EN EL BOTÓN "Tipo Cambio"'], 422);
         }
       }
       if ($request->tarjeta) {
@@ -115,11 +120,11 @@ class VentaController extends Controller{
             $total_soles += $request->tarjeta;
           }else{
             // Si el monto ingresado no corresponde al registrado regresamos a la vista anterior con un mensaje de error.
-            return redirect('venta/create')->with('error', 'ESTA INTENTANDO INGRESAR UN PAGO CON TARJETA DIFERENTE AL QUE REGISTRÓ!.');
+            return response()->json(['ESTA INTENTANDO INGRESAR UN PAGO CON TARJETA DIFERENTE AL QUE REGISTRÓ!.'], 422);
           }
         }else{
           // Si no se registró la venta con tarjeta, regresamos a la vista anterior con un mensaje de error.
-          return redirect('venta/create')->with('error', 'DEBE REGISTRAR EL PAGO CON TARJETA ANTES DE FINALLIZAR LA VENTA.');
+          return response()->json(['DEBE REGISTRAR EL PAGO CON TARJETA ANTES DE FINALLIZAR LA VENTA.'], 422);
         }
       }
       // Verificamos si el cliente quiere canjear sus puntos.
@@ -144,8 +149,8 @@ class VentaController extends Controller{
           $total_soles += $request->puntos*10;
 
         }else {
-          return redirect('venta/create')->with('error', 'EL CLIENTE NO TIENE '.$request->puntos.'000 PUNTOS TÚ COMO TRATA DE RECLAMAR.
-            INGRESE LOS DATOS NUEVAMENTE POR FAVOR.');
+          return response()->json(['EL CLIENTE NO TIENE '.$request->puntos.'000 PUNTOS TÚ COMO TRATA DE RECLAMAR.
+            INGRESE LOS DATOS NUEVAMENTE POR FAVOR.'], 422);
         }
       }
       // Verificamos si el total acumulado. es igual o mayor al total de la venta.
@@ -196,14 +201,14 @@ class VentaController extends Controller{
             $persona->save();
           }
         }
-        return redirect('imprimir-recibo/'.$venta->id)->with('correcto', 'LA VENTA SE CONCLUYÓ CON ÉXITO, PUEDE IMPRIMIR SU RECIBO.');;
+        return response()->json($venta, 201);
       }else{
         // Si el monto acumulado es menor que el total de la venta, regresamos a la vista de la venta con un mensaje de error.
-        return redirect('venta/create')->with('error', 'EL MONTO TOTAL INGRESADO NO COMPLETA EL TOTAL DE LA VENTA.');
+        return response()->json(['EL MONTO TOTAL INGRESADO NO COMPLETA EL TOTAL DE LA VENTA.'], 422);
       }
     }else{
       // Si no existe una venta activa para este usuario, retornams a la vista de venta con un mensaje de error.
-      return redirect('venta/create')->with('error', 'NO EXISTE UNA VENTA ACTIVA EN ESTE MOMENTO.');
+      return response()->json(['NO EXISTE UNA VENTA ACTIVA EN ESTE MOMENTO.'], 422);
     }
   }
 
@@ -653,7 +658,7 @@ class VentaController extends Controller{
         $total -= $recibo->venta->descuento;
     }
     $letras = $this->numtoletras($total);
-    $tablaTicket = "--Copia del ticket original--<div class='row'>
+    $tablaTicket = "<div class='row'>
         <div class='col-sm-12'>
             <p class='text-center' style='font-size: 12px; margin-bottom:1px;'>".$recibo->venta->tienda->nombre."</p>
         </div>
@@ -812,7 +817,7 @@ class VentaController extends Controller{
           PUNTOS TÚ. RECUERDE RECLAMAR SU DESCUENTO A PARTIR DE LOS 1 000 PUNTOS.</p>";
       }
     }
-    $tablaTicket .= "<p class='text-justify' style='font-size: 12px; margin-bottom:5px;'>BIENES TRANSFERIDOS EN LA AMAZONIA PARA SER CONSUMIDOS EN LA MISMA</p>--Copia del ticket original--";
+    $tablaTicket .= "<p class='text-justify' style='font-size: 12px; margin-bottom:5px;'>BIENES TRANSFERIDOS EN LA AMAZONIA PARA SER CONSUMIDOS EN LA MISMA</p>";
 
     return ['ticket'=>$tablaTicket, 'recibo'=>$recibo, 'venta'=>$venta];
   }
