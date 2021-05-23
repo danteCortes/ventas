@@ -162,7 +162,9 @@ Route::post('cambiar-foto', 'ConfiguracionController@cambiarFoto');
 Route::post('cambiar-password', 'ConfiguracionController@cambiarPassword');
 Route::post('cambio', 'ConfiguracionController@agregarTipoCambio');
 
-Route::middleware('administrador')->resource('tienda', 'TiendaController');
+Route::middleware(['auth', 'administrador'])->resource('tienda', 'TiendaController');
+Route::get('mdl-subir-certificado-digital', 'CertificadoController@mdlSubirCertificadoDigital');
+Route::post('subir-certificado-digital', 'CertificadoController@subirCertificadoDigital');
 
 Route::resource('usuario', 'UsuarioController');
 Route::post('restaurar-contrasenia', 'UsuarioController@restaurarContrasenia');

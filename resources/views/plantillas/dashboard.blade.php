@@ -35,6 +35,9 @@
     <!-- animate.css stylesheet -->
     {{Html::style('assets/lib/animate.css/animate.css')}}
 
+    <!-- busyload -->
+    {{Html::style('https://cdn.jsdelivr.net/npm/busy-load@0.1.2/dist/app.min.css')}}
+
     <!-- toastr -->
     {{Html::style('//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css')}}
 
@@ -215,6 +218,8 @@
     {{Html::script('assets/lib/mask/jquery.mask.js')}}
     
     {{Html::script('https://unpkg.com/axios/dist/axios.min.js')}}
+    
+    {{Html::script('https://cdn.jsdelivr.net/npm/busy-load@0.1.2/dist/app.min.js')}}
     
     {{Html::script('//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js')}}
 
