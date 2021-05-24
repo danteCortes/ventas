@@ -284,6 +284,9 @@ $(function() {
     $('#panelAgregar').on('shown.bs.collapse', function () {
       $("#btnAgregar").html("<span class='fa fa-minus'></span>")
     });
+    $('#verTicket').on('hidden.bs.modal', function (e) {
+      $("#ifr-recibo").attr('src', '')
+    })
 });
 
 const frmNuevaVenta = async () => {
@@ -587,20 +590,17 @@ const guardarVenta = async () => {
 }
 
 const mostrarTicket = async (id) => {
-  try{
-    let config = {
-      method: 'POST',
-      url: `/buscar-venta`,
-      data: {id}
-    }
-    let response = await axios(config)
+  // try{
+  //   let config = {
+  //     method: 'POST',
+  //     url: `/buscar-venta`,
+  //     data: {id}
+  //   }
+  //   let response = await axios(config)
     
-    $("#impTicket").html(response.data.ticket);
-    $(".numeracion").html(response.data.recibo.numeracion);
-    $("#verTicket").modal("show");
-  }catch(errors){console.log(errors)}
-}
-
-const imprimirTicket = () => {
-  $("div#impTicket").printArea();
+    // $("#impTicket").html(response.data.ticket);
+    // $(".numeracion").html(response.data.recibo.numeracion);
+  // }catch(errors){console.log(errors)}
+  $("#ifr-recibo").attr('src', `/imprimir-recibo/${id}`)
+  $("#verTicket").modal("show")
 }

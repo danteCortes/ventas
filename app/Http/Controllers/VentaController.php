@@ -371,13 +371,17 @@ class VentaController extends Controller{
   }
 
   public function imprimirRecibo($recibo_id){
-    $recibo = Venta::find($recibo_id)->recibo;
-    $total = $recibo->venta->total;
-    if($reclamo = $recibo->venta->reclamo){
-        $total -= $recibo->venta->descuento;
+    $venta = Venta::find($recibo_id);
+    $recibo = $venta->recibo;
+    $cont = count($venta->detalles);
+    $total = $venta->total;
+    if($reclamo = $venta->reclamo){
+        $total -= $venta->descuento;
     }
     $letras = $this->numtoletras($total);
-    return view('ventas.recibo')->with('recibo', $recibo)->with('letras', $letras);
+    $pdf = \PDF::loadView('ventas.pdfs.ticket', compact('recibo', 'letras'));
+    $pdf->setPaper( array( 0 , 0 , 204 , 950 + $cont * 40 ), "portrait" );
+    return $pdf->stream();
   }
 
   private function numtoletras($xcifra){

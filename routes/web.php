@@ -195,3 +195,9 @@ Route::resource('linea', 'LineaController');
 Route::resource('familia', 'FamiliaController');
 
 Route::resource('marca', 'MarcaController');
+
+Route::get('prueba-pdf', function(){
+  $pdf = App::make('dompdf.wrapper');
+  $pdf->loadHTML('<h1>Test</h1>');
+  return $pdf->stream();
+});

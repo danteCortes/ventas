@@ -36,11 +36,9 @@
       $("#tblVentas-header > div > div > div.search.form-group > div > input").focus();
       /* Se ejecuta despues de cargar y procesar los datos */
       grid.find(".command-show").on("click", function(e){
-        $.post("{{url('buscar-venta')}}", {id: $(this).data('row-codigo')}, function(data, textStatus, xhr) {
-          $("#impTicket").html(`--Copia del ticket original--${data['ticket']}--Copia del ticket original--`);
-          $(".numeracion").html(data['recibo']['numeracion']);
-          $("#verTicket").modal("show");
-        });
+        
+        $("#ifr-recibo").attr('src', `/imprimir-recibo/${$(this).data('row-codigo')}`)
+        $("#verTicket").modal("show");
       }).end().find(".command-edit").on("click", function(e){
         //
       }).end().find(".command-delete").on('click', function(e) {
@@ -55,6 +53,10 @@
     $(".imprimir").click(function (){
       $("div#impTicket").printArea();
     });
+
+    $('#verTicket').on('hidden.bs.modal', function (e) {
+      $("#ifr-recibo").attr('src', '')
+    })
 
     /*
      * Token necesario para hacer consultas por ajax.
