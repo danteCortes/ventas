@@ -34,12 +34,12 @@ class CertificadoController extends Controller
         $cer = $certificate->export(X509ContentType::CER);
         \Storage::disk('certificados')->put('certificado'.$request->id.'.pem', $pem);
 
-        return $cer;
+        $certificado = new Certificado;
+        $certificado->tienda_id = $request->id;
+        $certificado->usuario_sunat = mb_strtoupper($request->usuario_sunat);
+        $certificado->clave_sunat = $request->clave_sunat;
+        $certificado->save();
 
-        // $certificado = new Certificado;
-        // $certificado->tienda_id = $request->id;
-        // $certificado->usuario_sunat = mb_strtoupper($request->usuario_sunat);
-        // $certificado->clave_sunat = $request->clave_sunat;
-        // $certificado->save();
+        return $cer;
     }
 }

@@ -590,17 +590,7 @@ const guardarVenta = async () => {
 }
 
 const mostrarTicket = async (id) => {
-  // try{
-  //   let config = {
-  //     method: 'POST',
-  //     url: `/buscar-venta`,
-  //     data: {id}
-  //   }
-  //   let response = await axios(config)
-    
-    // $("#impTicket").html(response.data.ticket);
-    // $(".numeracion").html(response.data.recibo.numeracion);
-  // }catch(errors){console.log(errors)}
+  
   $("#ifr-recibo").attr('src', `/imprimir-recibo/${id}`)
   $("#verTicket").modal("show")
 }

@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Venta;
-use App\TarjetaVenta;
-use App\Tarjeta;
-use App\Detalle;
-use Illuminate\Http\Request;
 use Auth;
 use Validator;
+use App\Certificado;
+use App\Detalle;
+use App\Recibo;
+use App\Tarjeta;
+use App\TarjetaVenta;
+use App\Tienda;
+use App\Venta;
+use App\Jobs\SendInvoiceSunat;
+use Illuminate\Http\Request;
 
 class VentaController extends Controller{
 
@@ -182,14 +186,19 @@ class VentaController extends Controller{
         $cierre->save();
         // Creamos el recibo.
         $recibo = new \App\Recibo;
+        $prefijo_serie = 'B';
         if(strlen($request->documento) == 8){
           $recibo->persona_dni = $request->documento;
         }elseif (strlen($request->documento) == 11) {
           $recibo->empresa_ruc = $request->documento;
+          $prefijo_serie = 'F';
+        }
+        if(!$certificado = Certificado::where('tienda_id', \Auth::user()->tienda_id)->first()){
+          $prefijo_serie = '';
         }
         $recibo->venta_id = $venta->id;
         $recibo->tienda_id = \Auth::user()->tienda_id;
-        $recibo->numeracion = Auth::user()->tienda->serie."-".$this->numeracion($request->documento, Auth::user()->tienda_id);
+        $recibo->numeracion = $prefijo_serie.Auth::user()->tienda->serie."-".$this->numeracion($prefijo_serie, Auth::user()->tienda_id);
         $recibo->save();
         // Guardamos el total de puntos en la persona si hay persona.
         if ($persona = \App\Persona::find($request->documento)) {
@@ -201,6 +210,11 @@ class VentaController extends Controller{
             $persona->save();
           }
         }
+        if($certificado){
+          
+          SendInvoiceSunat::dispatch($venta);
+        }
+        
         return response()->json($venta, 201);
       }else{
         // Si el monto acumulado es menor que el total de la venta, regresamos a la vista de la venta con un mensaje de error.
@@ -212,15 +226,22 @@ class VentaController extends Controller{
     }
   }
 
-  private function numeracion($documento, $tienda){
-      if($recibo = \App\Recibo::whereNotNull('venta_id')->where('tienda_id', $tienda)->latest('id')->first()){
-        $numero = explode("-", $recibo->numeracion)[1]+1;
-      }else{
-        $numero = 1;
-      }
-    // rellenamos el numero a 6 dígitos.
-    while (strlen($numero) < 8) {
-      $numero = "0".$numero;
+  private function numeracion($prefijo_serie, $tienda)
+  {
+    $tienda = Tienda::find($tienda);
+    $ultimo_recibo = Recibo::select(
+        'numeracion'
+      )
+      ->whereNotNull('venta_id')
+      ->where('tienda_id', $tienda->id)
+      ->where(\DB::raw("SUBSTRING_INDEX(numeracion, '-', 1)"), $prefijo_serie.$tienda->serie)
+      ->orderBy(\DB::raw("SUBSTRING_INDEX(numeracion, '-', -1)"), 'desc')
+      ->first()
+    ;
+    if($ultimo_recibo){
+      $numero = explode("-", $ultimo_recibo->numeracion)[1] + 1;
+    }else{
+      $numero = 1;
     }
     return $numero;
   }
@@ -370,7 +391,8 @@ class VentaController extends Controller{
     return 1;
   }
 
-  public function imprimirRecibo($recibo_id){
+  public function imprimirRecibo($recibo_id)
+  {
     $venta = Venta::find($recibo_id);
     $recibo = $venta->recibo;
     $cont = count($venta->detalles);
@@ -379,7 +401,23 @@ class VentaController extends Controller{
         $total -= $venta->descuento;
     }
     $letras = $this->numtoletras($total);
-    $pdf = \PDF::loadView('ventas.pdfs.ticket', compact('recibo', 'letras'));
+    $modelo = 'ventas.pdfs.ticket';
+    if(strlen(explode('-', $recibo->numeracion)[0]) > 3){
+
+      $modelo = 'ventas.pdfs.comprobanteElectronico';
+      $dataQR = $venta->tienda->ruc.'|'.
+              ($recibo->empresa ? '01|' : '03|').
+              str_replace('-', '|', $recibo->numeracion).'|'.
+              '0.00|'.
+              $venta->total.'|'.
+              \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $venta->created_at)->format('d-m-Y').'|'.
+              ($recibo->empresa ? '6|' : '1|').
+              ($recibo->empresa ? $recibo->empresa_ruc : ($recibo->persona_dni ? $recibo->persona_dni : '00000000'));
+      $rutaQR = storage_path('app/public/qrTemp.svg');
+      \QrCode::generate($dataQR, $rutaQR);
+    }
+
+    $pdf = \PDF::loadView($modelo, compact('recibo', 'letras'));
     $pdf->setPaper( array( 0 , 0 , 204 , 950 + $cont * 40 ), "portrait" );
     return $pdf->stream();
   }
