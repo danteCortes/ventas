@@ -147,6 +147,7 @@ Route::post('listar-ventas', 'VentaController@listar');
 Route::post('buscar-venta', 'VentaController@buscar');
 Route::get('obtener-detalles', 'VentaController@obtenerDetalles');
 Route::get('mdl-registrar-pago-tarjeta', 'VentaController@mdlRegistrarPagoTarjeta');
+Route::post('cambiar-estado-emision-cpe', 'VentaController@cambiarEstadoEmisionCpe');
 
 Route::get('/', 'LoginController@inicio');
 Route::get('login', 'LoginController@frmInicioSesion')->name('login');
@@ -165,6 +166,8 @@ Route::post('cambio', 'ConfiguracionController@agregarTipoCambio');
 Route::middleware(['auth', 'administrador'])->resource('tienda', 'TiendaController');
 Route::get('mdl-subir-certificado-digital', 'CertificadoController@mdlSubirCertificadoDigital');
 Route::post('subir-certificado-digital', 'CertificadoController@subirCertificadoDigital');
+Route::get('mdl-subir-logo-tienda', 'TiendaController@mdlSubirLogoTienda');
+Route::post('subir-logo-tienda', 'TiendaController@subirLogoTienda');
 
 Route::resource('usuario', 'UsuarioController');
 Route::post('restaurar-contrasenia', 'UsuarioController@restaurarContrasenia');
@@ -196,8 +199,6 @@ Route::resource('familia', 'FamiliaController');
 
 Route::resource('marca', 'MarcaController');
 
-Route::get('prueba-pdf', function(){
-  $pdf = App::make('dompdf.wrapper');
-  $pdf->loadHTML('<h1>Test</h1>');
-  return $pdf->stream();
+Route::get('php-artisan-migrate', function(){
+  \Artisan::call('migrate');
 });

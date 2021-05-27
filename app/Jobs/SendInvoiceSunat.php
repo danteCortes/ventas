@@ -40,7 +40,7 @@ class SendInvoiceSunat implements ShouldQueue
 
             $see = new See();
             $see->setCertificate(file_get_contents(storage_path('app/public/certificados/certificado'.$tienda->id.'.pem')));
-            $see->setService(SunatEndpoints::FE_BETA);
+            $see->setService($tienda->produccion ? SunatEndpoints::FE_PRODUCCION : SunatEndpoints::FE_BETA);
             $see->setClaveSOL($tienda->ruc, $certificado->usuario_sunat, $certificado->clave_sunat);
 
             $invoice = $this->getInvoice();
@@ -48,38 +48,50 @@ class SendInvoiceSunat implements ShouldQueue
             $result = $see->send($invoice);
 
             // Guardar XML firmado digitalmente.
-            file_put_contents(storage_path('app/public/'.$invoice->getName().'.xml'), $see->getFactory()->getLastXml());
+            // file_put_contents(storage_path('app/public/'.$invoice->getName().'.xml'), $see->getFactory()->getLastXml());
 
             // Verificamos que la conexión con SUNAT fue exitosa.
             if (!$result->isSuccess()) {
                 // Mostrar error al conectarse a SUNAT.
                 \Log::error('Codigo Error: '.$result->getError()->getCode());
                 \Log::error('Mensaje Error: '.$result->getError()->getMessage());
+            }else{
+        
+                // Guardamos el CDR
+                if(!is_dir(storage_path('app/public/documentos'))){
+                    mkdir(storage_path('app/public/documentos'));
+                }
+                if(!is_dir(storage_path('app/public/documentos/cdrs'.$tienda->id))){
+                    mkdir(storage_path('app/public/documentos/cdrs'.$tienda->id));
+                }
+                file_put_contents(storage_path('app/public/documentos/cdrs'.$tienda->id.'/R-'.$invoice->getName().'.zip'), 
+                    $result->getCdrZip());
+        
+                $cdr = $result->getCdrResponse();
+                
+                $code = (int)$cdr->getCode();
+                
+                if ($code === 0) {
+                        \Log::info('ESTADO: ACEPTADA'.PHP_EOL);
+                        if (count($cdr->getNotes()) > 0) {
+                        \Log::info('OBSERVACIONES:'.PHP_EOL);
+                        // Corregir estas observaciones en siguientes emisiones.
+                        \Log::info(var_dump($cdr->getNotes()));
+                        }  
+                } else if ($code >= 2000 && $code <= 3999) {
+                        \Log::error('ESTADO: RECHAZADA'.PHP_EOL);
+                } else {
+                        /* Esto no debería darse, pero si ocurre, es un CDR inválido que debería tratarse como un error-excepción. */
+                        /*code: 0100 a 1999 */
+                        \Log::error('Excepción');
+                }
+                
+                \Log::info($cdr->getDescription().PHP_EOL);
+        
+                $this->comprobante->codigo_sunat = $code;
+                $this->comprobante->estado_sunat = $cdr->getDescription();
+                $this->comprobante->save();
             }
-
-            // Guardamos el CDR
-            file_put_contents(storage_path('app/public/R-'.$invoice->getName().'.zip'), $result->getCdrZip());
-
-            $cdr = $result->getCdrResponse();
-            
-            $code = (int)$cdr->getCode();
-            
-            if ($code === 0) {
-                \Log::info('ESTADO: ACEPTADA'.PHP_EOL);
-                if (count($cdr->getNotes()) > 0) {
-                    \Log::info('OBSERVACIONES:'.PHP_EOL);
-                    // Corregir estas observaciones en siguientes emisiones.
-                    \Log::info(var_dump($cdr->getNotes()));
-                }  
-            } else if ($code >= 2000 && $code <= 3999) {
-                \Log::error('ESTADO: RECHAZADA'.PHP_EOL);
-            } else {
-                /* Esto no debería darse, pero si ocurre, es un CDR inválido que debería tratarse como un error-excepción. */
-                /*code: 0100 a 1999 */
-                \Log::error('Excepción');
-            }
-            
-            \Log::info($cdr->getDescription().PHP_EOL);
         }catch(\Exception $error){
             \Log::error($error);
         }

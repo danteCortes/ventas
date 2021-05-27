@@ -24,11 +24,7 @@
       formatters: {
         "commands": function(column, row){
           return "<button type='button' class='btn btn-xs btn-info command-show' data-row-codigo='"+row.id+"' style='margin:2px'>"+
-            "<span class='fa fa-eye'></span></button>"+
-            "<a href='venta/"+row.id+"/edit' class='btn btn-xs btn-warning command-edit' data-row-codigo='"+row.id+"' style='margin:2px'>"+
-              "<span class='fa fa-edit'></span></a>"+
-            "<button type='button' class='btn btn-xs btn-danger command-delete' data-row-codigo='"+row.id+"' style='margin:2px'>"+
-              "<span class='fa fa-trash'></span></button>";
+            "<span class='fa fa-eye'></span></button>";
         }
       }
     }).on("loaded.rs.jquery.bootgrid", function(){

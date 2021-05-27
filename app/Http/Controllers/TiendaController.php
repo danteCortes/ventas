@@ -105,4 +105,28 @@ class TiendaController extends Controller
     $tienda->delete();
     return redirect('tienda')->with('info', 'LA TIENDA '.$tienda->nombre.' FUE BORRADO DE LOS REGISTROS.');
   }
+
+  public function mdlSubirLogoTienda(Request $request)
+  {
+    return Tienda::find($request->id);
+  }
+
+  public function subirLogoTienda(Request $request)
+  {
+    $validator = \Validator::make($request->all(), [
+      'logo' => 'required|image'
+    ]);
+
+    if($validator->fails()){
+      return response()->json($validator->errors()->all(), 422);
+    }
+
+    $logo = $request->file('logo');
+    
+    \Storage::disk('logos')->put('logo.'.$logo->extension(), \File::get($logo));
+
+    $tienda = Tienda::find($request->id);
+    $tienda->logo ='logo.'.$logo->extension();
+    $tienda->save();       
+  }
 }

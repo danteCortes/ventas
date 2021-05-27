@@ -918,4 +918,15 @@ class VentaController extends Controller{
       'tarjetas' => Tarjeta::get()
     ];
   }
+
+  public function cambiarEstadoEmisionCpe(Request $request)
+  {
+    $tienda = Tienda::find($request->id);
+    if($tienda->produccion){
+      $tienda->produccion = null;
+    }else{
+      $tienda->produccion = 1;
+    }
+    $tienda->save();
+  }
 }

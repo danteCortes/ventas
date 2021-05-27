@@ -68,6 +68,11 @@ return [
             'root' => storage_path('app/public/certificados'),
         ],
 
+        'logos' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/logos'),
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

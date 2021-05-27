@@ -22,7 +22,8 @@ class CertificadoController extends Controller
             'certificado_digital' => 'required|file',
             'password_certificado' => 'required',
             'usuario_sunat' => 'required',
-            'clave_sunat' => 'required'
+            'clave_sunat' => 'required',
+            'fecha_vencimiento' => 'required'
         ]);
   
         if($validator->fails()){
@@ -34,10 +35,13 @@ class CertificadoController extends Controller
         $cer = $certificate->export(X509ContentType::CER);
         \Storage::disk('certificados')->put('certificado'.$request->id.'.pem', $pem);
 
+        Certificado::where('tienda_id', $request->id)->delete();
+
         $certificado = new Certificado;
         $certificado->tienda_id = $request->id;
         $certificado->usuario_sunat = mb_strtoupper($request->usuario_sunat);
         $certificado->clave_sunat = $request->clave_sunat;
+        $certificado->fecha_vencimiento = $request->fecha_vencimiento;
         $certificado->save();
 
         return $cer;

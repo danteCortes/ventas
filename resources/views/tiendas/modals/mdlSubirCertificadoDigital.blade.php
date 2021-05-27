@@ -33,6 +33,13 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="txt-fecha-vencimiento" class="col-sm-3 control-label">Fech. de Venc.:</label>
+                        <div class="col-sm-9">
+                            <input type="date" class="form-control input-sm" id="txt-fecha-vencimiento" 
+                                placeholder="Fecha de Vencimiento">
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="txt-usuario-sunat" class="col-sm-3 control-label">Usuario SUNAT:</label>
                         <div class="col-sm-9">
                             <input type="text" class="form-control input-sm" id="txt-usuario-sunat" placeholder="Usuario SUNAT"

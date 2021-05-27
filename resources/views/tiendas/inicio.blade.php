@@ -84,14 +84,16 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+    <div class="col-xs-12 col-sm-12">
       <div class="table-responsive">
         <table class="table table-condensed table-hover table-bordered">
           <thead>
             <tr style="background-color:#385a94; color:#FFF;">
               <th>RUC</th>
               <th>TIENDA</th>
+              <th>ESTADO</th>
               <th>OPERACIONES</th>
+              <th>EMISION ELECTRONICA</th>
             </tr>
           </thead>
           <tbody>
@@ -100,6 +102,17 @@
                 <td>{{$tienda->ruc}}</td>
                 <td>{{$tienda->nombre}}</td>
                 <td>
+                  @if(\App\Certificado::where('tienda_id', $tienda->id)->first())
+                    @if($tienda->produccion)
+                      EMISION DE CPE EN PRODUCCION
+                    @else
+                      EMISION DE CPE EN PRUEBA
+                    @endif
+                  @else
+                    EMISION DE TICKETS
+                  @endif
+                </td>
+                <td class="text-center">
                   <button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#ver{{$tienda->id}}">
                     <span class="fa fa-eye"></span>
                   </button>
@@ -221,10 +234,22 @@
                       </div>
                     </div>
                   </div>
-                  <button type="button" class="btn btn-primary btn-xs" title="Subir Certificado Digital"
+                  <button type="button" class="btn btn-primary btn-xs" title="Subir Logo de Tienda"
+                    onclick="mdlSubirLogoTienda({{$tienda->id}})">
+                    <span class="fa fa-image"></span>
+                  </button>
+                </td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-info btn-xs" title="Subir Certificado Digital"
                     onclick="mdlSubirCertificadoDigital({{$tienda->id}})">
                     <span class="glyphicon glyphicon-file"></span>
                   </button>
+                  @if(\App\Certificado::where('tienda_id', $tienda->id)->first() && !$tienda->produccion)
+                    <button type="button" class="btn btn-warning btn-xs" title="Cambiar Estado de Emisión de CPE"
+                      onclick="cambiarProduccion({{$tienda->id}})">
+                      <span class="fa fa-refresh"></span>
+                    </button>
+                  @endif
                 </td>
               </tr>
             @endforeach
@@ -234,6 +259,7 @@
     </div>
   </div>
   @include('tiendas.modals.mdlSubirCertificadoDigital')
+  @include('tiendas.modals.mdlSubirLogoTienda')
 @stop
 
 @section('scripts')
