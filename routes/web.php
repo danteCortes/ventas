@@ -199,6 +199,9 @@ Route::resource('familia', 'FamiliaController');
 
 Route::resource('marca', 'MarcaController');
 
+Route::get('mdl-anular-venta', 'AnularVentaController@mdlAnularVenta');
+Route::post('anular-venta', 'AnularVentaController@anularVenta');
+
 Route::get('php-artisan-migrate', function(){
   \Artisan::call('migrate');
 });

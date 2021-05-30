@@ -590,12 +590,16 @@ class VentaController extends Controller{
         $order_name = $sort['ticket'];
     }
     if (isset($sort['fecha'])) {
-        $order_by = 'updated_at';
+        $order_by = 'ventas.updated_at';
         $order_name = $sort['fecha'];
     }
     if (isset($sort['total'])) {
         $order_by = 'total';
         $order_name = $sort['total'];
+    }
+    if (isset($sort['estado'])) {
+        $order_by = 'estado';
+        $order_name = $sort['estado'];
     }
 
     $skip = 0;
@@ -614,12 +618,18 @@ class VentaController extends Controller{
     } else {
       if (empty($where)) {
         $ventas = Venta::join('recibos', 'ventas.id', '=', 'recibos.venta_id')
+          ->leftJoin('notas_creditos as nc', 'nc.numero_documento_afectado', '=', 'recibos.numeracion')
           ->where('ventas.tienda_id', \Auth::user()->tienda_id)
           ->select(
             'recibos.numeracion as ticket',
             'ventas.updated_at as fecha',
             'ventas.total as total',
-            'ventas.id as id'
+            'ventas.id as id',
+            \DB::raw("case
+              when nc.id is not null then concat('De baja con Nota de Crédito ', nc.serie, '-', nc.correlativo)
+              when ventas.estado_sunat is not null then ventas.estado_sunat
+              else 'EN PROCESO'
+            end as estado")
             )
           ->distinct()
           ->offset($skip)
@@ -628,6 +638,7 @@ class VentaController extends Controller{
           ->get();
       } else {
         $ventas = Venta::join('recibos', 'ventas.id', '=', 'recibos.venta_id')
+          ->leftJoin('notas_creditos as nc', 'nc.numero_documento_afectado', '=', 'recibos.numeracion')
           ->where('ventas.tienda_id', \Auth::user()->tienda_id)
           ->where('recibos.numeracion', 'like', '%'.$where.'%')
           ->orWhere('ventas.updated_at', 'like', '%'.$where.'%')
@@ -636,7 +647,12 @@ class VentaController extends Controller{
             'recibos.numeracion as ticket',
             'ventas.updated_at as fecha',
             'ventas.total as total',
-            'ventas.id as id'
+            'ventas.id as id',
+            \DB::raw("case
+              when nc.id is not null then concat('De baja con Nota de Crédito ', nc.serie, '-', nc.correlativo)
+              when ventas.estado_sunat is not null then ventas.estado_sunat
+              else 'EN PROCESO'
+            end as estado")
             )
           ->distinct()
           ->offset($skip)
@@ -673,6 +689,7 @@ class VentaController extends Controller{
           "fecha" => \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $venta->fecha)->format('d/m/Y H:i A'),
           "total" => $venta->total,
           "id" => $venta->id,
+          "estado" => $venta->estado,
         )
       );
       //Asignamos un grupo de datos al array datas

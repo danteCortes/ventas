@@ -13,10 +13,10 @@
                 margin: 0 !important;
             }
             #invoice-POS h1 {
-                font-size: 9px;
+                font-size: 13px;
             }
             #invoice-POS h2 {
-                font-size: 9px;
+                font-size: 11px;
             }
         
             #invoice-POS #top {
@@ -96,12 +96,12 @@
                 <img class="logo" src="./{{$logo}}" alt="Logo"
                     style="max-width: 50%; height: 80px;">
                 <h1>{{$recibo->venta->tienda->nombre}}</h1>
-                <p class="font-size-9">{{$recibo->venta->tienda->direccion}}</p>                
+                <p class="font-size-11">{{$recibo->venta->tienda->direccion}}</p>                
             </div>
 
             <hr>
 
-            <div id="datos-empresa" class="text-center font-size-9">
+            <div id="datos-empresa" class="text-center font-size-11">
                 <p> RAZÓN SOCIAL: TIENDAS TU R&L E.I.R.L.</p>
                 <p>JR. GENERAL PRADO NRO. 584 HUANUCO - HUANUCO - HUANUCO</p>   
                 <p>RUC: 20601867835</p>
@@ -119,7 +119,7 @@
                 <h2>N° {{$recibo->numeracion}}</h2>
             </div>
 
-            <div id="datos-cliente" class="mtb-10 font-size-8">                
+            <div id="datos-cliente" class="mtb-10 font-size-10">                
                 <table style="width: 100%;">
                     <tr>
                         <td style="width: 30%;"><strong>Fecha Emisión:</strong></td>
@@ -167,7 +167,7 @@
 
             <hr>
 
-            <div id="listado-productos" class="mtb-10 font-size-9">
+            <div id="listado-productos" class="mtb-10 font-size-11">
                 <table id="productos" style="width: 100%;">
                     <tr class="text-bold">
                         <td width="50%">Descripción</td>
@@ -256,10 +256,10 @@
                     <tr>
                         <td class="text-center" style="width: 60%; vertical-align: middle;">
                             <p>Gracias por su preferencia.</p>
-                            <p style="text-align: center; font-size: 9px;">
+                            <p style="text-align: center; font-size: 11px;">
                                 BIENES TRANSFERIDOS EN LA AMAZONIA PARA SER CONSUMIDOS EN LA MISMA
                             </p>
-                            <p style="text-align: center; font-size: 9px;">Autorizado mediante resolución N° 155-2017/SUNAT
+                            <p style="text-align: center; font-size: 11px;">Autorizado mediante resolución N° 155-2017/SUNAT
                                 Representación impresa del comprobante electrónico.
                                 Consulte su documento en el portal SUNAT con su clave SOL</p>
                             <div class="mtb-10">

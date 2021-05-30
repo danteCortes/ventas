@@ -47,9 +47,6 @@ class SendInvoiceSunat implements ShouldQueue
 
             $result = $see->send($invoice);
 
-            // Guardar XML firmado digitalmente.
-            // file_put_contents(storage_path('app/public/'.$invoice->getName().'.xml'), $see->getFactory()->getLastXml());
-
             // Verificamos que la conexión con SUNAT fue exitosa.
             if (!$result->isSuccess()) {
                 // Mostrar error al conectarse a SUNAT.
@@ -140,6 +137,7 @@ class SendInvoiceSunat implements ShouldQueue
         $company = (new Company())
             ->setRuc('20601867835')
             ->setRazonSocial('TIENDAS TU R&L E.I.R.L.')
+            ->setNombreComercial('TIENDAS TU')
             ->setAddress($this->getDireccion())
         ;
         return $company;
