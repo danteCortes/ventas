@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Cierre;
+use App\ComunicacionBaja;
 use App\Detalle;
+use App\DetalleComunicacionBaja;
 use App\DetalleNotaCredito;
 use App\NotaCredito;
 use App\ProductoTienda;
@@ -11,6 +13,7 @@ use App\Tienda;
 use App\Venta;
 use Carbon\Carbon;
 use App\Jobs\SendNotaCreditoSunat;
+use App\Jobs\SendComunicacionBajaSunat;
 use Illuminate\Http\Request;
 
 class AnularVentaController extends Controller
@@ -23,6 +26,9 @@ class AnularVentaController extends Controller
         }
         if(NotaCredito::where('numero_documento_afectado', $venta->recibo->numeracion)->first()){
             return response()->json(['Esta venta ya tiene una nota de crédito asociada.'], 422);
+        }
+        if(DetalleComunicacionBaja::where('serie', explode('-', $venta->recibo->numeracion)[0])->where('correlativo', explode('-', $venta->recibo->numeracion)[1])->first()){
+            return response()->json(['Esta venta ya tiene una comunicacion de baja.'], 422);
         }
         
         return Venta::join('recibos as r', 'r.venta_id', '=', 'ventas.id')
@@ -127,6 +133,39 @@ class AnularVentaController extends Controller
 
     private function generarComunicacionBaja(Venta $venta)
     {
-        return 'generar comunicacion baja';
+        $cierre = Cierre::where('usuario_id', \Auth::user()->id)->where('estado', 1)->first();
+        $recibo = $venta->recibo;
+        $tienda = Tienda::find(\Auth::user()->tienda_id);
+        $correlativo = 1;
+        if($ultima_comunicacion_baja = ComunicacionBaja::where('fecha_comunicacion', Carbon::now()->format('Y-m-d'))
+            ->orderBy('correlativo', 'desc')->first()){
+            $correlativo = $ultima_comunicacion_baja->correlativo + 1;
+        }
+
+        $comunicacion_baja = ComunicacionBaja::create([
+            'usuario_id' => \Auth::user()->id,
+            'cierre_id' => $cierre->id,
+            'tienda_id' => \Auth::user()->tienda_id,
+            'correlativo' => $correlativo,
+            'fecha_generacion' => Carbon::now()->format('Y-m-d'),
+            'fecha_comunicacion' => Carbon::now()->format('Y-m-d')
+        ]);
+
+        DetalleComunicacionBaja::create([
+            'comunicacion_baja_id' => $comunicacion_baja->id,
+            'tipo_documento' =>  (substr($recibo->numeracion, 0, 1) == 'B' ? '03' : '01'),
+            'serie' => explode('-', $recibo->numeracion)[0],
+            'correlativo' => explode('-', $recibo->numeracion)[1],
+            'descripcion' => 'DEVOLUCIÓN DE PRODUCTOS'
+        ]);        
+
+        foreach(Detalle::where('venta_id', $venta->id)->get() as $detalle)
+        {
+            $this->devolverProducto($detalle);
+        }
+
+        SendComunicacionBajaSunat::dispatch($comunicacion_baja);
+
+        return $comunicacion_baja;
     }
 }

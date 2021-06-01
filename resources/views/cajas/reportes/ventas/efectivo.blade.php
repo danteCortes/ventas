@@ -31,6 +31,21 @@
     )
     ->first();
   $total_soles += $total_pagos->monto;
+  $total_notas_creditos = \App\NotaCredito::select(\DB::raw("sum(total) as total"))->where('cierre_id', $cierre->id)->first();
+  $total_soles -= $total_notas_creditos->total;
+
+  $comunicaciones_bajas = \App\ComunicacionBaja::where('cierre_id', $cierre->id)->get();
+  foreach ($comunicaciones_bajas as $comunicacion_baja) {
+    foreach(\App\DetalleComunicacionBaja::where('comunicacion_baja_id', $comunicacion_baja->id)->get() as $detalle_comunicacion_baja)
+    {    
+      $factura = \App\Venta::join('recibos as r', 'r.venta_id', '=', 'ventas.id')
+        ->select(\DB::raw("sum(ventas.total) as total"))
+        ->where('r.numeracion', $detalle_comunicacion_baja->serie.'-'.$detalle_comunicacion_baja->correlativo)
+        ->first()
+      ;
+      $total_soles -= $factura->total;
+    }
+  }
 ?>
 <table class="table table-condensed" id="tblDinero" style="margin-bottom:1px;">
   <tr>

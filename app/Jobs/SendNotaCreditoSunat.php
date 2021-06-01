@@ -128,6 +128,7 @@ class SendNotaCreditoSunat implements ShouldQueue
             ->setDistrito('HUANUCO')
             ->setUrbanizacion('-')
             ->setDireccion('JR. GENERAL PRADO NRO. 584')
+            ->setCodLocal('0000')
         ;
         return $address;
     }

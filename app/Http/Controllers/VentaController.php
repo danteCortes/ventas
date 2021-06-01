@@ -235,11 +235,11 @@ class VentaController extends Controller{
       ->whereNotNull('venta_id')
       ->where('tienda_id', $tienda->id)
       ->where(\DB::raw("SUBSTRING_INDEX(numeracion, '-', 1)"), $prefijo_serie.$tienda->serie)
-      ->orderBy(\DB::raw("SUBSTRING_INDEX(numeracion, '-', -1)"), 'desc')
+      ->orderBy(\DB::raw("CAST(SUBSTRING_INDEX(numeracion, '-', -1) AS UNSIGNED)"), 'desc')
       ->first()
     ;
     if($ultimo_recibo){
-      $numero = explode("-", $ultimo_recibo->numeracion)[1] + 1;
+      $numero = intval(explode("-", $ultimo_recibo->numeracion)[1]) + 1;
     }else{
       $numero = 1;
     }
@@ -590,7 +590,7 @@ class VentaController extends Controller{
         $order_name = $sort['ticket'];
     }
     if (isset($sort['fecha'])) {
-        $order_by = 'ventas.updated_at';
+        $order_by = 'ventas.created_at';
         $order_name = $sort['fecha'];
     }
     if (isset($sort['total'])) {
@@ -619,14 +619,17 @@ class VentaController extends Controller{
       if (empty($where)) {
         $ventas = Venta::join('recibos', 'ventas.id', '=', 'recibos.venta_id')
           ->leftJoin('notas_creditos as nc', 'nc.numero_documento_afectado', '=', 'recibos.numeracion')
+          ->leftJoin('detalles_comunicaciones_bajas as dcb', \DB::raw("concat(dcb.serie, '-', dcb.correlativo)"), '=', 'recibos.numeracion')
+          ->leftJoin('comunicaciones_bajas as cb', 'cb.id', '=', 'dcb.comunicacion_baja_id')
           ->where('ventas.tienda_id', \Auth::user()->tienda_id)
           ->select(
             'recibos.numeracion as ticket',
-            'ventas.updated_at as fecha',
+            'ventas.created_at as fecha',
             'ventas.total as total',
             'ventas.id as id',
             \DB::raw("case
               when nc.id is not null then concat('De baja con Nota de Crédito ', nc.serie, '-', nc.correlativo)
+              when cb.id is not null then concat('De baja con Comunicación de Baja RA-', replace(cb.fecha_comunicacion, '-', ''), '-', cb.correlativo)
               when ventas.estado_sunat is not null then ventas.estado_sunat
               else 'EN PROCESO'
             end as estado")
@@ -639,17 +642,20 @@ class VentaController extends Controller{
       } else {
         $ventas = Venta::join('recibos', 'ventas.id', '=', 'recibos.venta_id')
           ->leftJoin('notas_creditos as nc', 'nc.numero_documento_afectado', '=', 'recibos.numeracion')
+          ->leftJoin('detalles_comunicaciones_bajas as dcb', \DB::raw("concat(dcb.serie, '-', dcb.correlativo)"), '=', 'recibos.numeracion')
+          ->leftJoin('comunicaciones_bajas as cb', 'cb.id', '=', 'dcb.comunicacion_baja_id')
           ->where('ventas.tienda_id', \Auth::user()->tienda_id)
           ->where('recibos.numeracion', 'like', '%'.$where.'%')
-          ->orWhere('ventas.updated_at', 'like', '%'.$where.'%')
+          ->orWhere('ventas.created_at', 'like', '%'.$where.'%')
           ->orWhere('ventas.total', 'like', '%'.$where.'%')
           ->select(
             'recibos.numeracion as ticket',
-            'ventas.updated_at as fecha',
+            'ventas.created_at as fecha',
             'ventas.total as total',
             'ventas.id as id',
             \DB::raw("case
               when nc.id is not null then concat('De baja con Nota de Crédito ', nc.serie, '-', nc.correlativo)
+              when cb.id is not null then concat('De baja con Comunicación de Baja RA-', replace(cb.fecha_comunicacion, '-', ''), '-', cb.correlativo)
               when ventas.estado_sunat is not null then ventas.estado_sunat
               else 'EN PROCESO'
             end as estado")
@@ -669,7 +675,7 @@ class VentaController extends Controller{
         $total = Venta::join('recibos', 'ventas.id', '=', 'recibos.venta_id')
           ->where('ventas.tienda_id', \Auth::user()->tienda_id)
           ->where('recibos.numeracion', 'like', '%'.$where.'%')
-          ->orWhere('ventas.updated_at', 'like', '%'.$where.'%')
+          ->orWhere('ventas.created_at', 'like', '%'.$where.'%')
           ->orWhere('ventas.total', 'like', '%'.$where.'%')
           ->distinct()
           ->get();

@@ -13,7 +13,9 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        Commands\SendInvoiceProcesoSunat::class,
+        Commands\SendComunicacionBajaProcesoSunat::class,
+        Commands\SendNotaCreditoProcesoSunat::class,
     ];
 
     /**
