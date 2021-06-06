@@ -11,7 +11,7 @@ var detalles = []
 var source = null
 
 const mdlNuevoComprobante = () => {
-    var detalles = []
+    detalles = []
     $("#txt-documento").val('')
     $("#txt-nombres").val('')
     $("#txt-apellidos").val('')
@@ -103,7 +103,7 @@ const calcularImporteTotal = () => {
 }
 
 const agregarDetalle = () => {
-    if($("#txt-detalle-descripcion").val() != ''){
+    if($("#txt-detalle-descripcion").val() != '' && $("#importe-total-detalle").text() != 0){
         detalles.push({
             cantidad: $("#txt-detalle-cantidad").val(),
             descripcion: $("#txt-detalle-descripcion").val(),
@@ -181,7 +181,7 @@ const guardarComprobante = async () => {
     }catch(errors){
         $("#busyNuevoComprobante").busyLoad("hide")
         if(errors.response.status == 422){
-            errors.response.data.mal(error => toastr.error(error))
+            errors.response.data.map(error => toastr.error(error))
         }else{
             toastr.error('Hubo un error en el sistema, contacte con el administrador del sistema.')
         }

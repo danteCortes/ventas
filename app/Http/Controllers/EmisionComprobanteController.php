@@ -38,6 +38,13 @@ class EmisionComprobanteController extends Controller
 
     public function guardarComprobante(Request $request)
     {
+        $validator = \Validator::make($request->all(), [
+            'detalles' => 'required|min:1'
+        ]);
+        if($validator->fails()){
+            return response()->json($validator->errors()->all(), 422);
+        }
+
         $persona_dni = null;
         $empresa_ruc = null;
         $tipo_documento = '03';
