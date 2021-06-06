@@ -30,6 +30,11 @@ Administrador
   </a>
 </li>
 <li class="">
+  <a href="{{url('emision-comprobantes')}}">
+    <i class="fa fa-file"></i><span class="link-title">&nbsp;Emisión de Comprobantes Electrónicos</span>
+  </a>
+</li>
+<li class="">
   <a href="{{url('proveedor')}}">
     <i class="fa fa-user-circle"></i><span class="link-title">&nbsp;Proveedores</span>
   </a>
@@ -47,6 +52,11 @@ Administrador
 <li class="">
   <a href="{{url('reporte')}}">
     <i class="fa fa-file"></i><span class="link-title">&nbsp;Reportes</span>
+  </a>
+</li>
+<li class="">
+  <a href="#">
+    <i class="fa fa-file"></i><span class="link-title">&nbsp;Reporte de Comprobantes Electrónicos</span>
   </a>
 </li>
 @stop

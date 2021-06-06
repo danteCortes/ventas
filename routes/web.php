@@ -202,6 +202,17 @@ Route::resource('marca', 'MarcaController');
 Route::get('mdl-anular-venta', 'AnularVentaController@mdlAnularVenta');
 Route::post('anular-venta', 'AnularVentaController@anularVenta');
 
+Route::group(['prefix' => 'emision-comprobantes', 'middleware' => 'auth'], function(){
+  Route::get('', 'EmisionComprobanteController@inicio');
+  Route::get('buscar-persona', 'EmisionComprobanteController@buscarPersona');
+  Route::get('buscar-empresa', 'EmisionComprobanteController@buscarEmpresa');
+  Route::post('guardar-comprobante', 'EmisionComprobanteController@guardarComprobante');
+  Route::get('mostrar-comprobante', 'EmisionComprobanteController@mostrarComprobante');
+  Route::post('listar-comprobantes', 'EmisionComprobanteController@listarComprobantes');
+  Route::get('mdl-anular-comprobante', 'EmisionComprobanteController@mdlAnularComprobante');
+  Route::post('anular-comprobante', 'EmisionComprobanteController@anularComprobante');
+});
+
 Route::get('php-artisan-migrate', function(){
   \Artisan::call('migrate');
 });
