@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         Commands\SendComunicacionBajaProcesoSunat::class,
         Commands\SendNotaCreditoProcesoSunat::class,
         Commands\SendVentaAdministradorProcesoSunat::class,
+        Commands\CerrarCajas::class,
     ];
 
     /**
