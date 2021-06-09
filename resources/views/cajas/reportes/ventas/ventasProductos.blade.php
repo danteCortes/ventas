@@ -3,7 +3,10 @@ $productos = \DB::table('detalles')->join('ventas', 'ventas.id', '=', 'detalles.
   ->join('productos', 'productos.codigo', '=', 'detalles.producto_codigo')
   ->join('familias', 'familias.id', '=', 'productos.familia_id')
   ->join('marcas', 'marcas.id', '=', 'productos.marca_id')
-  ->where('ventas.cierre_id', $cierre->id)->select(
+  ->whereDate('ventas.created_at', $fecha)
+  ->where('ventas.usuario_id', $usuario->id)
+  ->where('ventas.tienda_id', $tienda->id)
+  ->select(
     'productos.codigo as codigo',
     DB::raw("SUM(detalles.cantidad) as cantidad"),
     'productos.descripcion as descripcion',

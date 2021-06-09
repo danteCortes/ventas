@@ -1,8 +1,9 @@
 <?php
   $cambios = \DB::table('cambios')->join('ventas', 'ventas.id', '=', 'cambios.venta_id')
     ->join('recibos', 'ventas.id', '=', 'recibos.venta_id')
-    ->where('cambios.cierre_id', $cierre->id)
-    ->where('ventas.cierre_id', '!=', $cierre->id)
+    ->whereDate('cambios.created_at', $fecha)
+    ->where('cambios.usuario_id', $usuario->id)
+    ->where('cambios.tienda_id', $tienda->id)
     ->select(
       'recibos.numeracion as numeracion',
       'ventas.created_at as fecha_venta',

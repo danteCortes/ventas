@@ -7,7 +7,9 @@
     ->join('familias', 'familias.id', '=', 'productos.familia_id')
     ->join('marcas', 'marcas.id', '=', 'productos.marca_id')
     ->where('detalles.descuento', '!=', 0)
-    ->where('ventas.cierre_id', $cierre->id)
+    ->whereDate('ventas.created_at', $fecha)
+    ->where('ventas.usuario_id', $usuario->id)
+    ->where('ventas.tienda_id', $tienda->id)
     ->select(
       'recibos.numeracion as numeracion',
       \DB::raw("concat(familias.nombre, ' ', marcas.nombre, ' ', productos.descripcion) as descripcion"),

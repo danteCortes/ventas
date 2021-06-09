@@ -69,12 +69,12 @@ class SendInvoiceSunat implements ShouldQueue
                 $code = (int)$cdr->getCode();
                 
                 if ($code === 0) {
-                        \Log::info('ESTADO: ACEPTADA'.PHP_EOL);
-                        if (count($cdr->getNotes()) > 0) {
+                    // \Log::info('ESTADO: ACEPTADA'.PHP_EOL);
+                    if (count($cdr->getNotes()) > 0) {
                         \Log::info('OBSERVACIONES:'.PHP_EOL);
                         // Corregir estas observaciones en siguientes emisiones.
                         \Log::info(var_dump($cdr->getNotes()));
-                        }  
+                    }  
                 } else if ($code >= 2000 && $code <= 3999) {
                         \Log::error('ESTADO: RECHAZADA'.PHP_EOL);
                 } else {
@@ -83,7 +83,7 @@ class SendInvoiceSunat implements ShouldQueue
                         \Log::error('Excepción');
                 }
                 
-                \Log::info($cdr->getDescription().PHP_EOL);
+                // \Log::info($cdr->getDescription().PHP_EOL);
         
                 $this->comprobante->codigo_sunat = $code;
                 $this->comprobante->estado_sunat = $cdr->getDescription();

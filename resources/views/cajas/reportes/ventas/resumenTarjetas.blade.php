@@ -2,7 +2,10 @@
 $pagos_tarjeta_ventas = \DB::table('tarjeta_venta')->join('ventas', 'ventas.id', '=', 'tarjeta_venta.venta_id')
   ->join('recibos', 'recibos.venta_id', '=', 'ventas.id')
   ->join('tarjetas', 'tarjetas.id', '=', 'tarjeta_venta.tarjeta_id')
-  ->where('ventas.cierre_id', $cierre->id)->select(
+  ->whereDate('ventas.created_at', $fecha)
+  ->where('ventas.usuario_id', $usuario->id)
+  ->where('ventas.tienda_id', $tienda->id)
+  ->select(
     'tarjeta_venta.operacion as operacion',
     'tarjeta_venta.monto as monto',
     'recibos.numeracion as numeracion',
@@ -12,7 +15,10 @@ $pagos_tarjeta = \DB::table('tarjeta_venta')->join('cambios', 'cambios.id', '=',
   ->join('ventas', 'ventas.id', '=', 'cambios.venta_id')
   ->join('recibos', 'recibos.venta_id', '=', 'ventas.id')
   ->join('tarjetas', 'tarjetas.id', '=', 'tarjeta_venta.tarjeta_id')
-  ->where('cambios.cierre_id', $cierre->id)->select(
+  ->whereDate('cambios.created_at', $fecha)
+  ->where('cambios.usuario_id', $usuario->id)
+  ->where('cambios.tienda_id', $tienda->id)
+  ->select(
     'tarjeta_venta.operacion as operacion',
     'tarjeta_venta.monto as monto',
     'recibos.numeracion as numeracion',

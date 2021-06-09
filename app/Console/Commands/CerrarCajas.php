@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Cierre;
+use App\Usuario;
 use Illuminate\Console\Command;
 
 class CerrarCajas extends Command
@@ -23,6 +24,12 @@ class CerrarCajas extends Command
         {
             $cierre->estado = 0;
             $cierre->save();
+        }
+        $usuarios = Usuario::get();
+        foreach($usuarios as $usuario)
+        {
+            $usuario->estado_caja = 0;
+            $usuario->save();
         }
     }
 }

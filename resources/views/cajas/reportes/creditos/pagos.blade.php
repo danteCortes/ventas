@@ -1,7 +1,12 @@
 <?php
-// Primero calculamos todos los dolares que se recibieron y lo convertimos a soles.
-$pagos = \DB::table('pagos')->where('cierre_id', $cierre->id)->whereNotNull('credito_id')->get();
-
+  // Primero calculamos todos los dolares que se recibieron y lo convertimos a soles.
+  $pagos = \DB::table('pagos')
+    ->whereDate('created_at', $fecha)
+    ->where('usuario_id', $usuario->id)
+    ->where('tienda_id', $tienda->id)
+    ->whereNotNull('credito_id')
+    ->get()
+  ;
 ?>
 @if(count($pagos) > 0)
 <hr>

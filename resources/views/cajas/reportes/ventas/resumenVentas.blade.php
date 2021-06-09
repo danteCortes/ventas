@@ -1,8 +1,8 @@
 <?php
 
-  $ventas = \App\Venta::where('cierre_id', $cierre->id)->where('estado', 0)->get();
+  $ventas = \App\Venta::whereDate('created_at', $fecha)->where('usuario_id', $usuario->id)->where('tienda_id', $tienda->id)->get();
 
- ?>
+?>
 @if(count($ventas) > 0)
 <hr style="margin-bottom: 1px; margin-top: 0px;">
 <table class="table table-condensed" id="tblResumenVentas" style="margin-bottom:0px;">

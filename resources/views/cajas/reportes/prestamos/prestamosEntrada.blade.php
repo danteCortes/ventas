@@ -1,6 +1,11 @@
 <?php
 
-$prestamos = \App\Prestamo::where('cierre_id', '=', $cierre->id)->where('direccion', 0)->get();
+$prestamos = \App\Prestamo::whereDate('created_at', $fecha)
+  ->where('usuario_id', $usuario->id)
+  ->where('tienda_id', $tienda->id)
+  ->where('direccion', 0)
+  ->get()
+;
 
 ?>
 @if(count($prestamos) > 0)

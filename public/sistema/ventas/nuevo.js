@@ -542,6 +542,13 @@ const calcularVuelto = async () => {
 }
 
 const guardarVenta = async () => {
+  $("#btnGuardarVenta").prop('disabled', true)
+  $("#content").busyLoad("show", {
+      background: "#4569ab",
+      spinner: "cube",
+      animation: "slide",
+      text: "Guardando datos de la Venta..."
+  })
   try{
     let config = {
       method: 'POST',
@@ -579,13 +586,17 @@ const guardarVenta = async () => {
     $("#puntos").val('')
 
     toastr.success('La venta se realizó con éxito.')
+    $("#content").busyLoad("hide")
     mostrarTicket(response.data.id)
+    $("#btnGuardarVenta").prop('disabled', false)
   }catch(errors){
     if(errors.response.status == 422){
       errors.response.data.map(error => toastr.error(error))
     }else{
       toastr.error('Hubo un error en el sistema, comuníquese con el administrador del sistema.')
     }
+    $("#content").busyLoad("hide")
+    $("#btnGuardarVenta").prop('disabled', false)
   }
 }
 

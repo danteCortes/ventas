@@ -77,7 +77,7 @@ class SendVentaAdministradorSunat implements ShouldQueue
                 $code = (int)$cdr->getCode();
                 
                 if ($code === 0) {
-                        \Log::info('ESTADO: ACEPTADA'.PHP_EOL);
+                        // \Log::info('ESTADO: ACEPTADA'.PHP_EOL);
                         if (count($cdr->getNotes()) > 0) {
                             \Log::info('OBSERVACIONES:'.PHP_EOL);
                             // Corregir estas observaciones en siguientes emisiones.
@@ -91,7 +91,7 @@ class SendVentaAdministradorSunat implements ShouldQueue
                         \Log::error('Excepción');
                 }
                 
-                \Log::info($cdr->getDescription().PHP_EOL);
+                // \Log::info($cdr->getDescription().PHP_EOL);
         
                 $this->venta_administrador->codigo_sunat = $code;
                 $this->venta_administrador->estado_sunat = $cdr->getDescription();

@@ -1,6 +1,10 @@
 <?php
 
-  $ingresos = \App\OtroIngreso::where('cierre_id', $cierre->id)->get();
+  $ingresos = \App\OtroIngreso::whereDate('created_at', $fecha)
+    ->where('usuario_id', $usuario->id)
+    ->where('tienda_id', $tienda->id)
+    ->get()
+  ;
 
  ?>
 @if(count($ingresos) > 0)

@@ -1,10 +1,17 @@
-@if(count($cierre->creditos) > 0)
+<?php
+  $creditos = \App\Credito::whereDate('created_at', $fecha)
+    ->where('usuario_id', $usuario->id)
+    ->where('tienda_id', $tienda->id)
+    ->get()
+  ;
+?>
+@if(count($creditos) > 0)
 <hr>
 <table class="table table-condensed" id="tblResumenVentas">
   <tr>
     <th colspan="3" style="text-align:center; border-top:rgba(255, 255, 255, 0);">RESUMEN DE CREDITOS</th>
   </tr>
-  @foreach($cierre->creditos as $credito)
+  @foreach($creditos as $credito)
     <tr>
       <th colspan="3" style="text-align:left;">Credito Nro {{$credito->id}}</th>
     </tr>

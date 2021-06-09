@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Tienda;
 use Illuminate\Http\Request;
 use App\Http\Traits\Reportes\Kardex\KardexTrait;
 
@@ -67,10 +68,10 @@ class ReporteController extends Controller{
   }
 
   public function crearCierre(Request $request){
-    $cierres = \App\Cierre::where('tienda_id', $request->tienda_id)->where('estado', 0)
-      ->whereDate(\DB::raw('date(created_at)'), $request->fecha_cierre)->get();
+    $tienda = Tienda::find($request->tienda_id);
+    $fecha = $request->fecha_cierre;
 
-    return view('reportes.cierres.vista')->with('cierres', $cierres);
+    return view('reportes.cierres.vista', compact('tienda', 'fecha'));
 
 
   }

@@ -1,6 +1,10 @@
 <?php
 
-  $gastos = \App\OtroGasto::where('cierre_id', $cierre->id)->get();
+  $gastos = \App\OtroGasto::whereDate('created_at', $fecha)
+    ->where('usuario_id', $usuario->id)
+    ->where('tienda_id', $tienda->id)
+    ->get()
+  ;
 
  ?>
 @if(count($gastos) > 0)

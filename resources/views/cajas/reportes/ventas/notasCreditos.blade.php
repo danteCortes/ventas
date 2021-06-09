@@ -1,6 +1,10 @@
 <?php
 
-  $notas_creditos = \App\NotaCredito::where('cierre_id', $cierre->id)->get();
+    $notas_creditos = \App\NotaCredito::whereDate('created_at', $fecha)
+        ->where('usuario_id', $usuario->id)
+        ->where('tienda_id', $tienda->id)
+        ->get()
+    ;
 
 ?>
 @if(count($notas_creditos) > 0)

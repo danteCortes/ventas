@@ -24,5 +24,5 @@ Ventas
   {{Html::script('bootgrid/jquery.bootgrid.min.js')}}
   {{Html::script('assets/lib/mask/jquery.mask.js')}}
   {{Html::script('assets/js/jquery.printarea.js')}}
-  {{Html::script('sistema/ventas/nuevo.js?v=2')}}
+  {{Html::script('sistema/ventas/nuevo.js?v=3')}}
 @stop

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Cierre;
+use App\Tienda;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Auth;
 
@@ -30,9 +32,10 @@ class CierreController extends Controller{
       return view('cajas.nuevo');
     }elseif (Auth::user()->estado_caja == 2) {
       // Si el usuario ya abrió caja, mostramos la vista para cerrar caja.
-      $cierre = \App\Cierre::where('usuario_id', Auth::user()->id)
-        ->where('tienda_id', Auth::user()->tienda_id)->where('estado', 1)->first();
-      return view('cajas.cerrar')->with('cierre', $cierre);
+      $tienda = Tienda::find(Auth::user()->tienda_id);
+      $fecha = Carbon::now()->format('Y-m-d');
+      
+      return view('cajas.cerrar', compact('tienda', 'fecha'));
     }else{
       // En este caso el usuario no tiene permiso para abrir caja.
       return redirect('cajero') ->with('error', 'NO TIENE PERMISO PARA ABRIR CAJA, COMUNÍQUESE CON SU ADMINISTRADOR.');

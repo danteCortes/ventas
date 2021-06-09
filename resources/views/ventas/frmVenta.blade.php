@@ -2,7 +2,6 @@
   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <div class="panel panel-default">
       <div class="panel-body" style="background-color:#bfbfbf;">
-        {{Form::open(['url'=>'venta', 'id'=>'frmNuevaVenta'])}}
         <p class="puntos text-success" style="font-family: Cambria, Georgia"></p>
         <div class="row">
           <div class="col-xs-12 col-sm-12 col-md-6 col-lg-4">
@@ -77,7 +76,7 @@
         <hr>
         <div class="row">
           <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
-            <button type="button" class="btn btn-primary" onclick="guardarVenta()">Terminar</button>
+            <button type="button" class="btn btn-primary" id="btnGuardarVenta" onclick="guardarVenta()">Terminar</button>
             <button type="button" class="btn btn-warning pull-right">Cancelar</button>
           </div>
           <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
@@ -87,7 +86,6 @@
             </div>
           </div>
         </div>
-        {{Form::close()}}
       </div>
     </div>
   </div>

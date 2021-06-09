@@ -8,15 +8,31 @@
         <h3 class="panel-title">Cerrar Caja
         </h3>
       </div>
+      <?php
+        $cierre = \App\Cierre::where('usuario_id', \Auth::user()->id)
+          ->where('tienda_id', \Auth::user()->tienda_id)
+          ->where('estado', 1)
+          ->whereDate('created_at', \Carbon\Carbon::now()->format('Y-m-d'))
+          ->first()
+        ;
+        $usuario = \App\Usuario::join('personas as p', 'p.dni', '=', 'usuarios.persona_dni')
+          ->select(
+            'usuarios.id',
+            \DB::raw("concat(p.nombres, ' ', p.apellidos) as nombres_apellidos")
+          )
+          ->where('usuarios.id', \Auth::user()->id)
+          ->first()
+        ;
+      ?>
       <div data-spy="scroll" data-target="#cabecera" data-offset="0" class="panel-body" id="reporteDiario">
         <p class="text-center" style="font-size: 12px; margin-bottom:1px;" id="cabecera">
-          <strong>CIERRE DE CAJA {{\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $cierre->created_at)->format('d/m/Y')}}</strong>
+          <strong>CIERRE DE CAJA {{\Carbon\Carbon::now()->format('d/m/Y')}}</strong>
         </p>
         <p class="text-center" style="font-size: 12px; margin-bottom:1px;" id="cabecera">
-          <strong>TIENDA: {{$cierre->usuario->tienda->nombre}}</strong>
+          <strong>TIENDA: {{$tienda->nombre}}</strong>
         </p>
         <p class="text-center" style="font-size: 12px; margin-bottom:1px;" id="cabecera">
-          <strong>USUARIO: {{$cierre->usuario->persona->nombres}} {{$cierre->usuario->persona->apellidos}}</strong>
+          <strong>USUARIO: {{$usuario->nombres_apellidos}}</strong>
         </p>
         <hr style="margin-bottom: 1px; margin-top: 1px;">
         @include('cajas.reportes.ventas.efectivo')
@@ -38,11 +54,16 @@
         @include('cajas.reportes.creditos.pagos')
       </div>
       <div class="panel-footer">
-        {{Form::open(['url'=>'cierre-caja/'.$cierre->id])}}
-          <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save"></span> Cerrar Caja</button>
+        @if($cierre)
+          {{Form::open(['url'=>'cierre-caja/'.$cierre->id])}}
+            <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-save"></span> Cerrar Caja</button>
+            <a href="{{url('cajero')}}" class="btn btn-default"><span class="glyphicon glyphicon-ban-circle"></span> Cancelar</a>
+            <button type="button" class="btn btn-primary imprimir pull-right"><span class="glyphicon glyphicon-print"></span> Imprimir</button>
+          {{Form::close()}}
+        @else
           <a href="{{url('cajero')}}" class="btn btn-default"><span class="glyphicon glyphicon-ban-circle"></span> Cancelar</a>
           <button type="button" class="btn btn-primary imprimir pull-right"><span class="glyphicon glyphicon-print"></span> Imprimir</button>
-        {{Form::close()}}
+        @endif
       </div>
     </div>
   </div>

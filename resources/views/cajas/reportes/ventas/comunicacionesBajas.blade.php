@@ -1,6 +1,10 @@
 <?php
 
-  $comunicaciones_bajas = \App\ComunicacionBaja::where('cierre_id', $cierre->id)->get();
+    $comunicaciones_bajas = \App\ComunicacionBaja::whereDate('created_at', $fecha)
+        ->where('usuario_id', $usuario->id)
+        ->where('tienda_id', $tienda->id)
+        ->get()
+    ;
 
 ?>
 @if(count($comunicaciones_bajas) > 0)

@@ -1,11 +1,17 @@
 <?php
-$productos = \DB::table('detalles')->join('creditos', 'creditos.id', '=', 'detalles.credito_id')
-  ->join('productos', 'productos.codigo', '=', 'detalles.producto_codigo')
-  ->where('creditos.cierre_id', $cierre->id)->select(
-    'productos.codigo as codigo',
-    DB::raw("SUM(detalles.cantidad) as cantidad"),
-    'productos.descripcion as descripcion'
-    )->groupBy('productos.codigo', 'productos.descripcion')->get();
+  $productos = \DB::table('detalles')->join('creditos', 'creditos.id', '=', 'detalles.credito_id')
+    ->join('productos', 'productos.codigo', '=', 'detalles.producto_codigo')
+    ->whereDate('creditos.created_at', $fecha)
+    ->where('creditos.usuario_id', $usuario->id)
+    ->where('creditos.tienda_id', $tienda->id)
+    ->select(
+      'productos.codigo as codigo',
+      DB::raw("SUM(detalles.cantidad) as cantidad"),
+      'productos.descripcion as descripcion'
+    )
+    ->groupBy('productos.codigo', 'productos.descripcion')
+    ->get()
+  ;
  ?>
  @if(count($productos) > 0)
 <hr>
