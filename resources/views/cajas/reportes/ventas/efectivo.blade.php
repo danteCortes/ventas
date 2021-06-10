@@ -9,13 +9,15 @@
 
   $total_dolares = 0;
   $total_vouchers = 0;
-  $total_soles = $total ? $total->total : 0;
+  $total_soles = 0;
   foreach ($ventas as $venta) {
+    $total_soles += $venta->total;
     if ($dolar = $venta->dolar) {
       $total_dolares += $dolar->monto;
     }
     if ($tarjeta = $venta->TarjetaVenta) {
       $total_vouchers += $tarjeta->monto;
+      $total_soles -= $tarjeta->monto;
     }
   }
   foreach ($cambios as $cambio) {
@@ -33,8 +35,26 @@
     ->select(
       DB::raw("SUM(pagos.monto) as monto")
     )
-    ->first();
+    ->first()
+  ;
   $total_soles += $total_pagos->monto;
+
+  $otros_ingresos = \App\OtroIngreso::select(\DB::raw("sum(total) as total"))
+    ->where('usuario_id', $usuario->id)
+    ->where('tienda_id', $tienda->id)
+    ->whereDate('created_at', $fecha)
+    ->first()
+  ;
+  $total_soles += $otros_ingresos->total;
+
+  $otros_gastos = \App\OtroGasto::select(\DB::raw("sum(total) as total"))
+    ->where('usuario_id', $usuario->id)
+    ->where('tienda_id', $tienda->id)
+    ->whereDate('created_at', $fecha)
+    ->first()
+  ;
+  $total_soles -= $otros_gastos->total;
+
   $total_notas_creditos = \App\NotaCredito::select(\DB::raw("sum(total) as total"))->whereDate('fecha_emision', $fecha)
     ->where('usuario_id', $usuario->id)->where('tienda_id', $tienda->id)->first();
   $total_soles -= $total_notas_creditos->total;
